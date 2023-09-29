@@ -1,38 +1,71 @@
-.App {
+/* all page settings */
+body {
+  font-family: 'Josefin Sans';
+  margin: 0;
+  padding: 0;
+  background-color: #9899c0;
+}
+
+/* title page headings */
+h2 {
+  color: #333;
+  font-family: 'Archivo Narrow', sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  left: 50%;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* nav bar formatting */
+nav {
+  background-color: #21234d;
+  padding: 13px;
+  display: flex;
+  justify-content: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center; /* Center the buttons horizontally within the nav bar */
+  align-items: center; /* Optional: To vertically center the buttons */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+nav ul li {
+  margin-left: 20px;
+}
+
+.nav-button {
+  background-color: #dad873;
+  color: #060000;
+  padding: 7px 13px;
+  font-family: 'Archivo Narrow', sans-serif;
+  font-weight: 200;
+  font-size: 18px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 50px;
+}
+
+/* navy dotted frame */
+.box {
+  margin-top: 2%;
+  margin-left: 2%;
+  margin-right: 2%;
+  width: 95.5%;
+  height: 1000px;
+  border: 5px dotted #21234d;
+  border-radius: 23px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.box img {
+  margin-top: 2%;
+  max-width: 25%;
+  max-height: 25%;
 }
