@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import logo from './BBLogoTransparent2.png';
+import logo from './BBLogo.png';
 
 /* home page UI */
 function Home() {

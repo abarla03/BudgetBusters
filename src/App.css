@@ -3,7 +3,7 @@ body {
   font-family: 'Josefin Sans';
   margin: 0;
   padding: 0;
-  background-color: #9899c0;
+  background-color: #edeceb;
 }
 
 /* title page headings */
@@ -65,7 +65,7 @@ nav ul li {
 }
 
 .box img {
-  margin-top: 2%;
-  max-width: 25%;
-  max-height: 25%;
+  margin-top: 1.5%;
+  max-width: 19%;
+  max-height: 19%;
 }
