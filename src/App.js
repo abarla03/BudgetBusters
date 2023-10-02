@@ -13,7 +13,14 @@ function Home() {
 /* set monthly goal page UI */
 function SetMonthlyGoal() {
   return (
-    <h2>set monthly budget</h2>
+    <div>
+      <h3>Set Monthly Budget:</h3>
+      <input type="text" placeholder="Enter your budget" />
+      <h3>Select Categories:</h3>
+      <h3>Create Categories:</h3>
+
+      <button className='submit-button' type="submit">Submit</button>
+    </div>
   )
 }
 

@@ -1,3 +1,4 @@
+/* STANDARD PAGE FORMATTING -----------------------------------------*/
 /* all page settings */
 body {
   font-family: 'Josefin Sans';
@@ -64,8 +65,69 @@ nav ul li {
   align-items: center;
 }
 
+/* BB logo formatting */
 .box img {
   margin-top: 1.5%;
   max-width: 19%;
   max-height: 19%;
 }
+
+/* MONTHLY GOAL SETTING PAGE FORMATTING --------------------------------*/
+/* possible form container */
+/* .form-container {
+  text-align: center;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} */
+
+/* headings for each subcsection in the form */
+h3 {
+  color: #333;
+  font-family: 'Archivo Narrow', sans-serif;
+  font-style: normal; 
+  font-weight: 600;
+  font-size: 23px;
+  left: 50%;
+  text-align: left;
+  margin-top: 50px;
+  margin-left: -150px;
+}
+
+/* monthly budget input field formatting */
+input[type="text"] { /* change classname so this can be applicable for other things */
+  width: 100%;
+  padding: 10px;
+  margin-top: -5px;
+  margin-left: -152px;
+  margin-right: 200px;
+  margin-bottom: 40px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+}
+
+/* submit button formatting */
+.submit-button {
+  background-color: #21234d;
+  color: #ffffff;
+  padding: 7px 13px;
+  font-family: 'Archivo Narrow', sans-serif;
+  font-weight: 200;
+  font-size: 18px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  position: fixed;
+  bottom: 40px;
+  right: 7%;
+  display: flex;
+}
+
+.submit-button:hover {
+  background-color: #3e3f56;
+}
+
+
