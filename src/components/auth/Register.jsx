@@ -1,12 +1,17 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from 'react';
 import { auth } from "../../firebase";
+import { signInWithGoogle } from "../../firebase";
+import logo from "../../BBLogo.png";
 
 
 const Register = (props) => {
     const [email, setEmail ] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState(' ');
+    const [age, setAge] = useState(' ');
+    const [phoneNumber, setPhoneNumber] = useState(' ');
+
 
     const registerSubmit = (e) => {
         // todo: sign in
@@ -29,20 +34,37 @@ const Register = (props) => {
     <div className="auth-form-container">
         
     <form className="register-form" onSubmit={registerSubmit}>
+    <img src={logo} alt = ''/>
             <h2>Register</h2>
         <label htmlFor="name">Full Name </label>
         <input value={name} onChange={(e) => setName(e.target.value)}type="name" id="name" placeholder="Full Name" name="Full Name" />
-        <label htmlFor="email">email</label>
-        <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" placeholder="youremail@gmail.com" id="email" name="email" />
 
-        <label htmlFor="password">password</label>
+        <label htmlFor="age">Age </label>
+        <input value={age} onChange={(e) => setAge(e.target.value)}type="age" id="age" placeholder="" name="age" />
+
+
+        <label htmlFor="phoneNumber">Phone Number </label>
+        <input value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}type="phoneNumber" id="phoneNumber" placeholder="" name="phoneNumber" />
+
+
+        <label htmlFor="email">Email</label>
+        <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" placeholder="email@emailprovider.com" id="email" name="email" />
+
+        <label htmlFor="password">Password</label>
         <input value={password} onChange={(e) => setPassword(e.target.value)}type="password" placeholder="enter password" id="password" name="password" />
 
         <button type="submit">Register</button>
 
+
     </form>
     <button className="link-btn" onClick={() => props.onFormSwitch}>Already have an account? Login here.</button>
     
+    <button class="sign-in-with-google-btn" onClick = {signInWithGoogle}>Sign In With Google</button> 
+    <h1>{localStorage.getItem("name")}</h1>
+    <h1>{localStorage.getItem("email")}</h1>
+    <img src = {localStorage.getItem("profilePic")}/>
+
+
     </div>
 
     /*

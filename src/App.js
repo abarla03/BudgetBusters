@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-//import logo from './logo.svg';
 import './App.css';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import AuthDetails from './components/AuthDetails';
+
+
 
 function App() {
 
@@ -15,11 +16,14 @@ function App() {
 
   return (
 
-    <div className="App">
+
+    <div className="App"> 
     {
-      currentForm === "login" ? <Login onFormSwitch={toggleForm}/> : <Register onFormSwitch={toggleForm}/>  
+      currentForm === "login" ? <Login onFormSwitch={toggleForm}/> : <Register onFormSwitch={toggleForm}/> 
     }
-    <AuthDetails />   
+      
+    <AuthDetails />  
+     
   </div>
 
 

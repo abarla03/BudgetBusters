@@ -1,6 +1,7 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from 'react';
 import { auth } from "../../firebase";
+import logo from "../../BBLogo.png";
 
 
 const Login = (props) => {
@@ -23,12 +24,13 @@ const Login = (props) => {
   return (
 
     <div className="auth-form-container">
+        <img src={logo} alt = ''/>
         <h2>Login</h2>
     <form className="login-form" onSubmit={loginSubmit}>
-        <label htmlFor="email">email</label>
-        <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" placeholder="youremail@gmail.com" id="email" name="email" />
+        <label htmlFor="email">Email</label>
+        <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" placeholder="email@emailprovider.com" id="email" name="email" />
 
-        <label htmlFor="password">password</label>
+        <label htmlFor="password">Password</label>
         <input value={password} onChange={(e) => setPassword(e.target.value)}type="password" placeholder="enter password" id="password" name="password" />
 
         <button type="submit">Log In</button>
@@ -58,6 +60,7 @@ const Login = (props) => {
         </form>
     </div>
 */
+
   )
 }
 
