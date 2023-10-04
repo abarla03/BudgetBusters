@@ -24,22 +24,29 @@ const provider = new GoogleAuthProvider()
 export const signInWithGoogle = () => {
   signInWithPopup(auth, provider)
   .then((result) => {
-      console.log(result);
-      // result object contains a lot of info about the user:
-      // email, display name, photoURL
-      const name = result.user.displayName;
-      const email = result.user.email;
-      const profilePic = result.user.photoURL;
-      //const phone = result.user.phone;
+    console.log(result);
+    // result object contains a lot of info about the user
+    // store user metadata as an object
+    const user = result.user;
+    const userData = {
+    
+      name: result.user.displayName,
+      email: result.user.email,
+      phone: user.phoneNumber,
+      profilePic: result.user.photoURL
+      
+    }
 
-      // local storage: browser remembers who's logged in
-      localStorage.setItem("name", name);
-      localStorage.setItem("email", email);
-      localStorage.setItem("profilePic", profilePic);
-      //localStorage.setItem("phone", phone);
-
+    // local storage: browser remembers who's logged in
+    localStorage.setItem("googleUserData", JSON.stringify(userData));
+  
   }).catch((error) => {
-      console.log(error);
+    console.log(error);
   });
+}
+
+/* clear user data from browser localStorage when user signs out */
+export const clearGoogleUserData = () => {
+  localStorage.removeItem("googleUserData");
 }
 
