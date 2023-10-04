@@ -12,16 +12,52 @@ function Home() {
 
 /* set monthly goal page UI */
 function SetMonthlyGoal() {
+  const [budget, setBudget] = useState('');
+  const [error, setError] = useState('');
+
+  const handleBudgetChange = (event) => {
+    const inputBudget = event.target.value;
+    // Regular expression to check if the input contains only numerical characters
+    const numericRegex = /^[0-9]*$/;
+
+    if (numericRegex.test(inputBudget)) {
+      setBudget(inputBudget);
+      setError('');
+    } else {
+      setBudget(inputBudget);
+      setError('Please enter a valid numerical budget.');
+    }
+  };
+
+  const handleSubmit = () => {
+    // Add your submission logic here, for example, sending the budget to a server.
+    // This function is called when the "Submit" button is clicked.
+  };
+
   return (
     <div>
       <h3>Set Monthly Budget:</h3>
-      <input type="text" placeholder="Enter your budget" />
+      <div className="input-container">
+        <input
+          type="text"
+          placeholder="Enter your budget"
+          value={budget}
+          onChange={handleBudgetChange}
+        />
+        {error && <p className="error-message">{error}</p>}
+      </div>
       <h3>Select Categories:</h3>
       <h3>Create Categories:</h3>
 
-      <button className='submit-button' type="submit">Submit</button>
+      <button 
+        className='submit-button'
+        type="submit"
+        onClick={handleSubmit}
+        disabled={error !== ''}>
+        Submit
+      </button>
     </div>
-  )
+  );
 }
 
 /* category breakdown page UI */

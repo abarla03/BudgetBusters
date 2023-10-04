@@ -109,6 +109,22 @@ input[type="text"] { /* change classname so this can be applicable for other thi
   outline: none;
 }
 
+/* error message formatting */
+.input-container {
+  position: relative;
+}
+
+/* Style the error message */
+.error-message {
+  color: red;
+  font-size: 14px;
+  font-weight: 100px;
+  font-family: 'Archivo Narrow', sans-serif;
+  position: absolute;
+  bottom: 5px; /* Adjust this value to control the vertical positioning */
+  left: -150px;
+}
+
 /* submit button formatting */
 .submit-button {
   background-color: #21234d;
