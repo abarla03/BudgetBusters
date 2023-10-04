@@ -21,25 +21,49 @@ export const auth = getAuth(app);
 
 const provider = new GoogleAuthProvider()
 
-export const signInWithGoogle = () => {
+export const signInWithGoogle = (onFormSwitch) => {
   signInWithPopup(auth, provider)
   .then((result) => {
       console.log(result);
-      // result object contains a lot of info about the user:
-      // email, display name, photoURL
-      const name = result.user.displayName;
-      const email = result.user.email;
-      const profilePic = result.user.photoURL;
-      //const phone = result.user.phone;
+      // 10/3 10:02 am
+      // // result object contains a lot of info about the user:
+      // // email, display name, photoURL
+      // const name = result.user.displayName;
+      // const email = result.user.email;
+      // const profilePic = result.user.photoURL;
+      // //const phone = result.user.phone;
 
-      // local storage: browser remembers who's logged in
-      localStorage.setItem("name", name);
-      localStorage.setItem("email", email);
-      localStorage.setItem("profilePic", profilePic);
-      //localStorage.setItem("phone", phone);
+      const user = result.user;
+      const userData = {
+        name: user.displayName,
+        email: user.email,
+        phone: user.phoneNumber,
+        profilePic: user.photoURL
+        
+      }
+
+      localStorage.setItem("googleUserData", JSON.stringify(userData));
+      
+      // automatically reload the page and directly go to the Register page
+      //window.location.href = "../../../components/auth/Register.jsx";
+      //window.location.reload();
+      // instead of using url / path, implement routing via a routing library, like React Router
+      // to manage routes + navigation
+
+      // 10/3 10:03 am
+      // // local storage: browser remembers who's logged in
+      // localStorage.setItem("name", name);
+      // localStorage.setItem("email", email);
+      // localStorage.setItem("profilePic", profilePic);
+      // //localStorage.setItem("phone", phone);
 
   }).catch((error) => {
       console.log(error);
   });
 }
+
+/* clear user data from browser localStorage when user signs out */
+export const clearGoogleUserData = () => {
+  localStorage.removeItem("googleUserData");
+} 
 

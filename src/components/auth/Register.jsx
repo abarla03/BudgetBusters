@@ -1,16 +1,34 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { auth } from "../../firebase";
 import { signInWithGoogle } from "../../firebase";
 import logo from "../../BBLogo.png";
 
 
 const Register = (props) => {
-    const [email, setEmail ] = useState('');
+    const [name, setName ] = useState('');
     const [password, setPassword] = useState('');
-    const [name, setName] = useState(' ');
-    const [age, setAge] = useState(' ');
-    const [phoneNumber, setPhoneNumber] = useState(' ');
+    const [email, setEmail] = useState('');
+    const [age, setAge] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+
+    /* populate register input fields with Google info */
+
+    const populateGoogleUserData = () => {
+            const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
+    
+            setName(googleUserData.name);
+            setEmail(googleUserData.email);
+            setPhoneNumber(googleUserData.phoneNumber);
+            /* add in other relevant fields */
+        
+    }
+
+    /* call the appropriate method to populate fields */
+     useEffect (() => {
+         populateGoogleUserData();
+    }, []);
+
 
 
     const registerSubmit = (e) => {
@@ -30,6 +48,7 @@ const Register = (props) => {
   return (
 
     // Debug Register button (compare Sign Up)
+    // changed type of name to 'text' instead of 'name' for better input handling
 
     <div className="auth-form-container">
         
@@ -37,7 +56,8 @@ const Register = (props) => {
     <img src={logo} alt = ''/>
             <h2>Register</h2>
         <label htmlFor="name">Full Name </label>
-        <input value={name} onChange={(e) => setName(e.target.value)}type="name" id="name" placeholder="Full Name" name="Full Name" />
+    
+        <input value={name} onChange={(e) => setName(e.target.value)}type="text" id="name" placeholder="Full Name" name="Full Name" />
 
         <label htmlFor="age">Age </label>
         <input value={age} onChange={(e) => setAge(e.target.value)}type="age" id="age" placeholder="" name="age" />
@@ -59,14 +79,17 @@ const Register = (props) => {
     </form>
     <button className="link-btn" onClick={() => props.onFormSwitch}>Already have an account? Login here.</button>
     
-    <button class="sign-in-with-google-btn" onClick = {signInWithGoogle}>Sign In With Google</button> 
-    <h1>{localStorage.getItem("name")}</h1>
-    <h1>{localStorage.getItem("email")}</h1>
-    <img src = {localStorage.getItem("profilePic")}/>
-
-
+    <button className="sign-in-with-google-btn" onClick = {signInWithGoogle}>Sign In With Google</button> 
+    
     </div>
 
+    // automatic refresh after they click on sign in with google? has to be after the choose their acc.
+    /* after <button class="sign-in-with-google-btn" line, had
+        <h1>{localStorage.getItem("name")}</h1>
+        <h1>{localStorage.getItem("email")}</h1>
+        <img src = {localStorage.getItem("profilePic")}/>
+
+    */
     /*
     <div className='sign-in-container'>
         <form onSubmit={handleSubmit}>
