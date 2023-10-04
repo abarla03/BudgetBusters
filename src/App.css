@@ -30,8 +30,8 @@ nav ul {
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center; /* Center the buttons horizontally within the nav bar */
-  align-items: center; /* Optional: To vertically center the buttons */
+  justify-content: center; 
+  align-items: center; 
 }
 
 nav ul li {
@@ -49,6 +49,24 @@ nav ul li {
   border-radius: 5px;
   cursor: pointer;
   margin-right: 50px;
+}
+
+/* settings icon and dropdown */
+.nav-settings .settings-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  position: absolute; 
+  top: 1%; 
+  left: 1%;
+  margin: 0; 
+}
+
+.nav-settings .settings-button img {
+  width: 47px; 
+  height: 44px;
 }
 
 /* navy dotted frame */

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import logo from './BBLogo.png';
+import settingsIcon from './SettingsIcon.png';
 
 /* home page UI */
 function Home() {
@@ -61,6 +62,13 @@ function App() {
     setCurrentPage(page);
   };
 
+  /* handle settings dropdown */
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!isDropdownVisible);
+  };
+
   /* return home page structure */
   return (
     <div className="App">
@@ -77,6 +85,21 @@ function App() {
           </li>
           <li>
             <button className='nav-button' onClick={() => handleNavigation('inputDailySpending')}>Input Daily Spending</button>
+          </li>
+          <li className="nav-settings">
+            <button className="settings-button" onClick={toggleDropdown}>
+              <img src={settingsIcon} alt = ''/>
+            </button>
+            {isDropdownVisible && (
+              <div className="dropdown-content">
+                <button className='nav-button' onClick={() => { }}>
+                  <h2>Profile</h2>
+                </button>
+                <button className='nav-button' onClick={() => { }}>
+                  <h2>Manage Notifications</h2>
+                </button>
+              </div>
+            )}
           </li>
         </ul>
       </nav>
