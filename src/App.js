@@ -17,7 +17,6 @@ function SetMonthlyGoal() {
 
   const handleBudgetChange = (event) => {
     const inputBudget = event.target.value;
-    // Regular expression to check if the input contains only numerical characters
     const numericRegex = /^[0-9]*$/;
 
     if (numericRegex.test(inputBudget)) {
@@ -30,8 +29,7 @@ function SetMonthlyGoal() {
   };
 
   const handleSubmit = () => {
-    // Add your submission logic here, for example, sending the budget to a server.
-    // This function is called when the "Submit" button is clicked.
+    // add submit logic
   };
 
   return (
