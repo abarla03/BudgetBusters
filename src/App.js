@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import logo from './BBLogo.png';
+import { categories } from './predefinedCategories.js'
 
 /* home page UI */
 function Home() {
@@ -14,10 +15,11 @@ function Home() {
 function SetMonthlyGoal() {
   const [budget, setBudget] = useState('');
   const [error, setError] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
+  /* function handling non-numeric values in budget goal field */
   const handleBudgetChange = (event) => {
     const inputBudget = event.target.value;
-    // Regular expression to check if the input contains only numerical characters
     const numericRegex = /^[0-9]*$/;
 
     if (numericRegex.test(inputBudget)) {
@@ -29,9 +31,17 @@ function SetMonthlyGoal() {
     }
   };
 
+  /* function handling user's ability to select multiple categories */
+  const handleCategoryClick = (category) => {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(selectedCategories.filter((c) => c !== category));
+    } else {
+      setSelectedCategories([...selectedCategories, category]);
+    }
+  };
+
   const handleSubmit = () => {
-    // Add your submission logic here, for example, sending the budget to a server.
-    // This function is called when the "Submit" button is clicked.
+    // add logic to submit here
   };
 
   return (
@@ -46,14 +56,27 @@ function SetMonthlyGoal() {
         />
         {error && <p className="error-message">{error}</p>}
       </div>
-      <h3>Select Categories:</h3>
-      <h3>Create Categories:</h3>
 
-      <button 
-        className='submit-button'
+      <h4>Select Categories:</h4>
+      <div className="category-buttons">
+        {categories.map((category) => (
+          <button
+            key={category}
+            className={`category-button${selectedCategories.includes(category) ? ' selected' : ''}`}
+            onClick={() => handleCategoryClick(category)}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+
+      <h4>Create Categories:</h4>
+      <button
+        className="submit-button"
         type="submit"
         onClick={handleSubmit}
-        disabled={error !== ''}>
+        disabled={error !== ''}
+      >
         Submit
       </button>
     </div>
