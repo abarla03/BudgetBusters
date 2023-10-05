@@ -100,7 +100,7 @@ h4 {
 }
 
 /* monthly budget input field formatting */
-.user-input-field { /* change classname so this can be applicable for other things */
+.user-input-field { 
   width: 500px;
   padding: 10px;
   margin-top: -5px;
@@ -125,7 +125,7 @@ h4 {
   font-weight: 100px;
   font-family: 'Archivo Narrow', sans-serif;
   position: absolute;
-  bottom: 5px; /* Adjust this value to control the vertical positioning */
+  bottom: 5px; 
   left: -150px;
 }
 
@@ -142,13 +142,76 @@ h4 {
 
 /* selected category buttons styling */
 .category-button.selected {
-  background-color: #dad873; /* Change color when selected */
-  color: #000000; /* Change text color when selected */
+  background-color: #dad873; 
+  color: #000000; 
 }
 
 .category-buttons {
-  margin-left: -166px; /* Adjust the value to move the buttons further to the left */
+  margin-left: -166px; 
   margin-bottom: 50px;
+}
+
+/* formatting for create category header and plus button in the same line */
+.create-category {
+  display: flex;
+  align-items: center;
+}
+
+/* plus button to create category button styling */
+.plus-button {
+  background-color: #21234d;
+  color: #ffffff;
+  border: none;
+  padding: 3px 4px;
+  border: none;
+  border-radius: 5px;
+  margin-top: -12px;
+  margin-left: 12px;
+  cursor: pointer;
+}
+
+/* created category buttons styling */
+.created-category {
+  background-color: #dad873;
+  border: none;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  margin: 1px 15px;
+  cursor: pointer;
+}
+
+/* formatting for create category field and add button in the same line */
+.add-field {
+  display: flex;
+  align-items: center;
+}
+
+/* formatting for field for creating categories */
+.category-field {
+  width: 500px;
+  padding: 10px;
+  margin-top: -11px;
+  margin-left: -152px;
+  margin-right: 200px;
+  margin-bottom: 50px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+}
+
+/* formatting for field for creating categories */
+.add-button {
+  background-color: #21234d;
+  color: #ffffff;
+  border: none;
+  padding: 5px 8px;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 60px;
+  margin-left: -175px;
+  cursor: pointer;
 }
 
 /* submit button formatting */

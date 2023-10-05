@@ -16,6 +16,9 @@ function SetMonthlyGoal() {
   const [budget, setBudget] = useState('');
   const [error, setError] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState('');
+  const [createdCategories, setCreatedCategories] = useState([]);
+  const [displayCreatedCategories, setDisplayCreatedCategories] = useState(false);
 
   /* function handling non-numeric values in budget goal field */
   const handleBudgetChange = (event) => {
@@ -38,6 +41,21 @@ function SetMonthlyGoal() {
     } else {
       setSelectedCategories([...selectedCategories, category]);
     }
+  };
+
+  /* function handling user's ability to create new categories */
+  const handleCreateCategory = () => {
+    if (newCategory.trim() !== '') {
+      const updatedCategories = [...createdCategories, newCategory];
+      setCreatedCategories(updatedCategories);
+      setNewCategory('');
+    }
+  };
+
+  /* function handling user's ability to delete their created categories */
+  const handleRemoveCategory = (categoryToRemove) => {
+    const updatedCategories = createdCategories.filter((category) => category !== categoryToRemove);
+    setCreatedCategories(updatedCategories);
   };
 
   const handleSubmit = () => {
@@ -70,7 +88,36 @@ function SetMonthlyGoal() {
         ))}
       </div>
 
-      <h4>Create Categories:</h4>
+      <div className="create-category">
+        <h4>Create Categories:</h4>
+        <button className="plus-button" onClick={() => setDisplayCreatedCategories(!displayCreatedCategories)}>+</button>
+      </div>
+
+      <div className="add-field">
+        {displayCreatedCategories && (
+          <div>
+            <input className='category-field'
+              type="text"
+              placeholder="Enter a new category"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+            />
+            <button className='add-button' onClick={handleCreateCategory}>Add</button>
+          </div>
+        )}
+      </div>
+
+      <div className="category-buttons">
+        {createdCategories.map((category) => (
+          <button
+          key={category}
+          className={`created-category ${category}`}
+          onClick={() => handleRemoveCategory(category)}>
+          {category}
+          </button>
+        ))}
+      </div>
+
       <button
         className="submit-button"
         type="submit"
