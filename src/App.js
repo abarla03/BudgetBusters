@@ -48,7 +48,7 @@ function SetMonthlyGoal() {
     <div>
       <h3>Set Monthly Budget:</h3>
       <div className="input-container">
-        <input
+        <input className='user-input-field'
           type="text"
           placeholder="Enter your budget"
           value={budget}

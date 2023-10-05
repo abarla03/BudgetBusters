@@ -1,4 +1,4 @@
-/* STANDARD PAGE FORMATTING -----------------------------------------*/
+/* STANDARD PAGE FORMATTING ----------------------------------------------------------------------*/
 /* all page settings */
 body {
   font-family: 'Josefin Sans';
@@ -30,8 +30,8 @@ nav ul {
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center; /* Center the buttons horizontally within the nav bar */
-  align-items: center; /* Optional: To vertically center the buttons */
+  justify-content: center; 
+  align-items: center; 
 }
 
 nav ul li {
@@ -72,7 +72,7 @@ nav ul li {
   max-height: 19%;
 }
 
-/* MONTHLY GOAL SETTING PAGE FORMATTING --------------------------------*/
+/* MONTHLY GOAL SETTING PAGE FORMATTING ---------------------------------------------------------*/
 /* headings for first subcsection in the form */
 h3 {
   color: #333;
@@ -100,8 +100,8 @@ h4 {
 }
 
 /* monthly budget input field formatting */
-input[type="text"] { /* change classname so this can be applicable for other things */
-  width: 100%;
+.user-input-field { /* change classname so this can be applicable for other things */
+  width: 500px;
   padding: 10px;
   margin-top: -5px;
   margin-left: -152px;
@@ -118,7 +118,7 @@ input[type="text"] { /* change classname so this can be applicable for other thi
   position: relative;
 }
 
-/* Style the error message */
+/* style the error message */
 .error-message {
   color: red;
   font-size: 14px;
