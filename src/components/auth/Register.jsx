@@ -3,23 +3,44 @@ import React, { useEffect, useState } from 'react';
 import { auth } from "../../firebase";
 import { signInWithGoogle } from "../../firebase";
 import logo from "../../BBLogo.png";
+import { useNavigate } from "react-router-dom";
+import GoogleSignInButton from '../GoogleSignInButton';
+/* 10/6 day changes */
 
 
-const Register = (props) => {
+const Register = () => {
+    const navigate = useNavigate();
     const [name, setName ] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
     const [age, setAge] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const[googleUserData, setGoogleUserData] = useState({
+        name: '',
+        email: '',
+        phoneNumber:''
+}); // new state 10/5
+
+const signInWithGoogleHandler = () => {
+    signInWithGoogle()
+      .then(() => {
+        // After successful sign-in with Google, navigate to the '/home' route
+        navigate('/home');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
     /* populate register input fields with Google info */
 
     const populateGoogleUserData = () => {
-            const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
-    
-            setName(googleUserData.name);
-            setEmail(googleUserData.email);
-            setPhoneNumber(googleUserData.phoneNumber);
+            //const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {}; // 10.5
+            const userData = JSON.parse(localStorage.getItem("googleUserData")) || {}; // 10.5
+            setGoogleUserData(userData); // Update state with Google user data 10.5
+            // setName(googleUserData.name);
+            // setEmail(googleUserData.email);
+            // setPhoneNumber(googleUserData.phoneNumber); // 10/5
             /* add in other relevant fields */
         
     }
@@ -50,6 +71,8 @@ const Register = (props) => {
     // Debug Register button (compare Sign Up)
     // changed type of name to 'text' instead of 'name' for better input handling
 
+    // <input value={name} onChange={(e) => setName(e.target.value)}type="text" id="name" placeholder="Full Name" name="Full Name" />
+        // put after label htmlFor
     <div className="auth-form-container">
         
     <form className="register-form" onSubmit={registerSubmit}>
@@ -57,7 +80,7 @@ const Register = (props) => {
             <h2>Register</h2>
         <label htmlFor="name">Full Name </label>
     
-        <input value={name} onChange={(e) => setName(e.target.value)}type="text" id="name" placeholder="Full Name" name="Full Name" />
+        <input value={googleUserData.name !== '' ? googleUserData.name : name} onChange={(e) => setName(e.target.value)}type="text" id="name" placeholder="Full Name" name="Full Name" />
 
         <label htmlFor="age">Age </label>
         <input value={age} onChange={(e) => setAge(e.target.value)}type="age" id="age" placeholder="" name="age" />
@@ -77,11 +100,14 @@ const Register = (props) => {
 
 
     </form>
-    <button className="link-btn" onClick={() => props.onFormSwitch}>Already have an account? Login here.</button>
+    <GoogleSignInButton/>
+    <button className="link-btn" onClick={() => navigate('/login')}>Already have an account? Login here.</button>
     
-    <button className="sign-in-with-google-btn" onClick = {signInWithGoogle}>Sign In With Google</button> 
     
     </div>
+
+//<button className="create-account-with-google-btn" onClick = {signInWithGoogle}>Sign In With Google</button> 
+    
 
     // automatic refresh after they click on sign in with google? has to be after the choose their acc.
     /* after <button class="sign-in-with-google-btn" line, had
@@ -108,6 +134,7 @@ const Register = (props) => {
             ></input>
             <button type="submit">Sign Up</button>
         </form>
+        
     </div>
     */
 
