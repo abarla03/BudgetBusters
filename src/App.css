@@ -148,4 +148,72 @@ input[type="text"] { /* change classname so this can be applicable for other thi
   background-color: #3e3f56;
 }
 
+/* PROFILE PAGE --------------------------------*/
+/* first header formatting */
+h4 {
+  color: #333;
+  font-family: 'Archivo Narrow', sans-serif;
+  font-style: normal; 
+  font-weight: 600;
+  font-size: 18px;
+  top: 20%;
+  left: 50%;
+  text-align: left;
+  margin-top: 50px;
+  margin-left: -150px;
+}
 
+/* later headers formatting */
+h5 {
+  color: #333;
+  font-family: 'Archivo Narrow', sans-serif;
+  font-style: normal; 
+  font-weight: 600;
+  font-size: 18px;
+  top: 20%;
+  left: 50%;
+  text-align: left;
+  margin-top: -20px;
+  margin-left: -150px;
+}
+
+/* edit fields formatting */
+.prepopulated-field {
+  width: 100%;
+  padding: 10px;
+  margin-top: -100px;
+  margin-left: -152px;
+  margin-right: 200px;
+  margin-bottom: 40px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+}
+
+/* edit button formatting */
+.edit-button {
+  background-color: #21234d;
+  color: #ffffff;
+  border: none;
+  padding: 5px 8px;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 60px;
+  margin-left: 0px;
+  cursor: pointer;
+}
+
+/* prepopulated info formatting */
+h6 {
+  color: #333;
+  font-family: 'Archivo Narrow', sans-serif;
+  font-style: normal; 
+  font-weight: 200;
+  font-size: 18px;
+  top: 20%;
+  left: 50%;
+  text-align: left;
+  margin-top: -20px;
+  margin-left: -150px;
+}

@@ -39,6 +39,80 @@ function InputDailySpending() {
   )
 }
 
+/* profile page UI */
+function Profile() {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [fullName, setFullName] = useState(''); 
+  const [email, setEmail] = useState(''); 
+  const [age, setAge] = useState('');
+
+  /* function handling the edit mode */
+  const handleEditClick = () => {
+    setIsEditMode(!isEditMode);
+  };
+
+  /* function handling the saved information from edit */
+  const handleSaveClick = () => {
+    setFullName(document.getElementById('fullName').value);
+    setEmail(document.getElementById('email').value);
+    setAge(document.getElementById('age').value);
+    setIsEditMode(false);
+  };
+
+  return (
+    <div>
+      <h4>Full Name:</h4>
+      {isEditMode ? (
+        <input
+          id="fullName"
+          className="prepopulated-field"
+          placeholder="Prepopulated name"
+          defaultValue={fullName}
+        />
+      ) : (
+        <h6>{fullName}</h6>
+      )}
+      <h5>Email:</h5>
+      {isEditMode ? (
+        <input
+          id="email"
+          className="prepopulated-field"
+          placeholder="Prepopulated email"
+          defaultValue={email}
+        />
+      ) : (
+        <h6>{email}</h6>
+      )}
+
+      <h5>Age:</h5>
+      {isEditMode ? (
+        <input
+          id="age"
+          className="prepopulated-field"
+          placeholder="Prepopulated age"
+          defaultValue={age}
+        />
+      ) : (
+        <h6>{age}</h6>
+      )}
+      <div>
+        {isEditMode ? (
+          <button className='edit-button' onClick={handleSaveClick}>Save</button>
+        ) : (
+          <button className='edit-button' onClick={handleEditClick}>Edit</button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* manage notifications UI */
+function ManageNotifications() {
+  return (
+    <h2>Manage Notifications</h2>
+  )
+}
+
 /* handle rendering of pages and options */
 function App() {
   const [currentPage, setCurrentPage] = React.useState('home');
@@ -53,6 +127,10 @@ function App() {
         return <CategoryBreakdown/>;
       case 'inputDailySpending':
         return <InputDailySpending/>;
+      case 'profile':
+        return <Profile/>;
+      case 'manageNotifications':
+        return <ManageNotifications/>;
       default:
         return <Home/>;
     }
@@ -92,12 +170,8 @@ function App() {
             </button>
             {isDropdownVisible && (
               <div className="dropdown-content">
-                <button className='nav-button' onClick={() => { }}>
-                  <h2>Profile</h2>
-                </button>
-                <button className='nav-button' onClick={() => { }}>
-                  <h2>Manage Notifications</h2>
-                </button>
+                <button className='nav-button' onClick={() => handleNavigation('profile')}>Profile</button>
+                <button className='nav-button' onClick={() => handleNavigation('manageNotifications')}>Manage Notifications</button>
               </div>
             )}
           </li>
@@ -106,7 +180,8 @@ function App() {
       
       <div class="box">
         <img
-          src={logo} alt = ''
+          src={logo} 
+          alt= '' 
         />
 
         <main>{renderPage()}</main>
