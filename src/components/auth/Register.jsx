@@ -12,45 +12,23 @@ const Register = () => {
     const navigate = useNavigate();
     const [name, setName ] = useState('');
     const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
-    const [age, setAge] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const[googleUserData, setGoogleUserData] = useState({
-        name: '',
-        email: '',
-        phoneNumber:''
-}); // new state 10/5
+    const [email, setEmail] = useState(' ');
+    const [age, setAge] = useState(' ');
+    const [phoneNumber, setPhoneNumber] = useState(' ');
 
-const signInWithGoogleHandler = () => {
-    signInWithGoogle()
-      .then(() => {
-        // After successful sign-in with Google, navigate to the '/home' route
-        navigate('/home');
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-    /* populate register input fields with Google info */
-
+    /* populate register input fields with applicable Google account info */
     const populateGoogleUserData = () => {
-            //const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {}; // 10.5
-            const userData = JSON.parse(localStorage.getItem("googleUserData")) || {}; // 10.5
-            setGoogleUserData(userData); // Update state with Google user data 10.5
-            // setName(googleUserData.name);
-            // setEmail(googleUserData.email);
-            // setPhoneNumber(googleUserData.phoneNumber); // 10/5
-            /* add in other relevant fields */
-        
+        const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
+        setName(googleUserData.name);
+        setEmail(googleUserData.email);
+        setPhoneNumber(googleUserData.phoneNumber);
+        /* add in other relevant fields */
     }
 
     /* call the appropriate method to populate fields */
-     useEffect (() => {
-         populateGoogleUserData();
+    useEffect (() => {
+        populateGoogleUserData();
     }, []);
-
-
 
     const registerSubmit = (e) => {
         // todo: sign in
@@ -106,7 +84,7 @@ const signInWithGoogleHandler = () => {
     
     </div>
 
-//<button className="create-account-with-google-btn" onClick = {signInWithGoogle}>Sign In With Google</button> 
+//<button classNameName="create-account-with-google-btn" onClick = {signInWithGoogle}>Sign In With Google</button> 
     
 
     // automatic refresh after they click on sign in with google? has to be after the choose their acc.
