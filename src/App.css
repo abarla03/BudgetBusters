@@ -215,7 +215,7 @@ h4 {
 }
 
 /* submit button formatting */
-.submit-button {
+.next-button {
   background-color: #21234d;
   color: #ffffff;
   padding: 7px 13px;
@@ -235,4 +235,49 @@ h4 {
   background-color: #3e3f56;
 }
 
+/* user categories formatting */
+.button {
+  background-color: var(--button-bg-color);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth transition effect */
+}
+
+/* dropdown formatting */
+select {
+  font-size: 14px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+}
+
+/* remove bullets in list and add spacing between categories */
+ul {
+  list-style-type: none; 
+  margin-left: -205px;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+/* back button styling for color-coding categories */
+.back-button {
+  background-color: #21234d;
+  color: #ffffff;
+  padding: 7px 13px;
+  font-family: 'Archivo Narrow', sans-serif;
+  font-weight: 200;
+  font-size: 18px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  position: fixed;
+  bottom: 40px;
+  right: 89%;
+  display: flex;
+}
 
