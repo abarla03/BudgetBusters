@@ -175,39 +175,6 @@ button {
   }
 }
 
-/* nav bar formatting */
-nav {
-  background-color: #21234d;
-  padding: 13px;
-  display: flex;
-  justify-content: center;
-}
-
-
-body {
-  text-align: center;
-  padding-top: 2rem;
-}
-
-.box {
-  margin-top: 2%;
-  margin-left: 2%;
-  margin-right: 2%;
-  width: 95.5%;
-  height: 1000px;
-  border: 5px dotted #21234d;
-  border-radius: 23px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.box img {
-  margin-top: 1.5%;
-  max-width: 19%;
-  max-height: 19%;
-}
-
 
 /* integrate home and integrated pages w/in from rosie */
 /* STANDARD PAGE FORMATTING ----------------------------------------------------------------------*/
@@ -230,7 +197,7 @@ h2 {
 }
 
 /* nav bar formatting */
-nav {
+.nav {
   background-color: #21234d;
   padding: 13px;
   display: flex;

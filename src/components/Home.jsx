@@ -1,89 +1,52 @@
 
 
 /****************** modified to match App.cs ***************************** */
-import React, { useState } from 'react';
+import React from 'react';
 import '../App.css';
 import logo from '../BBLogo.png';
+import { Route, Routes, Link  } from 'react-router-dom';
+import SetMonthlyGoal from './SetMonthlyGoal'; // Import your components
+import CategoryBreakdown from './CategoryBreakdown'; // Import your components
+import InputDailySpending from './InputDailySpending'; // Import your components
 
-/* home page UI */
 function Home() {
-  const [currentPage, setCurrentPage] = useState('home');
+    console.log("Home component is rendering.");
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'home':
-        return <h1>Welcome to the Home Page!</h1>;
-      case 'setMonthlyGoal':
-        return <SetMonthlyGoal />;
-      case 'categoryBreakdown':
-        return <CategoryBreakdown />;
-      case 'inputDailySpending':
-        return <InputDailySpending />;
-      default:
-        return <h1>Welcome to the Home Page!</h1>;
-    }
-  };
+    return (
+     
+        <div className="App">
+          <nav className="nav">
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/SetMonthlyGoal">Set Monthly Goal</Link>
+              </li>
+              <li>
+                <Link to="/CategoryBreakdown">Category Breakdown</Link>
+              </li>
+              <li>
+                <Link to="/InputDailySpending">Input Daily Spending</Link>
+              </li>
+            </ul>
+          </nav>
+        
+          <div className="box">
+            
+            {/* <Routes>
+                <Route path="/SetMonthlyGoal" element={<SetMonthlyGoal />} />
+                <Route path="/CategoryBreakdown" element={<CategoryBreakdown />} />
+                <Route path="/InputDailySpending" element={<InputDailySpending />} />
+                <Route path="/" element={<h1>Welcome to the Home Page!</h1>} />
+                <Route path="*" element={<h1>Page not found</h1>} />
+            </Routes> */}
 
-  const handleNavigation = (page) => {
-    setCurrentPage(page);
-  };
-
-  return (
-    <div className="App">
-      <nav>
-        <ul>
-          <li>
-            <button className='nav-button' onClick={() => handleNavigation('home')}>Home</button>
-          </li>
-          <li>
-            <button className='nav-button' onClick={() => handleNavigation('setMonthlyGoal')}>Set Monthly Goal</button>
-          </li>
-          <li>
-            <button className='nav-button' onClick={() => handleNavigation('categoryBreakdown')}>Category Breakdown</button>
-          </li>
-          <li>
-            <button className='nav-button' onClick={() => handleNavigation('inputDailySpending')}>Input Daily Spending</button>
-          </li>
-        </ul>
-      </nav>
+          </div>
+        </div>
       
-      <div className="page-container"> {/* Added the page-container class */}
-        <img src={logo} alt='' />
-        <main>{renderPage()}</main>
-      </div>
-    </div>
-  );
-}
+    );
+  }
+  
+  export default Home;
 
-/* set monthly goal page UI */
-function SetMonthlyGoal() {
-  return (
-    <div>
-      <h3>Set Monthly Budget:</h3>
-      {/* Add your content for the SetMonthlyGoal component */}
-    </div>
-  );
-}
-
-/* category breakdown page UI */
-function CategoryBreakdown() {
-  return (
-    <div>
-      <h2>Category Breakdown</h2>
-      {/* Add content and logic for category breakdown */}
-    </div>
-  );
-}
-
-/* input daily spending UI */
-function InputDailySpending() {
-  return (
-    <div>
-      <h2>Input Daily Spending</h2>
-      {/* Add content and logic for inputting daily spending */}
-    </div>
-  );
-}
-
-export default Home;
-/****************** modified to match App.cs ***************************** */

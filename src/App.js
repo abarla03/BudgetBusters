@@ -5,10 +5,13 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import AuthDetails from './components/AuthDetails';
 import Home from './components/Home';
+import SetMonthlyGoal from "./components/SetMonthlyGoal";
+import InputDailySpending from "./components/InputDailySpending";
+import CategoryBreakdown from "./components/CategoryBreakdown";
 //import { categories } from "./predefinedCategories";
 
 function App() {
-
+  //console.log("SetMonthlyGoal component is rendering.")
   return (
 
     <Router>
@@ -18,6 +21,9 @@ function App() {
           <Route path="/login" element={<Login  />} />
           <Route path="/register" element={<Register  />} />
           <Route path="/home" element={<Home />} /> {/* New route for the home page */}
+          <Route path="/SetMonthlyGoal" element={<SetMonthlyGoal />} />
+          <Route path="/CategoryBreakdown" element={<CategoryBreakdown />} />
+          <Route path="/InputDailySpending" element={<InputDailySpending />} />
           <Route path="/" element={<Login />} />
         </Routes>
         <AuthDetails />
