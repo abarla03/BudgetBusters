@@ -5,55 +5,13 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import AuthDetails from './components/AuthDetails';
 import Home from './components/Home';
-
-/* 
-* 10/6 DAY CHANGES
-*/
+//import { categories } from "./predefinedCategories";
 
 function App() {
 
-  //const [currentForm, setCurrentForm] = useState('login'); 10/6
-  //const [currentForm, setCurrentForm] = useState(null);
-  
-
-  // const toggleForm = (formName) => {
-  //   setCurrentForm(formName);
-  // }
-
-  /* 10/6 */
-  
-  /* 10/6 */
-
   return (
 
-    // <div className="App"> 
-    // {
-    //   currentForm === "login" ? <Login onFormSwitch={toggleForm}/> : <Register onFormSwitch={toggleForm}/> 
-    // }
-      
-    // <AuthDetails />  
-     
-    // </div>
-
     <Router>
-      {/* <div className="App"> 
-        <Switch>
-          <Route path="/login">
-            <Login onFormSwitch={toggleForm} />
-          </Route>
-          <Route path="/register">
-            <Register onFormSwitch={toggleForm} />
-          </Route>
-          <Route path="/">
-          {currentForm === "login" ? (
-              <Login onFormSwitch={toggleForm} />
-            ) : (
-              <Register onFormSwitch={toggleForm} />
-            )}
-          </Route>
-        </Switch>
-        <AuthDetails />
-      </div> */}
 
       <div className="App">
         <Routes> {/* Use Routes here */}
@@ -68,11 +26,7 @@ function App() {
 
   );
 }
-/*
-    <div className="App">
-      <Login />
-      <Register/>
-      <AuthDetails />
-    </div>
-    */
+
+
+
 export default App;

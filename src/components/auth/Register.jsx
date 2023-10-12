@@ -15,6 +15,22 @@ const Register = () => {
     const [email, setEmail] = useState(' ');
     const [age, setAge] = useState(' ');
     const [phoneNumber, setPhoneNumber] = useState(' ');
+    const [googleUserData, setGoogleUserData] = useState({
+        name: '',
+        email: '',
+        phoneNumber: ''
+    })
+
+    const signInWithGoogleHandler = () => {
+        signInWithGoogle()
+      .then(() => {
+        // After successful sign-in with Google, navigate to the '/home' route
+        navigate('/home');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    };
 
     /* populate register input fields with applicable Google account info */
     const populateGoogleUserData = () => {
@@ -83,40 +99,6 @@ const Register = () => {
     
     
     </div>
-
-//<button classNameName="create-account-with-google-btn" onClick = {signInWithGoogle}>Sign In With Google</button> 
-    
-
-    // automatic refresh after they click on sign in with google? has to be after the choose their acc.
-    /* after <button class="sign-in-with-google-btn" line, had
-        <h1>{localStorage.getItem("name")}</h1>
-        <h1>{localStorage.getItem("email")}</h1>
-        <img src = {localStorage.getItem("profilePic")}/>
-
-    */
-    /*
-    <div className='sign-in-container'>
-        <form onSubmit={handleSubmit}>
-            <h1>Create Account</h1>
-            <input 
-                type="email" 
-                placeholder="Enter your email" 
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-            ></input>
-            <input 
-                type="password" 
-                placeholder="Enter your password" 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-            ></input>
-            <button type="submit">Sign Up</button>
-        </form>
-        
-    </div>
-    */
-
-
   )
 }
 

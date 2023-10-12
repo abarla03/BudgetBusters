@@ -1,8 +1,10 @@
 import React from 'react';
 import { signInWithGoogle } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import '../App.css'
 
 const GoogleSignInButton = () => {
+ 
   const navigate = useNavigate();
 
   const handleSignIn = async () => {
@@ -16,10 +18,12 @@ const GoogleSignInButton = () => {
   };
 
   return (
-    <button onClick={handleSignIn}>
+    <button classname = "google-sign-in-2-btn" onClick={handleSignIn}>
       Sign In With Google 2
     </button>
   );
 };
+
+
 
 export default GoogleSignInButton;
