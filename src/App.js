@@ -8,6 +8,8 @@ import Home from './components/Home';
 import SetMonthlyGoal from "./components/SetMonthlyGoal";
 import InputDailySpending from "./components/InputDailySpending";
 import CategoryBreakdown from "./components/CategoryBreakdown";
+import Profile from "./components/Profile";
+import ManageNotifications from "./components/ManageNotifications";
 import NavBar from './components/NavBar';
 import logo from './BBLogo.png';
 
@@ -15,15 +17,17 @@ function App() {
   return (
     <Router>
       <div className="App">
-      <NavBar visiblePaths={['/Home', '/SetMonthlyGoal', '/CategoryBreakdown', '/InputDailySpending']} />
+      <NavBar visiblePaths={['/home', '/SetMonthlyGoal', '/CategoryBreakdown', '/InputDailySpending']} />
       <img src={logo} width = '20%'/>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/Home" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/SetMonthlyGoal" element={<SetMonthlyGoal />} />
           <Route path="/CategoryBreakdown" element={<CategoryBreakdown />} />
           <Route path="/InputDailySpending" element={<InputDailySpending />} />
+          <Route path="/Profile" element={<Profile />} />
+          <Route path="/ManageNotifications" element={<ManageNotifications />} />
           <Route path="/" element={<Login />} />
         </Routes>
         <AuthDetails />
