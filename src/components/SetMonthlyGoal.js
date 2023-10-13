@@ -29,7 +29,7 @@ function SetMonthlyGoal() {
       setError('');
     } else {
       setBudget(inputBudget);
-      setError('Please enter a valid numerical budget.');
+      setError('Invalid budget goal. Please provide a numerical input.');
     }
   };
 
@@ -128,7 +128,7 @@ function SetMonthlyGoal() {
       </div>
 
       <button
-        className="next-button"
+        className="submit-button"
         type="submit"
         onClick={handleSubmit}
         disabled={error !== ''}
@@ -219,7 +219,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
             {submitted && editableCategories.includes(category) ? (
               <input
                 type="text"
-                value={categoryNames[category] || ""}
+                value={categoryNames[category] || ''}
                 onChange={(e) => setCategoryNames({ ...categoryNames, [category]: e.target.value })}
               />
             ) : (
@@ -228,7 +228,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
           </button>
           {submitted && !editableCategories.includes(category) ? (
             <button
-              className="edit-button"
+              className="button"
               onClick={() => handleEditCategory(category)}
             >
               Edit
@@ -236,7 +236,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
           ) : null}
           {editableCategories.includes(category) ? (
                 <button
-                  className="save-button"
+                  className="button"
                   onClick={() => handleSaveCategoryName(category)}
                 >
                   Save
@@ -266,7 +266,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
         Back
       </button>
       <button
-        className="next-button"
+        className="submit-button"
         type="submit"
         onClick={handleSubmit}
       >

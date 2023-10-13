@@ -8,19 +8,19 @@ import Home from './components/Home';
 import SetMonthlyGoal from "./components/SetMonthlyGoal";
 import InputDailySpending from "./components/InputDailySpending";
 import CategoryBreakdown from "./components/CategoryBreakdown";
-//import { categories } from "./predefinedCategories";
+import NavBar from './components/NavBar';
+import logo from './BBLogo.png';
 
 function App() {
-  //console.log("SetMonthlyGoal component is rendering.")
   return (
-
     <Router>
-
       <div className="App">
-        <Routes> {/* Use Routes here */}
-          <Route path="/login" element={<Login  />} />
-          <Route path="/register" element={<Register  />} />
-          <Route path="/home" element={<Home />} /> {/* New route for the home page */}
+      <NavBar visiblePaths={['/Home', '/SetMonthlyGoal', '/CategoryBreakdown', '/InputDailySpending']} />
+      <img src={logo} width = '20%'/>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/SetMonthlyGoal" element={<SetMonthlyGoal />} />
           <Route path="/CategoryBreakdown" element={<CategoryBreakdown />} />
           <Route path="/InputDailySpending" element={<InputDailySpending />} />
@@ -29,10 +29,7 @@ function App() {
         <AuthDetails />
       </div>
     </Router>
-
   );
 }
-
-
 
 export default App;

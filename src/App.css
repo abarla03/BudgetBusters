@@ -1,9 +1,9 @@
 .App {
   text-align: center;
-  display: flex;
+  /* display: center; */
   min-height: 100vh;
-  align-items: center;
-  justify-content: center;
+  /* align-items: center; */
+  /* justify-content: center; */
   background-color: #edeceb;
 }
 
@@ -20,7 +20,6 @@
     margin: 0.5rem;
   }
 }
-
 
 label {
   text-align: left;
@@ -235,10 +234,10 @@ nav ul li {
   margin-top: 2%;
   margin-left: 2%;
   margin-right: 2%;
-  width: 95.5%;
-  height: 1000px;
+  width: 96%;
+  height: 2000px;
   border: 5px dotted #21234d;
-  border-radius: 23px;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -262,7 +261,7 @@ h3 {
   left: 50%;
   text-align: left;
   margin-top: 50px;
-  margin-left: -150px;
+  margin-left: 200px;
 }
 
 /* headings for later subsections in the form */
@@ -275,7 +274,7 @@ h4 {
   left: 50%;
   text-align: left;
   margin-top: 15px;
-  margin-left: -150px;
+  margin-left: 200px;
 }
 
 /* monthly budget input field formatting */
@@ -283,7 +282,7 @@ h4 {
   width: 500px;
   padding: 10px;
   margin-top: -5px;
-  margin-left: -152px;
+  margin-left: -560px;
   margin-right: 200px;
   margin-bottom: 40px;
   border: 1px solid #ccc;
@@ -305,7 +304,7 @@ h4 {
   font-family: 'Archivo Narrow', sans-serif;
   position: absolute;
   bottom: 5px; 
-  left: -150px;
+  left: 200px;
 }
 
 /* category buttons styling */
@@ -326,7 +325,7 @@ h4 {
 }
 
 .category-buttons {
-  margin-left: -166px; 
+  margin-left: -200px; 
   margin-bottom: 50px;
 }
 
@@ -371,7 +370,7 @@ h4 {
   width: 500px;
   padding: 10px;
   margin-top: -11px;
-  margin-left: -152px;
+  margin-left: 200px;
   margin-right: 200px;
   margin-bottom: 50px;
   border: 1px solid #ccc;
@@ -414,4 +413,48 @@ h4 {
   background-color: #3e3f56;
 }
 
+/* user categories formatting */
+.button {
+  background-color: #21234d;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth transition effect */
+}
 
+/* dropdown formatting */
+select {
+  font-size: 14px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+}
+
+/* remove bullets in list and add spacing between categories */
+ul {
+  list-style-type: none; 
+  margin-left: -205px;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+/* back button styling for color-coding categories */
+.back-button {
+  background-color: #21234d;
+  color: #ffffff;
+  padding: 7px 13px;
+  font-family: 'Archivo Narrow', sans-serif;
+  font-weight: 200;
+  font-size: 18px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  position: fixed;
+  bottom: 40px;
+  right: 89%;
+  display: flex;
+}

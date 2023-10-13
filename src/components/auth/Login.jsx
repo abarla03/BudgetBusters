@@ -39,13 +39,13 @@ const Login = () => {
 
     if (loginSuccess) {
         Navigate('/home');
+        console.log("went to home page after logging in");
       }
 
     
   return (
 
     <div className="auth-form-container">
-        <img src={logo} alt = ''/>
         <h2>Login</h2>
     <form className="login-form" onSubmit={loginSubmit}>
         <label htmlFor="email">Email</label>
@@ -60,30 +60,6 @@ const Login = () => {
     
     <GoogleSignInButton/>
     </div>
-
-//<button className="sign-in-with-google-btn" onClick = {signInWithGoogle}>Sign In With Google</button> 
-
-
-/*
-    <div className='sign-in-container'>
-        <form onSubmit={signIn}>
-            <h1>Log In to Account</h1>
-            <input 
-                type="email" 
-                placeholder="Enter your email" 
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-            ></input>
-            <input 
-                type="password" 
-                placeholder="Enter your password" 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-            ></input>
-            <button type="submit">Log In</button>
-        </form>
-    </div>
-*/
 
   )
 }

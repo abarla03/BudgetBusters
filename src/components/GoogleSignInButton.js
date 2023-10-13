@@ -19,7 +19,7 @@ const GoogleSignInButton = () => {
 
   return (
     <button classname = "google-sign-in-2-btn" onClick={handleSignIn}>
-      Sign In With Google 2
+      Sign In with Google
     </button>
   );
 };
