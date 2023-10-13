@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import '../App.css';
 import logo from '../BBLogo.png';
-import { Route, Routes, Link  } from 'react-router-dom';
+import { Route, Routes, Link, useNavigate  } from 'react-router-dom';
 import SetMonthlyGoal from './SetMonthlyGoal'; // Import your components
 import CategoryBreakdown from './CategoryBreakdown'; // Import your components
 import InputDailySpending from './InputDailySpending'; // Import your components
+import { deleteUser } from "firebase/auth";
+import { deleteAccount } from '../firebase';
+
+
 
 function Profile() {
+
+    const navigate = useNavigate();
+
     console.log("Profile component is rendering.");
     const [isEditMode, setIsEditMode] = useState(false);
     const [fullName, setFullName] = useState(''); 
@@ -25,6 +32,26 @@ function Profile() {
       setAge(document.getElementById('age').value);
       setIsEditMode(false);
     };
+
+    /* delete account */
+    const handleDeleteAccountClick = () => {
+        if (window.confirm("Are you sure you want to delete your account?")) {
+          // Call the deleteAccount function from firebase.js
+          deleteAccount()
+            .then(() => {
+              // Optionally, you can navigate to a different page or perform other actions upon successful deletion
+              // For example, navigate to the login page after account deletion
+              // navigate('/login');
+              navigate("/register");
+              console.log("account is deleted");
+            })
+            .catch((error) => {
+              console.error("Error deleting user account: ", error);
+            });
+        }
+      };
+    
+
   
     return (
       <div>
@@ -71,7 +98,7 @@ function Profile() {
 
         </div>
 
-        <button type="submit" >Delete Account</button>
+        <button className="submit-button" onClick={handleDeleteAccountClick}>Delete Account</button>
       </div>
     );
   }

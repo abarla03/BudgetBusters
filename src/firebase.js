@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, deleteUser } from "firebase/auth";
 import 'firebase/auth';
 import { useNavigate } from "react-router-dom";
 
@@ -60,6 +60,19 @@ export const resetPassword = (email) => {
       console.error("Error sending password reset email: ", error);
     });
 }
+
+
+    /* delete account */
+    export const deleteAccount = () => {
+      const auth = getAuth(app);
+      return deleteUser(auth.currentUser)
+          .then(() => {
+              console.log("User account deleted successfully");
+          })
+          .catch((error) => {
+              console.error("Error deleting user account: ", error);
+          });
+  };
 
 
 /* clear user data from browser localStorage when user signs out */
