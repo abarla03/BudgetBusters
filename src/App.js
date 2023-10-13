@@ -25,7 +25,7 @@ function SetMonthlyGoal() {
   )
 }
 
-/* category breakdown page UI */
+/* category breakdown page UI  */
 function CategoryBreakdown() {
   return (
     <h2>category breakdown</h2>
