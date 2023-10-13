@@ -75,7 +75,6 @@ const Register = () => {
     <div className="auth-form-container">
         
     <form className="register-form" onSubmit={registerSubmit}>
-    <img src={logo} alt = ''/>
             <h2>Register</h2>
         <label htmlFor="name">Full Name </label>
     
@@ -97,7 +96,7 @@ const Register = () => {
 
         <button type="submit" onClick = { showMessage }>Register</button>
         {displayMessage && <p>You have successfully created an account.</p>}
-        
+
 
     </form>
     <GoogleSignInButton/>
