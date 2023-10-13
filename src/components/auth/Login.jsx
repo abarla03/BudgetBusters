@@ -38,7 +38,7 @@ const Login = () => {
     // }
 
     if (loginSuccess) {
-        Navigate('/home');
+        Navigate('/Home');
         console.log("went to home page after logging in");
       }
 

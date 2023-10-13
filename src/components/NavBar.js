@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import settingsIcon from './SettingsIcon.png';
+
 
 function NavigationBar({ visiblePaths }) {
   const location = useLocation();
@@ -27,6 +29,11 @@ function NavigationBar({ visiblePaths }) {
           <button className='nav-button'>
             <Link to="/InputDailySpending">Input Daily Spending</Link>
           </button>
+        </li>
+        <li className = "nav-settings">
+            <button className="settings-button" >
+                <img src={settingsIcon} alt = ''/>
+            </button>
         </li>
       </ul>
     </nav>
