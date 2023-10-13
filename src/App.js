@@ -149,6 +149,8 @@ function SelectedCategoriesPage({ selectedCategories }) {
   const [colorOptions, setColorOptions] = useState({});
   const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false); 
+  const [editableCategories, setEditableCategories] = useState([]);
+  const [categoryNames, setCategoryNames] = useState({});
 
   const hexColorOptions = {
     Red: '#ff5c70',
@@ -168,6 +170,21 @@ function SelectedCategoriesPage({ selectedCategories }) {
       ...prevColorOptions,
       [category]: color,
     }));
+  };
+
+  const handleEditCategory = (category) => {
+    // Enable editing for the specified category
+    setEditableCategories((prevEditableCategories) => [...prevEditableCategories, category]);
+  };
+
+  const handleSaveCategoryName = (category) => {
+    // Save the edited category name
+    setCategoryNames((prevCategoryNames) => ({
+      ...prevCategoryNames,
+      [category]: categoryNames[category],
+    }));
+    // Disable editing for the specified category
+    setEditableCategories((prevEditableCategories) => prevEditableCategories.filter((item) => item !== category));
   };
 
   const handleSubmit = () => {
@@ -196,7 +213,14 @@ function SelectedCategoriesPage({ selectedCategories }) {
             >
               {category}
             </button>
-            {submitted ? null : (
+            {submitted ? (
+            <button
+              className="edit-button"
+              onClick={() => handleEditCategory(category)}
+            >
+              Edit
+            </button>
+          ) : (
             <select
               onChange={(e) => handleColorChange(category, e.target.value)}
               value={colorOptions[category] || ''}
@@ -228,6 +252,54 @@ function SelectedCategoriesPage({ selectedCategories }) {
     </div>
   );
 }
+
+/*
+return (
+  <div>
+    <h3>Selected Categories:</h3>
+    {error && <p style={{ color: 'red'}}>{error}</p>}
+    <ul>
+      {selectedCategories.map((category) => (
+        <li key={category}>
+          <button className="category-button"
+            id={`button-${category}`} 
+            style={{ backgroundColor: colorOptions[category] || '#ccc' }}
+          >
+            {category}
+          </button>
+          {submitted ? null : (
+          <select
+            onChange={(e) => handleColorChange(category, e.target.value)}
+            value={colorOptions[category] || ''}
+          >
+            <option value="">Choose Color</option>
+            {Object.entries(hexColorOptions).map(([colorName, hexCode]) => (
+              <option key={hexCode} value={hexCode}>
+                {colorName}
+              </option>
+            ))}
+          </select>
+          )}
+        </li>
+      ))}
+    </ul>
+    <button
+      className="back-button"
+      type="submit"
+    >
+      Back
+    </button>
+    <button
+      className="next-button"
+      type="submit"
+      onClick={handleSubmit}
+    >
+      Submit
+    </button>
+  </div>
+);
+}
+*/
 
 /* category breakdown page UI */
 function CategoryBreakdown() {
