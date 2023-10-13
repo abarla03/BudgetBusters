@@ -144,10 +144,10 @@ function SetMonthlyGoal() {
 /* set monthly goal pt.2: function handling color coding categories */
 function SelectedCategoriesPage({ selectedCategories }) {
   const [colorOptions, setColorOptions] = useState({});
-
-  // error handling
   const [error, setError] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(false); 
+  const [editableCategories, setEditableCategories] = useState([]);
+  const [categoryNames, setCategoryNames] = useState({});
 
   const hexColorOptions = {
     Red: '#ff5c70',
@@ -162,6 +162,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
     Grey: '#ccc'
   };
 
+  /* function handling the color change of categories when hex code is specified */
   const handleColorChange = (category, color) => {
     setColorOptions((prevColorOptions) => ({
       ...prevColorOptions,
@@ -169,7 +170,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
     }));
   };
 
-  // error handling for color coding categories
+  /* function handling submit button and if all categories are colored */
   const handleSubmit = () => {
     const allCategoriesColored = selectedCategories.every(
       (category) => colorOptions[category]
@@ -183,6 +184,26 @@ function SelectedCategoriesPage({ selectedCategories }) {
     }
   };
 
+  /* function handling the category editing (ensures that only one category is edited in edit mode) */
+  const handleEditCategory = (category) => {
+    setEditableCategories((prevEditableCategories) => {
+      if (prevEditableCategories.includes(category)) {
+        return prevEditableCategories.filter((item) => item !== category);
+      } else {
+        return [...prevEditableCategories, category];
+      }
+    });
+  };
+
+  /* function to save edited category name */
+  const handleSaveCategoryName = (category) => {
+    setCategoryNames((prevCategoryNames) => ({
+      ...prevCategoryNames,
+      [category]: categoryNames[category],
+    }));
+    setEditableCategories((prevEditableCategories) => prevEditableCategories.filter((item) => item !== category));
+  };
+
   return (
     <div>
       <h3>Selected Categories:</h3>
@@ -190,25 +211,51 @@ function SelectedCategoriesPage({ selectedCategories }) {
       <ul>
         {selectedCategories.map((category) => (
           <li key={category}>
+            <div>
             <button className="category-button"
               id={`button-${category}`} 
               style={{ backgroundColor: colorOptions[category] || '#ccc' }}
             >
-              {category}
-            </button>
-            {submitted ? null : (
-            <select
-              onChange={(e) => handleColorChange(category, e.target.value)}
-              value={colorOptions[category] || ''}
-            >
-              <option value="">Choose Color</option>
-              {Object.entries(hexColorOptions).map(([colorName, hexCode]) => (
-                <option key={hexCode} value={hexCode}>
-                  {colorName}
-                </option>
-              ))}
-            </select>
+            {submitted && editableCategories.includes(category) ? (
+              <input
+                type="text"
+                value={categoryNames[category] || ""}
+                onChange={(e) => setCategoryNames({ ...categoryNames, [category]: e.target.value })}
+              />
+            ) : (
+              categoryNames[category] || category
             )}
+          </button>
+          {submitted && !editableCategories.includes(category) ? (
+            <button
+              className="edit-button"
+              onClick={() => handleEditCategory(category)}
+            >
+              Edit
+            </button>
+          ) : null}
+          {editableCategories.includes(category) ? (
+                <button
+                  className="save-button"
+                  onClick={() => handleSaveCategoryName(category)}
+                >
+                  Save
+                </button>
+              ) : null}
+          {submitted ? null : (
+          <select
+            onChange={(e) => handleColorChange(category, e.target.value)}
+            value={colorOptions[category] || category}
+          >
+            <option value="">Choose Color</option>
+            {Object.entries(hexColorOptions).map(([colorName, hexCode]) => (
+              <option key={hexCode} value={hexCode}>
+                {colorName}
+              </option>
+            ))}
+          </select>
+          )}
+            </div>
           </li>
         ))}
       </ul>
