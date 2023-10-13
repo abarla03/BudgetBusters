@@ -68,7 +68,10 @@ function Profile() {
           ) : (
             <button className='edit-button' onClick={handleEditClick}>Edit</button>
           )}
+
         </div>
+
+        <button type="submit" >Delete Account</button>
       </div>
     );
   }
@@ -81,4 +84,3 @@ function Profile() {
   
   export default Profile;
 
- 

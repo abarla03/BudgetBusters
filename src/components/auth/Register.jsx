@@ -15,6 +15,7 @@ const Register = () => {
     const [email, setEmail] = useState(' ');
     const [age, setAge] = useState(' ');
     const [phoneNumber, setPhoneNumber] = useState(' ');
+    const [displayMessage, setDisplayMessage] = useState(false);
     const [googleUserData, setGoogleUserData] = useState({
         name: '',
         email: '',
@@ -30,6 +31,10 @@ const Register = () => {
       .catch((error) => {
         console.log(error);
       });
+    };
+
+    const showMessage = () => {
+      setDisplayMessage(true);
     };
 
     /* populate register input fields with applicable Google account info */
@@ -90,8 +95,9 @@ const Register = () => {
         <label htmlFor="password">Password</label>
         <input value={password} onChange={(e) => setPassword(e.target.value)}type="password" placeholder="enter password" id="password" name="password" />
 
-        <button type="submit">Register</button>
-
+        <button type="submit" onClick = { showMessage }>Register</button>
+        {displayMessage && <p>You have successfully created an account.</p>}
+        
 
     </form>
     <GoogleSignInButton/>

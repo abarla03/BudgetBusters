@@ -7,7 +7,8 @@ import { signInWithGoogle } from "../../firebase";
 //import { useHistory } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import GoogleSignInButton from '../GoogleSignInButton';
-// 10.6 day changes
+import { resetPassword } from "../../firebase";
+// 10.6 day changes 
 
 const Login = () => {
     //const history = useHistory();
@@ -15,6 +16,7 @@ const Login = () => {
     const [email, setEmail ] = useState('');
     const [password, setPassword] = useState('');
     const [ loginSuccess, setLoginSuccess ] = useState(false);
+    const [isSent, setIsSent] = useState(false);
 
     const loginSubmit = (e) => {
         // todo: sign in
@@ -42,6 +44,21 @@ const Login = () => {
         console.log("went to home page after logging in");
       }
 
+      const handleResetPassword = () => {
+        console.log("clicked on reset password link");
+        //console.log("here's the email: " + email);
+        resetPassword(email)
+            // console.log("here's the email: " + email);
+          .then(() => {
+            console.log("here's the email: " + email);
+            setIsSent(true);
+          })
+          .catch((error) => {
+            // Handle error, e.g., display an error message to the user
+          });
+      };
+
+
     
   return (
 
@@ -57,6 +74,9 @@ const Login = () => {
         <button type="submit">Log In</button>
     </form>
     <button className="link-btn" onClick={() => Navigate('/register')}> Don't have an account? Register here.</button>
+    <button class="link-btn" onClick = { handleResetPassword }>Reset Password</button>
+
+    
     
     <GoogleSignInButton/>
     </div>
