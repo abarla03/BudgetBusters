@@ -1,8 +1,8 @@
-package com.java.firebase;
+package org.budgetbusters;
 
-import lombok.AllArgsConstructor;
+import lombok.AllArgsConstructor; // takes care of all the setters and getters
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.NoArgsConstructor; // takes care of all the setters and getters
 import lombok.Setter;
 
 import java.util.List;
@@ -22,8 +22,7 @@ public class User {
     private String email;
     private String userId;
     private Integer phoneNumber;
-    private Integer monthlyBudget;
-    private List<String> categories;
+//    private List<String> categories;
 //    private Map<String, String> categories; use for category + color
 
 //    public String getFirst_name() {

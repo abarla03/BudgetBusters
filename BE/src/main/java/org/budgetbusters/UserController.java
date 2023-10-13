@@ -1,4 +1,4 @@
-package com.java.firebase;
+package org.budgetbusters;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,22 +13,28 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/create")
+    @PostMapping("/createUser")
     public String createUser(@RequestBody User user) throws InterruptedException, ExecutionException {
         return userService.createUser(user);
     }
 
-    @GetMapping("/get")
+    @PostMapping("/createGoal")
+    public String createGoal(@RequestBody MonthlyGoal monthlyGoal) throws InterruptedException, ExecutionException {
+//        System.out.println(monthlyGoal.getUserId() + " : " + monthlyGoal.getMonthlyBudget());
+        return userService.createGoal(monthlyGoal);
+    }
+
+    @GetMapping("/getUser")
     public User getUser(@RequestParam String userId) throws InterruptedException, ExecutionException {
         return userService.getUser(userId);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/updateUser")
     public String updateUser(@RequestBody User user) throws InterruptedException, ExecutionException {
         return userService.updateUser(user);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/deleteUser")
     public String deleteUser(@RequestParam String userId) throws InterruptedException, ExecutionException {
         return userService.deleteUser(userId);
     }

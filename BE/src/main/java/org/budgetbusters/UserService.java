@@ -1,4 +1,4 @@
-package com.java.firebase;
+package org.budgetbusters;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
@@ -18,7 +18,14 @@ public class UserService {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("crud_user").document(user.getUserId()).set(user);
 
-        return collectionsApiFuture.get().getUpdateTime().toString();
+        return "You have successfully created an account." + collectionsApiFuture.get().getUpdateTime().toString();
+    }
+
+    public String createGoal(MonthlyGoal monthlyGoal) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("monthlyGoal").document(monthlyGoal.getUserId()).set(monthlyGoal);
+        return "This month’s budget has been created! \n" + "Monthly Budget: " + monthlyGoal.getMonthlyBudget() + "\n" + collectionsApiFuture.get().getUpdateTime().toString();
+
     }
 
     public User getUser(String userId) throws ExecutionException, InterruptedException {
@@ -38,7 +45,7 @@ public class UserService {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("crud_user").document(user.getUserId()).set(user);
 
-        return collectionsApiFuture.get().getUpdateTime().toString();
+        return "User Profile Information modified" + collectionsApiFuture.get().getUpdateTime().toString();
     }
 
     public String deleteUser(String userId) throws ExecutionException, InterruptedException {
