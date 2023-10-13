@@ -147,6 +147,9 @@ function SetMonthlyGoal() {
 /* set monthly goal pt.2: function handling color coding categories */
 function SelectedCategoriesPage({ selectedCategories }) {
   const [colorOptions, setColorOptions] = useState({});
+  const [error, setError] = useState('');
+  const [submitted, setSubmitted] = useState(false); 
+
   const hexColorOptions = {
     Red: '#ff5c70',
     Orange: '#ffb267',
@@ -167,9 +170,23 @@ function SelectedCategoriesPage({ selectedCategories }) {
     }));
   };
 
+  const handleSubmit = () => {
+    const allCategoriesColored = selectedCategories.every(
+      (category) => colorOptions[category]
+    );
+
+    if (allCategoriesColored) {
+      setError('');
+      setSubmitted(true);
+    } else {
+      setError('Please enter a color for every category.');
+    }
+  };
+
   return (
     <div>
       <h3>Selected Categories:</h3>
+      {error && <p style={{ color: 'red'}}>{error}</p>}
       <ul>
         {selectedCategories.map((category) => (
           <li key={category}>
@@ -179,6 +196,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
             >
               {category}
             </button>
+            {submitted ? null : (
             <select
               onChange={(e) => handleColorChange(category, e.target.value)}
               value={colorOptions[category] || ''}
@@ -190,6 +208,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
                 </option>
               ))}
             </select>
+            )}
           </li>
         ))}
       </ul>
@@ -202,6 +221,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
       <button
         className="next-button"
         type="submit"
+        onClick={handleSubmit}
       >
         Submit
       </button>
