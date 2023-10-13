@@ -94,8 +94,12 @@ const Register = () => {
         <label htmlFor="password">Password</label>
         <input value={password} onChange={(e) => setPassword(e.target.value)}type="password" placeholder="enter password" id="password" name="password" />
 
-        <button type="submit" onClick = { showMessage }>Register</button>
+        
+        <button type="submit" onClick={() => { showMessage(); navigate('/login'); }}>Register</button>
+
         {displayMessage && <p>You have successfully created an account.</p>}
+      
+        
 
 
     </form>
@@ -106,5 +110,7 @@ const Register = () => {
     </div>
   )
 }
+
+// <button type="submit" onClick = { showMessage }>Register</button>
 
 export default Register

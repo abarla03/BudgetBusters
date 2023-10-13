@@ -12,7 +12,7 @@ import { resetPassword } from "../../firebase";
 
 const Login = () => {
     //const history = useHistory();
-    const Navigate = useNavigate();
+    const navigate = useNavigate();
     const [email, setEmail ] = useState('');
     const [password, setPassword] = useState('');
     const [ loginSuccess, setLoginSuccess ] = useState(false);
@@ -40,7 +40,7 @@ const Login = () => {
     // }
 
     if (loginSuccess) {
-        Navigate('/Home');
+        navigate('/home');
         console.log("went to home page after logging in");
       }
 
@@ -71,12 +71,12 @@ const Login = () => {
         <label htmlFor="password">Password</label>
         <input value={password} onChange={(e) => setPassword(e.target.value)}type="password" placeholder="enter password" id="password" name="password" />
 
-        <button type="submit">Log In</button>
+        <button type="submit" onClick={() => navigate('/home')}>Log In</button>
     </form>
-    <button className="link-btn" onClick={() => Navigate('/register')}> Don't have an account? Register here.</button>
+    <button className="link-btn" onClick={() => navigate('/register')}> Don't have an account? Register here.</button>
     <button class="link-btn" onClick = { handleResetPassword }>Reset Password</button>
 
-    
+
     
     <GoogleSignInButton/>
     </div>
