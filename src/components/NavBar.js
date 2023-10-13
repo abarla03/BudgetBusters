@@ -10,7 +10,7 @@ function NavigationBar({ visiblePaths }) {
       <ul>
         <li>
           <button className='nav-button'>
-            <Link to="/Home">Home</Link>
+            <Link to="/home">Home</Link>
           </button>
         </li>
         <li>

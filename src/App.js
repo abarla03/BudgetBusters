@@ -15,7 +15,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-      <NavBar visiblePaths={['/Home', '/SetMonthlyGoal', '/CategoryBreakdown', '/InputDailySpending']} />
+      <NavBar visiblePaths={['/home', '/SetMonthlyGoal', '/CategoryBreakdown', '/InputDailySpending']} />
       <img src={logo} width = '20%'/>
         <Routes>
           <Route path="/login" element={<Login />} />
