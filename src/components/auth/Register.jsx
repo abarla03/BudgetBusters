@@ -53,6 +53,15 @@ const Register = () => {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log(userCredential);
+                // const user = userCredential.user;
+                // const userData = {
+                //   name: user.displayName,
+                //   email: user.email,
+                //   age: user.age
+                // };
+                // localStorage.setItem("userData", JSON.stringify(userData));
+                // console.log(userCredential);
+
             })
             .catch((error) => {
             console.log(error);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../App.css';
 import logo from '../BBLogo.png';
 import { Route, Routes, Link  } from 'react-router-dom';
@@ -25,6 +25,18 @@ function Profile() {
       setAge(document.getElementById('age').value);
       setIsEditMode(false);
     };
+
+//      // Retrieve user data from local storage and populate fields
+//   useEffect(() => {
+//     const userData = JSON.parse(localStorage.getItem("userData"));
+//     if (userData) {
+//       setFullName(userData.name);
+//       setEmail(userData.email);
+//       setAge(userData.age);
+//       // Populate other fields as needed
+//     }
+//   }, []);
+
   
     return (
       <div>
