@@ -24,6 +24,11 @@ public class UserController {
         return userService.createGoal(monthlyGoal);
     }
 
+    @PostMapping("/createCategories")
+    public String createCategories(@RequestBody Categories categories) throws InterruptedException, ExecutionException {
+        return userService.createCategories(categories);
+    }
+
     @GetMapping("/getUser")
     public User getUser(@RequestParam String userId) throws InterruptedException, ExecutionException {
         return userService.getUser(userId);

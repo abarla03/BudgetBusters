@@ -24,17 +24,17 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/get?documentId=user_1",
+					"raw": "localhost:8080/getUser?userId=user_1",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"get"
+						"getUser"
 					],
 					"query": [
 						{
-							"key": "documentId",
+							"key": "userId",
 							"value": "user_1"
 						}
 					]
@@ -57,13 +57,13 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/create",
+					"raw": "localhost:8080/createUser",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"create"
+						"createUser"
 					]
 				}
 			},
@@ -84,13 +84,13 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/update",
+					"raw": "localhost:8080/updateUser",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"update"
+						"updateUser"
 					]
 				}
 			},
@@ -102,13 +102,13 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/delete?userId=user_5",
+					"raw": "localhost:8080/deleteUser?userId=user_5",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"delete"
+						"deleteUser"
 					],
 					"query": [
 						{

@@ -28,6 +28,13 @@ public class UserService {
 
     }
 
+    public String createCategories(Categories categories) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("categories").document(categories.getUserId()).set(categories);
+        return "This month’s spending categories have been created! \n" + "Spending categories: " + categories.getCategories() + "\n" + collectionsApiFuture.get().getUpdateTime().toString();
+
+    }
+
     public User getUser(String userId) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         DocumentReference documentReference = dbFirestore.collection("crud_user").document(userId);
