@@ -13,6 +13,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("/createBudget")
+    public String createGoal(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException {
+//        System.out.println(monthlyGoal.getUserId() + " : " + monthlyGoal.getMonthlyBudget());
+        return userService.createMonthlyBudget(monthlyBudget);
+    }
     @PostMapping("/createUser")
     public String createUser(@RequestBody User user) throws InterruptedException, ExecutionException {
         return userService.createUser(user);
@@ -23,6 +28,8 @@ public class UserController {
 //        System.out.println(monthlyGoal.getUserId() + " : " + monthlyGoal.getMonthlyBudget());
         return userService.createGoal(monthlyGoal);
     }
+
+
 
     @PostMapping("/createCategories")
     public String createCategories(@RequestBody Categories categories) throws InterruptedException, ExecutionException {

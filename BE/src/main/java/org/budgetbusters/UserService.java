@@ -13,6 +13,12 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class UserService {
 
+    public String createMonthlyBudget(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("monthlyBudget").document(monthlyBudget.getEmailAddress()).set(monthlyBudget);
+        return "Monthly Budget created: " + collectionsApiFuture.get().getUpdateTime().toString();
+
+    }
 
     public String createUser(User user) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
