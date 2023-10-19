@@ -1,0 +1,6 @@
+org/budgetbusters/User.class
+org/budgetbusters/MonthlyGoal.class
+org/budgetbusters/BudgetBustersRunner.class
+org/budgetbusters/UserController.class
+org/budgetbusters/Categories.class
+org/budgetbusters/UserService.class
