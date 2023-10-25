@@ -7,4 +7,4 @@ function CategoryBreakdown() {
       </div>
     );
   }
-export default CategoryBreakdown.js;
+export default CategoryBreakdown;
