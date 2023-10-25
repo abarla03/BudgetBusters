@@ -4,12 +4,6 @@ import Login from './auth/Login'
 
 function SetMonthlyGoal() {
     console.log("SetMonthlyGoal component is rendering.")
-    // return (
-    //   <div>
-    //     <h3>Set Monthly Budget:</h3>
-    //     {/* Add your content for the SetMonthlyGoal component */}
-    //   </div>
-    // );
 
     const [budget, setBudget] = useState('');
     const [error, setError] = useState('');
@@ -63,12 +57,13 @@ function SetMonthlyGoal() {
         setAllCategories(allCategories.filter((c) => c !== categoryToRemove));
     };
 
+    /* function handling the Next button and putting together the user's selected and created categories */
     const handleSubmit = () => {
         // add logic to submit here
         setFormSubmitted(true);
         setShowAllCategories(true);
 
-        // abstracted json object to send data to backend
+        // abstracted json object to send data to backend (Next button)
         const goalInfo = {
             email: Login.email,
             monthlyBudget: budget,
@@ -192,7 +187,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
             // collect colors in the order of selectedCategories
             const selectedColors = selectedCategories.map((category) => colorOptions[category]);
 
-            // abstracted json object to send data to backend
+            // abstracted json object to send data to backend (Submit button)
             const colorInfo = {
                 email: Login.email,
                 selectedCategories: selectedCategories,
@@ -228,7 +223,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
             return list;
         }, {});
 
-        // abstracted json object to send data to backend
+        // abstracted json object to send data to backend (Save button)
         const modifiedCategoryInfo = {
             email: Login.email,
             allCategories: categoriesAfterEdit
