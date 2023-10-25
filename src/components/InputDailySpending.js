@@ -7,4 +7,4 @@ function InputDailySpending() {
       </div>
     );
   }
-export default InputDailySpending.js;
+export default InputDailySpending;
