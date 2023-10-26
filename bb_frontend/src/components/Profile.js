@@ -13,7 +13,8 @@ import { useEffect } from "react";
 // don't have to explicitly define value, can do it directly in populateProfileData method
 const dummyName = "Ooga Booga"
 const dummyEmail = "dummy@gmail.com";
-const dummyAge = 20;
+//const dummyAge = 20;
+const dummyPhone = 2247049742; // have users only enter numbers, or we parse string?
 
 
 function Profile() {
@@ -25,13 +26,19 @@ function Profile() {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [age, setAge] = useState('');
+    const [phone, setPhone] = useState(null);
 
     /* populate name and email fields with already-inputted info */
     const populateProfileData = () => {
-        const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
+        //const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
         setFullName(dummyName);
         setEmail(dummyEmail);
-        setAge(dummyAge);
+
+        // users will enter this info for the first time, so don't populate
+        // unless we extract phone from google account settings...
+
+        //setAge(dummyAge);
+        //setPhone(dummyPhone);
 
     }
 
@@ -50,6 +57,7 @@ function Profile() {
         setFullName(document.getElementById('fullName').value);
         setEmail(document.getElementById('email').value);
         setAge(document.getElementById('age').value);
+        setPhone(document.getElementById('phone').value);
         setIsEditMode(false);
     };
 
@@ -78,8 +86,8 @@ function Profile() {
 
             <h5> Name: <input value={fullName} onChange={(e) => setFullName(e.target.value)}type="name" id="name" placeholder="" name="name" /> </h5>
             <h5> Email: <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" id="email" placeholder="" name="email" /> </h5>
-            <h5> Age: <input value={age} onChange={(e) => setAge(e.target.value)}type="age" id="age" placeholder="" name="age" /> </h5>
-
+            <h5> Age: <input value={age} onChange={(e) => setAge(e.target.value)}type="age" id="age" placeholder="Enter your age" name="age" /> </h5>
+            <h5> Phone number: <input value={phone} onChange={(e) => setPhone(e.target.value)}type="phone" id="phone" placeholder="Enter your phone number" name="phone" /> </h5>
 
             <div>
                 {isEditMode ? (
