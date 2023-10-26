@@ -39,9 +39,12 @@
 import React, { useEffect, useState } from 'react'
 import { auth, clearGoogleUserData } from '../firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import {useNavigate} from "react-router-dom";
 
 const AuthDetails = () => {
     const [authUser, setAuthUser] = useState(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const listen = onAuthStateChanged(auth, (user) => {
@@ -61,6 +64,10 @@ const AuthDetails = () => {
             console.log('sign out successful')
             /* clear user data from localStorage, clearGoogleUserData() in firebase.js */
             clearGoogleUserData();
+
+            // route to register screen
+            navigate('/register');
+
 
         }).catch(error => console.log(error))
     }
