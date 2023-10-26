@@ -7,7 +7,13 @@ import CategoryBreakdown from './CategoryBreakdown'; // Import your components
 import InputDailySpending from './InputDailySpending'; // Import your components
 import { deleteUser } from "firebase/auth";
 import { deleteAccount } from '../firebase';
+import { useEffect } from "react";
 
+// get values from backend, for now hardcode
+// don't have to explicitly define value, can do it directly in populateProfileData method
+const dummyName = "Ooga Booga"
+const dummyEmail = "dummy@gmail.com";
+const dummyAge = 20;
 
 
 function Profile() {
@@ -19,6 +25,20 @@ function Profile() {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [age, setAge] = useState('');
+
+    /* populate name and email fields with already-inputted info */
+    const populateProfileData = () => {
+        const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
+        setFullName(dummyName);
+        setEmail(dummyEmail);
+        setAge(dummyAge);
+
+    }
+
+    /* call the appropriate method to populate fields */
+    useEffect (() => {
+        populateProfileData();
+    }, []);
 
     /* function handling the edit mode */
     const handleEditClick = () => {
@@ -55,40 +75,12 @@ function Profile() {
 
     return (
         <div>
-            <h4>Full Name:</h4>
-            {isEditMode ? (
-                <input
-                    id="fullName"
-                    className="prepopulated-field"
-                    placeholder="Prepopulated name"
-                    defaultValue={fullName}
-                />
-            ) : (
-                <h6>{fullName}</h6>
-            )}
-            <h5>Email:</h5>
-            {isEditMode ? (
-                <input
-                    id="email"
-                    className="prepopulated-field"
-                    placeholder="Prepopulated email"
-                    defaultValue={email}
-                />
-            ) : (
-                <h6>{email}</h6>
-            )}
 
-            <h5>Age:</h5>
-            {isEditMode ? (
-                <input
-                    id="age"
-                    className="prepopulated-field"
-                    placeholder="Prepopulated age"
-                    defaultValue={age}
-                />
-            ) : (
-                <h6>{age}</h6>
-            )}
+            <h5> Name: <input value={fullName} onChange={(e) => setFullName(e.target.value)}type="name" id="name" placeholder="" name="name" /> </h5>
+            <h5> Email: <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" id="email" placeholder="" name="email" /> </h5>
+            <h5> Age: <input value={age} onChange={(e) => setAge(e.target.value)}type="age" id="age" placeholder="" name="age" /> </h5>
+
+
             <div>
                 {isEditMode ? (
                     <button className='edit-button' onClick={handleSaveClick}>Save</button>
@@ -102,11 +94,5 @@ function Profile() {
         </div>
     );
 }
-
-// return (
-//   <div className="Profile">
-//   <h3>Welcome to the Profile Page!</h3>
-//   </div>
-// );
 
 export default Profile;
