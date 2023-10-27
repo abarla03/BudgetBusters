@@ -24,7 +24,7 @@
 
 	<modules>
 		<module>BE</module>
-<!--		<module>FE</module>-->
+<!--		<module>bb_frontend</module>-->
 	</modules>
 
 	<build>
