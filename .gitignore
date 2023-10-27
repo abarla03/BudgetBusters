@@ -21,4 +21,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/.idea/
 /BE/target/
+/BE/budget-busters-BE.iml
+/budget-busters.iml
+
