@@ -3,45 +3,10 @@
 		"_postman_id": "5cef0916-3560-4299-bc76-1474be89d87e",
 		"name": "BudgetBusters",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "30256980"
+		"_exporter_id": "30256980",
+		"_collection_link": "https://lively-star-705095.postman.co/workspace/My-Workspace~dbe10769-935a-48ec-8353-80f21ddfb9cc/collection/30256980-5cef0916-3560-4299-bc76-1474be89d87e?action=share&source=collection_link&creator=30256980"
 	},
 	"item": [
-		{
-			"name": "getUser",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/getUser?userId=user_1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"getUser"
-					],
-					"query": [
-						{
-							"key": "userId",
-							"value": "user_1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
 		{
 			"name": "createUser",
 			"request": {
@@ -49,7 +14,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"userId\" : \"user_2\",\n    \"firstName\" : \"John\",\n    \"lastName\" : \"Purdue\",\n    \"birthYear\" : 1869,\n    \"email\" : \"john@purdue.edu\",\n    \"phoneNumber\" : 111111111\n}",
+					"raw": "{\n    \"firstName\" : \"John\",\n    \"lastName\" : \"Purdue\",\n    \"age\" : 20,\n    \"email\" : \"john@purdue.edu\",\n    \"phoneNumber\" : 111111111\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -76,7 +41,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"userId\" : \"user_1\",\n    \"firstName\" : \"Jimmy\",\n    \"lastName\" : \"Purdue\",\n    \"birthYear\" : 1870,\n    \"email\" : \"james@purdue.edu\",\n    \"phoneNumber\" : 211111111\n}",
+					"raw": "{\n    \"firstName\" : \"Jimmy\",\n    \"lastName\" : \"Purdue\",\n    \"age\" : 23,\n    \"email\" : \"james@purdue.edu\",\n    \"phoneNumber\" : 211111111\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -102,7 +67,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/deleteUser?userId=user_5",
+					"raw": "localhost:8080/deleteUser?email=joseph@gmail.com",
 					"host": [
 						"localhost"
 					],
@@ -112,9 +77,87 @@
 					],
 					"query": [
 						{
-							"key": "userId",
-							"value": "user_5"
+							"key": "email",
+							"value": "joseph@gmail.com"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createBudget",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"gigi@gmail.com\",\n    \"monthlyBudget\" : 600,\n    \"allCategories\" : [\"personal care\", \"entertainment\", \"gym\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/createBudget",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"createBudget"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getBudget",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getBudget?email=jane@gmail.com",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getBudget"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "jane@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateBudget",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"gigi@gmail.com\",\n    \"monthlyBudget\" : 550,\n    \"allCategories\" : [\"entertainment\", \"groceries\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/updateBudget",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"updateBudget"
 					]
 				}
 			},
