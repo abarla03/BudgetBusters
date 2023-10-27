@@ -14,36 +14,13 @@ public class UserController {
     }
 
     @PostMapping("/createBudget")
-    public String createGoal(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException {
-//        System.out.println(monthlyGoal.getUserId() + " : " + monthlyGoal.getMonthlyBudget());
+    public String createBudget(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException {
         return userService.createMonthlyBudget(monthlyBudget);
     }
+
     @PostMapping("/createUser")
     public String createUser(@RequestBody User user) throws InterruptedException, ExecutionException {
         return userService.createUser(user);
-    }
-
-    @PostMapping("/createGoal")
-    public String createGoal(@RequestBody MonthlyGoal monthlyGoal) throws InterruptedException, ExecutionException {
-//        System.out.println(monthlyGoal.getUserId() + " : " + monthlyGoal.getMonthlyBudget());
-        return userService.createGoal(monthlyGoal);
-    }
-
-
-
-    @PostMapping("/createCategories")
-    public String createCategories(@RequestBody Categories categories) throws InterruptedException, ExecutionException {
-        return userService.createCategories(categories);
-    }
-
-    @GetMapping("/getUser")
-    public User getUser(@RequestParam String userId) throws InterruptedException, ExecutionException {
-        return userService.getUser(userId);
-    }
-
-    @PutMapping("/updateUser")
-    public String updateUser(@RequestBody User user) throws InterruptedException, ExecutionException {
-        return userService.updateUser(user);
     }
 
     @DeleteMapping("/deleteUser")
@@ -51,14 +28,24 @@ public class UserController {
         return userService.deleteUser(userId);
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> testGetEndpoint() {
-        return ResponseEntity.ok("Test Get Endpoint is Working");
+    @GetMapping("/getBudget")
+    public MonthlyBudget getBudget(@RequestParam String email) throws InterruptedException, ExecutionException {
+        MonthlyBudget monthlyBudget = userService.getBudget(email);
+        return monthlyBudget;
     }
 
-    // use this as a link as an url to connect with react
-//    @GetMapping("/url")
-//    public ResponseEntity<String> urlGetEndpoint() {
-//        return ResponseEntity.ok("Got the JSON file");
-//    }
+    @GetMapping("/getUser")
+    public User getUser(@RequestParam String userId) throws InterruptedException, ExecutionException {
+        return userService.getUser(userId);
+    }
+
+    @PutMapping("/updateBudget")
+    public String updateBudget(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException, BudgetBustersException {
+        return userService.updateMonthlyBudget(monthlyBudget);
+    }
+
+    @PutMapping("/updateUser")
+    public String updateUser(@RequestBody User user) throws InterruptedException, ExecutionException {
+        return userService.updateUser(user);
+    }
 }
