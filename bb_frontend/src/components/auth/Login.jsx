@@ -72,8 +72,7 @@ const Login = (props) => {
 
                 <input value={password} onChange={(e) => setPassword(e.target.value)}type="password" placeholder="enter password" id="password" name="password" />
 
-            <button type="submit">Log In</button>
-
+                <button type="submit" onClick={() => navigate('/home')}>Log In</button>
             </form>
             <button className="link-btn" onClick={() => navigate('/register')}> Don't have an account? Register here.</button>
             <button className ="link-btn" onClick = { handleResetPassword }>Reset Password</button>
