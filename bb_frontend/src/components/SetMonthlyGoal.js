@@ -212,7 +212,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
         });
     };
 
-    /* function to save edited category name */
+    /* function to save modified category name */
     const handleSaveCategoryName = (category) => {
         setCategoryNames((prevCategoryNames) => ({
             ...prevCategoryNames,
