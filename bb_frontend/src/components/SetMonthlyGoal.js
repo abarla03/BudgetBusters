@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { categories } from '../predefinedCategories'
+import Login from './auth/Login'
 function SetMonthlyGoal() {
     console.log("SetMonthlyGoal component is rendering.")
     // return (
@@ -62,9 +63,15 @@ function SetMonthlyGoal() {
     };
 
     const handleSubmit = () => {
-        // add logic to submit here
         setFormSubmitted(true);
         setShowAllCategories(true);
+
+        // abstracted json object to send data to backend (Next button)
+        const goalInfo = {
+            email: Login.email,
+            monthlyBudget: budget,
+            allCategories: allCategories
+        }
     };
 
     return (
@@ -179,6 +186,16 @@ function SelectedCategoriesPage({ selectedCategories }) {
         if (allCategoriesColored) {
             setError('');
             setSubmitted(true);
+
+            // collect colors in the order of selectedCategories
+            const selectedColors = selectedCategories.map((category) => colorOptions[category]);
+
+            // abstracted json object to send data to backend (Submit button)
+            const colorInfo = {
+                email: Login.email,
+                selectedCategories: selectedCategories,
+                colors: selectedColors
+            }
         } else {
             setError('Please enter a color for every category.');
         }
@@ -202,6 +219,18 @@ function SelectedCategoriesPage({ selectedCategories }) {
             [category]: categoryNames[category],
         }));
         setEditableCategories((prevEditableCategories) => prevEditableCategories.filter((item) => item !== category));
+
+        // creates a full list of category names (whether they have been modified or not)
+        const categoriesAfterEdit = selectedCategories.reduce((list, category) => {
+            list[category] = categoryNames[category] || category;
+            return list;
+        }, {});
+
+        // abstracted json object to send data to backend (Save button)
+        const modifiedCategoryInfo = {
+            email: Login.email,
+            allCategories: categoriesAfterEdit
+        }
     };
 
     return (
