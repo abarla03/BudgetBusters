@@ -85,7 +85,7 @@ function SetMonthlyGoal() {
                                value={budget}
                                onChange={handleBudgetChange}
                         />
-                        {error && <p className="error-message-2">{error}</p>}
+                        {error && <p className="error-message">{error}</p>}
                     </div>
 
                     <h4>Select Categories:</h4>
@@ -156,14 +156,14 @@ function SelectedCategoriesPage({ selectedCategories }) {
     const hexColorOptions = {
         Red: '#ff5c70',
         Orange: '#ffb267',
-        Yellow: '#e9fc87',
+        Yellow: '#eeda74',
         Green: '#85d67a',
         Teal: '#47c8a6',
         Blue: '#5c9dc5',
-        Violet: '#6d5eb0',
+        Violet: '#9286d5',
         Purple: '#af7abd',
+        Magenta: '#b73183',
         Pink: '#e36498',
-        Grey: '#ccc'
     };
 
     /* function handling the color change of categories when hex code is specified */
