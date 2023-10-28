@@ -1,9 +1,6 @@
 .App {
   text-align: center;
-  /* display: center; */
   min-height: 100vh;
-  /* align-items: center; */
-  /* justify-content: center; */
   background-color: #edeceb;
 }
 
@@ -300,7 +297,7 @@ h4 {
 .error-message {
   color: red;
   font-size: 14px;
-  font-weight: 100px;
+  font-weight: 100;
   font-family: 'Archivo Narrow', sans-serif;
   position: absolute;
   bottom: 5px;
@@ -476,8 +473,8 @@ li {
   width: 47px;
   height: 44px;
 }
-/* ------------------------------------------------------------------------*/
-/* INPUT DAILY SPENDING PAGE ----------------------------------------------*/
+
+/* INPUT DAILY SPENDING PAGE --------------------------------------------------------------------*/
 /* formatting for field to add purchase item */
 .purchase-item {
   width: 500px;
@@ -485,7 +482,7 @@ li {
   margin-top: -11px;
   margin-left: 200px;
   margin-right: 200px;
-  margin-bottom: 50px;
+  margin-bottom: 35px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
@@ -499,20 +496,126 @@ li {
   margin-top: -11px;
   margin-left: 100px;
   margin-right: 500px;
-  margin-bottom: 50px;
+  margin-bottom: 35px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
   outline: none;
 }
 
-/* style the error message */
-.error-message {
+/* error message for purchase amount */
+.error-message2 {
   color: red;
   font-size: 14px;
-  font-weight: 100px;
+  font-weight: 100;
   font-family: 'Archivo Narrow', sans-serif;
   position: absolute;
-  bottom: 176px;
-  left: 200px;
+  bottom: 95px;
+  left: 552px;
+}
+
+/* input daily spending heading (Purchase) */
+h5 {
+  color: #333;
+  font-family: 'Archivo Narrow', sans-serif;
+  font-size: 20px;
+  font-weight: 300;
+  margin-left: -445px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+/* input daily spending heading (Amount) */
+h6 {
+  color: #333;
+  font-family: 'Archivo Narrow', sans-serif;
+  font-size: 20px;
+  font-weight: 300;
+  margin-left: -455px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+/* input daily spending heading (Select Category) */
+h7 {
+  color: #333;
+  font-family: 'Archivo Narrow', sans-serif;
+  font-size: 20px;
+  font-weight: 300;
+  margin-left: -396px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+/* structure for select category section */
+.category-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* dropdown for displaying categories for a user's purchase */
+.category-dropdown {
+  width: 200px;
+  margin-left: -260px;
+  margin-top: -10px;
+}
+
+/* add button for inputting a purchase */
+.add-button2 {
+  background-color: #21234d;
+  color: #ffffff;
+  padding: 10px 13px;
+  border-radius: 5px;
+  align-content: center;
+  margin-top: 75px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+/* input purchase items alignment */
+.input-purchase {
+  /* indentation */
+  margin-left: 350px;
+
+  /* styling for vertical alignment of fields */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* formatting inside the purchase info buttons */
+.span {
+  display: block;
+  width: 100px;
+  padding: 0 8px;
+  margin-bottom: 0;
+  line-height: 1.4;
+  word-break: break-word;
+  text-align: center;
+}
+
+/* formatting for x buttons to delete purchases */
+.remove-purchase-button {
+  background-color: #21234d;
+  color: #ffffff;
+  padding: 5px 8px;
+  border-radius: 5px;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+/* buttons that display purchase information */
+.purchase-info-button {
+  margin-top: 25px;
+}
+
+/* error message for not filling in all fields for the purchase input */
+.error-message3 {
+  color: red;
+  font-size: 14px;
+  font-weight: 100;
+  font-family: 'Archivo Narrow', sans-serif;
+  position: absolute;
+  bottom: -57px;
+  left: 756px;
 }
