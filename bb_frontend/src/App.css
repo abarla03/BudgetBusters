@@ -279,7 +279,7 @@ h4 {
   width: 500px;
   padding: 10px;
   margin-top: -5px;
-  margin-left: -560px;
+  margin-left: -520px;
   margin-right: 200px;
   margin-bottom: 40px;
   border: 1px solid #ccc;
@@ -304,6 +304,16 @@ h4 {
   left: 200px;
 }
 
+.error-message4 {
+  color: red;
+  font-size: 14px;
+  font-weight: 100;
+  font-family: 'Archivo Narrow', sans-serif;
+  position: absolute;
+  bottom: 1px;
+  left: 200px;
+}
+
 /* category buttons styling */
 .category-button {
   background-color: #ccc; /* Default button color */
@@ -322,7 +332,7 @@ h4 {
 }
 
 .category-buttons {
-  margin-left: -200px;
+  margin-left: -160px;
   margin-bottom: 50px;
 }
 

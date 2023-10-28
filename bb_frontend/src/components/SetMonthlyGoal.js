@@ -6,7 +6,8 @@ function SetMonthlyGoal() {
     console.log("SetMonthlyGoal component is rendering.")
 
     const [budget, setBudget] = useState('');
-    const [error, setError] = useState('');
+    const [budgetError, setBudgetError] = useState('');
+    const [duplicateCategoryError, setDuplicateCategoryError] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [newCategory, setNewCategory] = useState('');
     const [createdCategories, setCreatedCategories] = useState([]);
@@ -22,10 +23,10 @@ function SetMonthlyGoal() {
 
         if (numericRegex.test(inputBudget)) {
             setBudget(inputBudget);
-            setError('');
+            setBudgetError('');
         } else {
             setBudget(inputBudget);
-            setError('Invalid budget goal. Please provide a numerical input.');
+            setBudgetError('Invalid budget goal. Please provide a numerical input.');
         }
     };
 
@@ -43,10 +44,18 @@ function SetMonthlyGoal() {
     /* function handling user's ability to create new categories */
     const handleCreateCategory = () => {
         if (newCategory.trim() !== '') {
-            const updatedCategories = [...createdCategories, newCategory];
-            setCreatedCategories(updatedCategories);
-            setAllCategories([...allCategories, newCategory]);
-            setNewCategory('');
+            const newCategoryLowercase = newCategory.toLowerCase();
+
+            if (categories.some(category => category.toLowerCase() === newCategoryLowercase) ||
+                createdCategories.some(category => category.toLowerCase() === newCategoryLowercase)) {
+                setDuplicateCategoryError('This category name already exists. Please create another name.');
+            } else {
+                const updatedCategories = [...createdCategories, newCategory];
+                setCreatedCategories(updatedCategories);
+                setAllCategories([...allCategories, newCategory]);
+                setNewCategory('');
+                setDuplicateCategoryError('');
+            }
         }
     };
 
@@ -85,7 +94,7 @@ function SetMonthlyGoal() {
                                value={budget}
                                onChange={handleBudgetChange}
                         />
-                        {error && <p className="error-message-2">{error}</p>}
+                        {budgetError && <p className="error-message">{budgetError}</p>}
                     </div>
 
                     <h4>Select Categories:</h4>
@@ -118,6 +127,7 @@ function SetMonthlyGoal() {
                                 <button className='add-button' onClick={handleCreateCategory}>Add</button>
                             </div>
                         )}
+                        {duplicateCategoryError && <p className="error-message4">{duplicateCategoryError}</p>}
                     </div>
 
                     <div className="category-buttons">
@@ -135,7 +145,7 @@ function SetMonthlyGoal() {
                         className="submit-button"
                         type="submit"
                         onClick={handleSubmit}
-                        disabled={error !== ''}
+                        disabled={budgetError !== '' || duplicateCategoryError !== ''}
                     >
                         Next
                     </button>
