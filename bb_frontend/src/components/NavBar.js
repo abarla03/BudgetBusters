@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import settingsIcon from './SettingsIcon.png';
+import notifications from './images/envelope.png'
+import logout from './images/log-out.png'
+import profile from './images/user.png'
+import DropDownSettings from "./DropDownSettings";
 
 
 function NavigationBar({ visiblePaths }) {
@@ -20,7 +24,10 @@ function NavigationBar({ visiblePaths }) {
         setDropdownVisible(!isDropdownVisible);
     };
 
-    return shouldDisplay ? (
+
+
+
+    return (
         <nav className="nav">
             <ul>
                 <li>
@@ -43,25 +50,37 @@ function NavigationBar({ visiblePaths }) {
                         <Link to="/InputDailySpending">Input Daily Spending</Link>
                     </button>
                 </li>
-                <li className = "nav-settings">
-                    <button className="settings-button" onClick={toggleDropdown}>
-                        <img src={settingsIcon} alt = ''/>
-                    </button>
-                    {isDropdownVisible && (
 
-                        <div className="dropdown-content">
-                            <button className='nav-button' >
-                                <Link to = "/Profile">Profile</Link>
-                            </button>
-                            <button className='nav-button' >
-                                <Link to = "/ManageNotifications">Manage Notifications</Link>
-                            </button>
-                        </div>
-                    )}
-                </li>
+                <div className='nav-settings' >
+                    <div className='menu-trigger' >
+                        <img src={settingsIcon} alt = ''/>
+                    </div>
+
+                    <div className = 'dropdown-menu'>
+                        <ul>
+                            <DropDownItem img = {profile} text = {"Profile"}/>
+                            <DropDownItem img = {notifications} text = {"Notifications"}/>
+                            <DropDownItem img = {logout} text = {"Log Out"}/>
+
+                        </ul>
+
+                    </div>
+
+                </div>
             </ul>
         </nav>
-    ) : null;
+    );
+}
+
+function DropDownItem(props) {
+    return (
+        <li className = 'dropdownItem' >
+            <img src = {props.img}></img>
+            <a> {props.text} </a>
+        </li>
+
+    )
+
 }
 
 export default NavigationBar;

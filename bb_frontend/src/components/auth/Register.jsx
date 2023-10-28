@@ -64,6 +64,8 @@ const Register = (props) => {
             })
     }
 
+    /* handle non-numerical values for age*/
+
 
     return (
 
