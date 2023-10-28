@@ -85,7 +85,7 @@ function SetMonthlyGoal() {
                                value={budget}
                                onChange={handleBudgetChange}
                         />
-                        {error && <p className="error-message">{error}</p>}
+                        {error && <p className="error-message-2">{error}</p>}
                     </div>
 
                     <h4>Select Categories:</h4>
@@ -101,7 +101,7 @@ function SetMonthlyGoal() {
                         ))}
                     </div>
 
-                    <div className="create-category">
+                    <div className="add-user-input">
                         <h4>Create Categories:</h4>
                         <button className="plus-button" onClick={() => setDisplayCreatedCategories(!displayCreatedCategories)}>+</button>
                     </div>
