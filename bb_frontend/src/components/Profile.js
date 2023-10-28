@@ -8,16 +8,31 @@ import InputDailySpending from './InputDailySpending'; // Import your components
 import { deleteUser } from "firebase/auth";
 import { deleteAccount } from '../firebase';
 import { useEffect } from "react";
+import firebase from "firebase/app";
+import 'firebase/auth';
+import { auth } from "../firebase";
+
+function Profile() {
+    const user = auth.currentUser;
+
+    let firebaseEmail = "";
+    let firebaseDisplayName = "";
+    if (user) {
+        console.log("there's a user signed in: ");
+        console.log(user.displayName);
+        console.log("here's their email: ");
+        console.log(user.email);
+        firebaseEmail = user.email;
+        firebaseDisplayName = user.displayName;
+    }
+
 
 // get values from backend, for now hardcode
 // don't have to explicitly define value, can do it directly in populateProfileData method
-const dummyName = "Ooga Booga"
-const dummyEmail = "dummy@gmail.com";
+//     const dummyName = "Ooga Booga"
+//     const dummyEmail = "dummy@gmail.com";
 //const dummyAge = 20;
-const dummyPhone = 2247049742; // have users only enter numbers, or we parse string?
-
-
-function Profile() {
+    const dummyPhone = 2247049742; // have users only enter numbers, or we parse string?
 
     const navigate = useNavigate();
 
@@ -26,13 +41,13 @@ function Profile() {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [age, setAge] = useState('');
-    const [phone, setPhone] = useState(null);
+    const [phone, setPhone] = useState();
 
     /* populate name and email fields with already-inputted info */
     const populateProfileData = () => {
         //const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
-        setFullName(dummyName);
-        setEmail(dummyEmail);
+        setFullName(firebaseDisplayName);
+        setEmail(firebaseEmail);
 
         // users will enter this info for the first time, so don't populate
         // unless we extract phone from google account settings...
