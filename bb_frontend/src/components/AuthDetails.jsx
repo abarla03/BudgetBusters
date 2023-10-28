@@ -64,12 +64,19 @@ const AuthDetails = () => {
 
         }).catch(error => console.log(error))
     }
-    return (
+ /*   return (
         // could input message like "Sign Out, in between the p tags"
         // <div>{ authUser ? <><p>{`Signed In as ${authUser.email}`}</p><button onClick={userSignOut}>Sign Out</button></> : <p></p> }</div>
         //{ authUser ? :  }
-        <p>''</p>
+
+       // <div>{ authUser ? <><p>{`Signed In as ${authUser.email}`}</p><button onClick={userSignOut}>Sign Out</button></> : <p></p> }</div>
     )
+    */
 }
 
 export default AuthDetails
+
+// changes made to AuthDetails
+/*
+   // incorporating authUser.email react code
+ */
