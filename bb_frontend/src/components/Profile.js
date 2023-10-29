@@ -7,10 +7,32 @@ import CategoryBreakdown from './CategoryBreakdown'; // Import your components
 import InputDailySpending from './InputDailySpending'; // Import your components
 import { deleteUser } from "firebase/auth";
 import { deleteAccount } from '../firebase';
-
-
+import { useEffect } from "react";
+import firebase from "firebase/app";
+import 'firebase/auth';
+import { auth } from "../firebase";
 
 function Profile() {
+    const user = auth.currentUser;
+
+    let firebaseEmail = "";
+    let firebaseDisplayName = "";
+    if (user) {
+        console.log("there's a user signed in: ");
+        console.log(user.displayName);
+        console.log("here's their email: ");
+        console.log(user.email);
+        firebaseEmail = user.email;
+        firebaseDisplayName = user.displayName;
+    }
+
+
+// get values from backend, for now hardcode
+// don't have to explicitly define value, can do it directly in populateProfileData method
+//     const dummyName = "Ooga Booga"
+//     const dummyEmail = "dummy@gmail.com";
+//const dummyAge = 20;
+    const dummyPhone = 2247049742; // have users only enter numbers, or we parse string?
 
     const navigate = useNavigate();
 
@@ -19,6 +41,26 @@ function Profile() {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [age, setAge] = useState('');
+    const [phone, setPhone] = useState();
+
+    /* populate name and email fields with already-inputted info */
+    const populateProfileData = () => {
+        //const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
+        setFullName(firebaseDisplayName);
+        setEmail(firebaseEmail);
+
+        // users will enter this info for the first time, so don't populate
+        // unless we extract phone from google account settings...
+
+        //setAge(dummyAge);
+        //setPhone(dummyPhone);
+
+    }
+
+    /* call the appropriate method to populate fields */
+    useEffect (() => {
+        populateProfileData();
+    }, []);
 
     /* function handling the edit mode */
     const handleEditClick = () => {
@@ -30,6 +72,7 @@ function Profile() {
         setFullName(document.getElementById('fullName').value);
         setEmail(document.getElementById('email').value);
         setAge(document.getElementById('age').value);
+        setPhone(document.getElementById('phone').value);
         setIsEditMode(false);
     };
 
@@ -55,40 +98,12 @@ function Profile() {
 
     return (
         <div>
-            <h4>Full Name:</h4>
-            {isEditMode ? (
-                <input
-                    id="fullName"
-                    className="prepopulated-field"
-                    placeholder="Prepopulated name"
-                    defaultValue={fullName}
-                />
-            ) : (
-                <h6>{fullName}</h6>
-            )}
-            <h5>Email:</h5>
-            {isEditMode ? (
-                <input
-                    id="email"
-                    className="prepopulated-field"
-                    placeholder="Prepopulated email"
-                    defaultValue={email}
-                />
-            ) : (
-                <h6>{email}</h6>
-            )}
 
-            <h5>Age:</h5>
-            {isEditMode ? (
-                <input
-                    id="age"
-                    className="prepopulated-field"
-                    placeholder="Prepopulated age"
-                    defaultValue={age}
-                />
-            ) : (
-                <h6>{age}</h6>
-            )}
+            <h5> Name: <input value={fullName} onChange={(e) => setFullName(e.target.value)}type="name" id="name" placeholder="" name="name" /> </h5>
+            <h5> Email: <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" id="email" placeholder="" name="email" /> </h5>
+            <h5> Age: <input value={age} onChange={(e) => setAge(e.target.value)}type="age" id="age" placeholder="Enter your age" name="age" /> </h5>
+            <h5> Phone number: <input value={phone} onChange={(e) => setPhone(e.target.value)}type="phone" id="phone" placeholder="Enter your phone number" name="phone" /> </h5>
+
             <div>
                 {isEditMode ? (
                     <button className='edit-button' onClick={handleSaveClick}>Save</button>
@@ -102,11 +117,5 @@ function Profile() {
         </div>
     );
 }
-
-// return (
-//   <div className="Profile">
-//   <h3>Welcome to the Profile Page!</h3>
-//   </div>
-// );
 
 export default Profile;
