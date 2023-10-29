@@ -622,3 +622,26 @@ h7 {
     bottom: -57px;
     left: 756px;
 }
+
+/* --------------------Manage Notifications--------------- */
+.notification-method-buttons {
+    margin-left: -200px;
+    margin-bottom: 50px;
+}
+
+/* category buttons styling */
+.notification-method-button {
+    background-color: #ccc; /* Default button color */
+    border: none;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    margin: 1px 15px;
+    cursor: pointer;
+}
+
+/* selected category buttons styling */
+.notification-method-button.selected {
+    background-color: #dad873;
+    color: #000000;
+}
