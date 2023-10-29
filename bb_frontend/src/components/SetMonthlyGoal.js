@@ -104,7 +104,7 @@ function SetMonthlyGoal() {
                         ))}
                     </div>
 
-                    <div className="create-category">
+                    <div className="add-user-input">
                         <h4>Create Categories:</h4>
                         <button className="plus-button" onClick={() => setDisplayCreatedCategories(!displayCreatedCategories)}>+</button>
                     </div>

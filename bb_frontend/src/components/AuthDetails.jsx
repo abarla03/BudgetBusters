@@ -68,7 +68,7 @@ const AuthDetails = () => {
         // could input message like "Sign Out, in between the p tags"
         // <div>{ authUser ? <><p>{`Signed In as ${authUser.email}`}</p><button onClick={userSignOut}>Sign Out</button></> : <p></p> }</div>
         //{ authUser ? :  }
-        <p>''</p>
+        <p></p>
     )
 }
 
