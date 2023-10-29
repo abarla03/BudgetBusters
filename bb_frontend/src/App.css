@@ -489,6 +489,7 @@ li {
 }
 
 .dropdown-menu{
+    display: block;
     position: absolute;
     top: 100px;
     right: -50px;
@@ -498,6 +499,7 @@ li {
 }
 
 .dropdown-menu::before{
+    display: block;
     content: '';
     position: absolute;
     top: -5px;
