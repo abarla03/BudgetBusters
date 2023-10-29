@@ -33,6 +33,9 @@ function ManageNotifications() {
     /* function handling the edit mode */
     const handleEditClick = () => {
         setIsEditMode(!isEditMode);
+        // have to revert to default color
+        setSelectedMethods([]); // Clear the selected methods
+
     };
 
     /* function handling the saved information from edit */
@@ -42,6 +45,8 @@ function ManageNotifications() {
         // setAge(document.getElementById('age').value);
         // setPhone(document.getElementById('phone').value);
         setIsEditMode(false);
+
+        // have to save new options in backend/db
     };
 
     return (
