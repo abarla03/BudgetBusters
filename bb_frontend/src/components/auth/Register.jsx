@@ -5,10 +5,8 @@ import { signInWithGoogle } from "../../firebase";
 import logo from "../../BBLogo.png";
 import { useNavigate } from "react-router-dom";
 import GoogleSignInButton from '../GoogleSignInButton';
-/* 10/6 day changes */
 
-
-const Register = () => {
+const Register = (props) => {
     const navigate = useNavigate();
     const [name, setName ] = useState('');
     const [password, setPassword] = useState('');
@@ -26,7 +24,7 @@ const Register = () => {
         signInWithGoogle()
             .then(() => {
                 // After successful sign-in with Google, navigate to the '/home' route
-                navigate('/home');
+                //navigate('/home');
             })
             .catch((error) => {
                 console.log(error);
@@ -94,18 +92,13 @@ const Register = () => {
                 <label htmlFor="password">Password</label>
                 <input value={password} onChange={(e) => setPassword(e.target.value)}type="password" placeholder="enter password" id="password" name="password" />
 
-
-                <button type="submit" onClick={() => { showMessage(); navigate('/login'); }}>Register</button>
+                <button type="submit" onClick = { showMessage }>Register</button>
 
                 {displayMessage && <p>You have successfully created an account.</p>}
 
-
-
-
             </form>
-            <GoogleSignInButton/>
             <button className="link-btn" onClick={() => navigate('/login')}>Already have an account? Login here.</button>
-
+            <GoogleSignInButton/>
 
         </div>
     )

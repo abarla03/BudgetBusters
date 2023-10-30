@@ -8,9 +8,8 @@ import { signInWithGoogle } from "../../firebase";
 import { useNavigate } from 'react-router-dom';
 import GoogleSignInButton from '../GoogleSignInButton';
 import { resetPassword } from "../../firebase";
-// 10.6 day changes
 
-const Login = () => {
+const Login = (props) => {
     //const history = useHistory();
     const navigate = useNavigate();
     const [email, setEmail ] = useState('');
@@ -28,20 +27,11 @@ const Login = () => {
                 // direct user to home page
                 //history.push('/home');
                 setLoginSuccess(true);
-                //navigate('/home');
+                navigate('/home');
             })
             .catch((error) => {
                 console.log(error);
             })
-    }
-
-    // if (loginSuccess) {
-    //     return <Navigate to="/home" />;
-    // }
-
-    if (loginSuccess) {
-        navigate('/home');
-        console.log("went to home page after logging in");
     }
 
     const handleResetPassword = () => {
@@ -58,8 +48,6 @@ const Login = () => {
             });
     };
 
-
-
     return (
 
         <div className="auth-form-container">
@@ -71,16 +59,14 @@ const Login = () => {
                 <label htmlFor="password">Password</label>
                 <input value={password} onChange={(e) => setPassword(e.target.value)}type="password" placeholder="enter password" id="password" name="password" />
 
-                <button type="submit" onClick={() => navigate('/home')}>Log In</button>
+                <button type="submit">Log In</button>
+
             </form>
             <button className="link-btn" onClick={() => navigate('/register')}> Don't have an account? Register here.</button>
-            <button class="link-btn" onClick = { handleResetPassword }>Reset Password</button>
-
-
+            <button className="link-btn" onClick = { handleResetPassword }>Reset Password</button>
 
             <GoogleSignInButton/>
         </div>
-
     )
 }
 
