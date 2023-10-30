@@ -38,12 +38,12 @@ const Login = (props) => {
     // if (loginSuccess) {
     //     return <Navigate to="/home" />;
     // }
-/*
-    if (loginSuccess) {
-        navigate('/home');
-        console.log("went to home page after logging in");
-    }
-*/
+    /*
+        if (loginSuccess) {
+            navigate('/home');
+            console.log("went to home page after logging in");
+        }
+    */
     const handleResetPassword = () => {
         console.log("clicked on reset password link");
         //console.log("here's the email: " + email);
@@ -58,8 +58,7 @@ const Login = (props) => {
             });
     };
 
-
-
+    // quick note: don't include navigation from login to home
     return (
 
         <div className="auth-form-container">
@@ -72,7 +71,8 @@ const Login = (props) => {
 
                 <input value={password} onChange={(e) => setPassword(e.target.value)}type="password" placeholder="enter password" id="password" name="password" />
 
-                <button type="submit" onClick={() => navigate('/home')}>Log In</button>
+                <button type="submit">Log In</button>
+
             </form>
             <button className="link-btn" onClick={() => navigate('/register')}> Don't have an account? Register here.</button>
             <button className ="link-btn" onClick = { handleResetPassword }>Reset Password</button>
