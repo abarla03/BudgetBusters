@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Login from './auth/Login'
 
 function InputDailySpending() {
     const [showPurchaseFields, setShowPurchaseFields] = useState(false);
@@ -56,7 +57,16 @@ function InputDailySpending() {
         setShowPurchaseFields(false);
         setPurchases(purchases.slice().reverse());
 
-        // send json object
+        // send json object (to send purchases)
+        const userPurchaseInfo = {
+            email: Login.email,
+            numPurchases: purchases.length,
+            purchases: purchases.map((purchase) => ({
+                purchaseName: purchase.item,
+                purchaseAmount: purchase.amount,
+                purchaseCategory: purchase.category,
+            }))
+        }
     };
 
     /* function handling purchase removal and associated default message */
@@ -66,6 +76,12 @@ function InputDailySpending() {
         setPurchases(updatedPurchases);
         if (updatedPurchases.length === 0) {
             setMessage('You did not spend anything today.');
+        }
+
+        // send json object (to remove a purchase)
+        const purchaseToRemove = {
+            email: Login.email,
+            purchase: purchases[index]
         }
     };
 
