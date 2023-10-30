@@ -57,7 +57,7 @@ function InputDailySpending() {
         setShowPurchaseFields(false);
         setPurchases(purchases.slice().reverse());
 
-        // send json object (to send purchases)
+        // send json object to send purchases
         const userPurchaseInfo = {
             email: Login.email,
             numPurchases: purchases.length,
@@ -78,7 +78,7 @@ function InputDailySpending() {
             setMessage('You did not spend anything today.');
         }
 
-        // send json object (to remove a purchase)
+        // send json object to remove a purchase
         const purchaseToRemove = {
             email: Login.email,
             purchase: purchases[index]
