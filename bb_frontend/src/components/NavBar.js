@@ -5,6 +5,8 @@ import notifications from './images/envelope.png'
 import logout from './images/log-out.png'
 import profile from './images/user.png'
 import { useNavigate } from 'react-router-dom';
+import firebase from 'firebase/app';
+import { auth } from '../firebase'
 
 
 
@@ -50,6 +52,17 @@ function NavigationBar({ visiblePaths }) {
         navigate(path);
     };
 
+        const handleSignOut = () => {
+            auth.signOut()
+                .then(() => {
+                    console.log("sign out successful");
+                    navigate('/register');
+                })
+                .catch((error) => {
+                    // Handle errors here.
+                })
+            };
+
 
         return (
         <nav className="nav">
@@ -93,7 +106,7 @@ function NavigationBar({ visiblePaths }) {
 
                             <li>
                                 <img src = {logout} alt = '' />
-                                <button_dropdown>Logout</button_dropdown>
+                                <button_dropdown onClick={() => handleSignOut()}>Logout</button_dropdown>
                             </li>
 
                         </ul>
