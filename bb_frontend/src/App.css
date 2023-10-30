@@ -513,20 +513,20 @@ a {
 
 .menu-trigger img{
     position: absolute;
-    top: 20px;
+    top: 5px;
     right: 20px;
     height: 60px;
     width: 60px;
     border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
-    background-color: #fff;
+    background-color: #21234d;
 }
 
 .dropdown-menu{
     position: absolute;
     top: 100px;
-    right: 40px;
+    right: 20px;
     background-color: #fff;
     border-radius: var(--border-radius);
     padding: 10px 20px;
@@ -607,6 +607,16 @@ h3 span{
     max-width: 100px;
     margin-left: 10px;
     transition: var(--speed);
+}
+
+
+button_dropdown {
+    border: none;
+    background-color: #fff;
+    color: #060000;
+    padding: 20px;
+    border-radius: 10px;
+    cursor: pointer;
 }
 
 

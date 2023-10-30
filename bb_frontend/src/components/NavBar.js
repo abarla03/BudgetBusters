@@ -4,6 +4,7 @@ import settingsIcon from './SettingsIcon.png';
 import notifications from './images/envelope.png'
 import logout from './images/log-out.png'
 import profile from './images/user.png'
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -14,6 +15,8 @@ function NavigationBar({ visiblePaths }) {
     const [open, setOpen] = useState(false);
 
     const [currentPage, setCurrentPage] = React.useState('home');
+    const navigate = useNavigate();
+
 
     const handleNavigation = (page) => {
         setCurrentPage(page);
@@ -42,6 +45,10 @@ function NavigationBar({ visiblePaths }) {
             document.removeEventListener("mousedown",handler)
         }
     });
+
+    const handleOptionClick = (path) => {
+        navigate(path);
+    };
 
 
         return (
@@ -72,12 +79,23 @@ function NavigationBar({ visiblePaths }) {
                     <div className='menu-trigger' onClick={()=>{setOpen(!open)}}>
                         <img src={settingsIcon} alt = ''/>
                     </div>
-
                     <div className={`dropdown-menu ${open? 'active' : 'inactive'}`} >
-                        <ul>
-                            <DropDownItem img = {profile} text = {"Profile"}/>
-                            <DropDownItem img = {notifications} text = {"Notifications"}/>
-                            <DropDownItem img = {logout} text = {"Log Out"}/>
+                        <ul className = 'dropdownItem'>
+                            <li>
+                                <img src = {profile} alt = '' />
+                                <button_dropdown onClick={() => handleOptionClick('/Profile')}>Profile</button_dropdown>
+                            </li>
+
+                            <li>
+                                <img src = {notifications} alt = '' />
+                                <button_dropdown onClick={() => handleOptionClick('/ManageNotifications')}>Notifications</button_dropdown>
+                            </li>
+
+                            <li>
+                                <img src = {logout} alt = '' />
+                                <button_dropdown>Logout</button_dropdown>
+                            </li>
+
                         </ul>
                     </div>
                 </div>
@@ -86,15 +104,16 @@ function NavigationBar({ visiblePaths }) {
     );
 }
 
+/*
 function DropDownItem(props) {
     return (
         <li className = 'dropdownItem' >
             <img src = {props.img}></img>
-            <a> {props.text} </a>
+            <button> {props.text} </button>
         </li>
     );
 }
-
+*/
 export default NavigationBar;
 
 // import React from 'react';
