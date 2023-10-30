@@ -28,7 +28,7 @@ const Login = (props) => {
                 // direct user to home page
                 //history.push('/home');
                 setLoginSuccess(true);
-                //navigate('/home');
+                navigate('/home');
             })
             .catch((error) => {
                 console.log(error);
