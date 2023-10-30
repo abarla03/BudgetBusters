@@ -4,7 +4,6 @@ import settingsIcon from './SettingsIcon.png';
 import notifications from './images/envelope.png'
 import logout from './images/log-out.png'
 import profile from './images/user.png'
-import DropDownSettings from "./DropDownSettings";
 
 
 function NavigationBar({ visiblePaths }) {
