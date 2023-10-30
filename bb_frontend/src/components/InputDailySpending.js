@@ -78,7 +78,7 @@ function InputDailySpending() {
             setMessage('You did not spend anything today.');
         }
 
-        // send json object to remove a purchase
+        // send json object to remove a purchase (per X button)
         const purchaseToRemove = {
             email: Login.email,
             purchase: purchases[index]
