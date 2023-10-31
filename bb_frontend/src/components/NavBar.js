@@ -53,7 +53,7 @@ function NavigationBar({ visiblePaths }) {
         auth.signOut()
             .then(() => {
                 console.log("sign out successful");
-                navigate('/register');
+                navigate('/login');
             })
             .catch((error) => {
                 // Handle errors here.
