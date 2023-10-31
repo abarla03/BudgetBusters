@@ -56,7 +56,7 @@ function NavigationBar({ visiblePaths }) {
                 navigate('/login');
             })
             .catch((error) => {
-                // Handle errors here.
+                console.log("oops error");
             })
     };
 

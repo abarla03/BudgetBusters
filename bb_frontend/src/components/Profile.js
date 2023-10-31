@@ -77,14 +77,10 @@ function Profile() {
     };
 
     /* delete account */
-    const handleDeleteAccountClick = () => {
+    const handleDeleteAccount = () => {
         if (window.confirm("Are you sure you want to delete your account?")) {
-            // Call the deleteAccount function from firebase.js
             deleteAccount()
                 .then(() => {
-                    // Optionally, you can navigate to a different page or perform other actions upon successful deletion
-                    // For example, navigate to the login page after account deletion
-                    // navigate('/login');
                     navigate("/register");
                     console.log("account is deleted");
                 })
@@ -113,7 +109,7 @@ function Profile() {
 
             </div>
 
-            <button className="submit-button" onClick={handleDeleteAccountClick}>Delete Account</button>
+            <button className="submit-button" onClick={handleDeleteAccount}>Delete Account</button>
         </div>
     );
 }
