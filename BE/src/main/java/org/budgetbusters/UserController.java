@@ -28,8 +28,8 @@ public class UserController {
         return userService.deleteUser(userId);
     }
 
-    @GetMapping("/getBudget")
-    public MonthlyBudget getBudget(@RequestParam String email) throws InterruptedException, ExecutionException {
+    @GetMapping("/getBudget/{email}")
+    public MonthlyBudget getBudget(@PathVariable String email) throws InterruptedException, ExecutionException {
         MonthlyBudget monthlyBudget = userService.getBudget(email);
         return monthlyBudget;
     }

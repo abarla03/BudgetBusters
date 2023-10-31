@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { categories } from '../predefinedCategories'
-import Login from './auth/Login'
+import Login, { emailAddress } from './auth/Login'
+import {get, post} from "./ApiClient";
+import { auth } from "../firebase";
 function SetMonthlyGoal() {
     console.log("SetMonthlyGoal component is rendering.")
+    const user = auth.currentUser;
     // return (
     //   <div>
     //     <h3>Set Monthly Budget:</h3>
@@ -61,16 +64,33 @@ function SetMonthlyGoal() {
         setCreatedCategories(updatedCategories);
         setAllCategories(allCategories.filter((c) => c !== categoryToRemove));
     };
-
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setFormSubmitted(true);
         setShowAllCategories(true);
 
-        // abstracted json object to send data to backend (Next button)
+        let firebaseEmail = "";
+        if (user) {
+            firebaseEmail = user.email;
+            // console.log(firebaseEmail);
+        }
+        // Abstracted JSON object to send data to the backend (Next button)
         const goalInfo = {
-            email: Login.email,
+            email: firebaseEmail,
             monthlyBudget: budget,
             allCategories: allCategories
+        };
+            const createBudgetResponse = await post('/createBudget', goalInfo);
+            // use the above createBudgetResponse to display confirmation of creation of budget on the page
+            console.log(createBudgetResponse);
+
+        // testing for get method
+        // the following get request code need to be moved where getBudgetData needs to be retrieved
+        try {
+            // Make the GET request to retrieve the budget
+            const budgetData = await get(`/getBudget/${firebaseEmail}`);
+            console.log("Budget data:", budgetData);
+        } catch (error) {
+            console.error("Error creating or fetching budget:", error);
         }
     };
 
@@ -192,7 +212,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
 
             // abstracted json object to send data to backend (Submit button)
             const colorInfo = {
-                email: Login.email,
+                // email: Login.email,
                 selectedCategories: selectedCategories,
                 colors: selectedColors
             }
@@ -228,7 +248,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
 
         // abstracted json object to send data to backend (Save button)
         const modifiedCategoryInfo = {
-            email: Login.email,
+            // email: Login.email,
             allCategories: categoriesAfterEdit
         }
     };

@@ -14,7 +14,7 @@ public class UserService {
     public String createMonthlyBudget(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("monthlyBudget").document(monthlyBudget.getEmail()).set(monthlyBudget);
-        return "Monthly Budget created: " + collectionsApiFuture.get().getUpdateTime();
+        return "Monthly Budget created for " + monthlyBudget.getEmail() + " at " + collectionsApiFuture.get().getUpdateTime();
     }
 
     public String createUser(User user) throws ExecutionException, InterruptedException {
