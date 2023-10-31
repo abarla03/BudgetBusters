@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import settingsIcon from './SettingsIcon.png';
-
+import notifications from './images/envelope.png'
+import logout from './images/log-out.png'
+import profile from './images/user.png'
+import { useNavigate } from 'react-router-dom';
+import firebase from 'firebase/app';
+import { auth } from '../firebase'
 
 function NavigationBar({ visiblePaths }) {
+
     const location = useLocation();
     const shouldDisplay = visiblePaths.includes(location.pathname);
-
+    const [open, setOpen] = useState(false);
     const [currentPage, setCurrentPage] = React.useState('home');
+    const navigate = useNavigate();
 
     const handleNavigation = (page) => {
         setCurrentPage(page);
@@ -20,7 +27,40 @@ function NavigationBar({ visiblePaths }) {
         setDropdownVisible(!isDropdownVisible);
     };
 
-    return shouldDisplay ? (
+
+    let menuRef = useRef();
+
+    useEffect(() => {
+        let handler = (e)=>{
+            if(menuRef.current && !menuRef.current.contains(e.target)){
+                setOpen(false);
+                console.log(menuRef.current);
+            }
+        };
+
+        document.addEventListener("mousedown", handler);
+
+        return() => {
+            document.removeEventListener("mousedown",handler)
+        }
+    });
+
+    const handleOptionClick = (path) => {
+        navigate(path);
+    };
+
+    const handleSignOut = () => {
+        auth.signOut()
+            .then(() => {
+                console.log("sign out successful");
+                navigate('/register');
+            })
+            .catch((error) => {
+                // Handle errors here.
+            })
+    };
+
+    return shouldDisplay? (
         <nav className="nav">
             <ul>
                 <li>
@@ -43,59 +83,33 @@ function NavigationBar({ visiblePaths }) {
                         <Link to="/InputDailySpending">Input Daily Spending</Link>
                     </button>
                 </li>
-                <li className = "nav-settings">
-                    <button className="settings-button" onClick={toggleDropdown}>
+                <div className='menu-container' ref={menuRef}>
+                    <div className='menu-trigger' onClick={()=>{setOpen(!open)}}>
                         <img src={settingsIcon} alt = ''/>
-                    </button>
-                    {isDropdownVisible && (
+                    </div>
+                    <div className={`dropdown-menu ${open? 'active' : 'inactive'}`} >
+                        <ul className = 'dropdownItem'>
+                            <li>
+                                <img src = {profile} alt = '' />
+                                <button_dropdown onClick={() => handleOptionClick('/Profile')}>Profile</button_dropdown>
+                            </li>
 
-                        <div className="dropdown-content">
-                            <button className='nav-button' >
-                                <Link to = "/Profile">Profile</Link>
-                            </button>
-                            <button className='nav-button' >
-                                <Link to = "/ManageNotifications">Manage Notifications</Link>
-                            </button>
-                        </div>
-                    )}
-                </li>
+                            <li>
+                                <img src = {notifications} alt = '' />
+                                <button_dropdown onClick={() => handleOptionClick('/ManageNotifications')}>Notifications</button_dropdown>
+                            </li>
+
+                            <li>
+                                <img src = {logout} alt = '' />
+                                <button_dropdown onClick={() => handleSignOut()}>Logout</button_dropdown>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
             </ul>
         </nav>
-    ) : null;
+    ) : <> </>;
 }
 
 export default NavigationBar;
-
-// import React from 'react';
-// import { Link } from 'react-router-dom';
-
-// function NavBar() {
-//   return (
-//     <nav className="nav">
-//       <ul>
-//         <li>
-//           <button className='nav-button'>
-//             <Link to="/">Home</Link>
-//           </button>
-//         </li>
-//         <li>
-//           <button className='nav-button'>
-//             <Link to="/SetMonthlyGoal">Set Monthly Goal</Link>
-//           </button>
-//         </li>
-//         <li>
-//           <button className='nav-button'>
-//             <Link to="/CategoryBreakdown">Category Breakdown</Link>
-//           </button>
-//         </li>
-//         <li>
-//           <button className='nav-button'>
-//             <Link to="/InputDailySpending">Input Daily Spending</Link>
-//           </button>
-//         </li>
-//       </ul>
-//     </nav>
-//   );
-// }
-
-// export default NavBar;

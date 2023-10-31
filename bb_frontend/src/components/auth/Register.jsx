@@ -78,14 +78,6 @@ const Register = (props) => {
 
                 <input value={googleUserData.name !== '' ? googleUserData.name : name} onChange={(e) => setName(e.target.value)}type="text" id="name" placeholder="Full Name" name="Full Name" />
 
-                <label htmlFor="age">Age </label>
-                <input value={age} onChange={(e) => setAge(e.target.value)}type="age" id="age" placeholder="" name="age" />
-
-
-                <label htmlFor="phoneNumber">Phone Number </label>
-                <input value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}type="phoneNumber" id="phoneNumber" placeholder="" name="phoneNumber" />
-
-
                 <label htmlFor="email">Email</label>
                 <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" placeholder="email@emailprovider.com" id="email" name="email" />
 
