@@ -413,13 +413,14 @@ h4 {
     background-color: #3e3f56;
 }
 
-/* user categories formatting */
-.button {
+/* edit button for category modification */
+.edit-button {
     background-color: #21234d;
     color: white;
-    padding: 10px 20px;
+    padding: 5px 8px;
     border: none;
     cursor: pointer;
+    border-radius: 6px;
     transition: background-color 0.3s ease; /* Smooth transition effect */
 }
 
@@ -726,23 +727,22 @@ a {
     transition: var(--speed) ease;
 }
 
+/*h3{*/
+/*    width: 100%;*/
+/*    text-align: center;*/
+/*    font-size: 18px;*/
+/*    padding: 20px 0;*/
+/*    font-weight: 500;*/
+/*    font-size: 18px;*/
+/*    color: var(--primary-text-color);*/
+/*    line-height: 1.2rem;*/
+/*}*/
 
-h3{
-    width: 100%;
-    text-align: center;
-    font-size: 18px;
-    padding: 20px 0;
-    font-weight: 500;
-    font-size: 18px;
-    color: var(--primary-text-color);
-    line-height: 1.2rem;
-}
-
-h3 span{
-    font-size: 14px;
-    color: var(--secondary-text-color);
-    font-weight: 400;
-}
+/*h3 span{*/
+/*    font-size: 14px;*/
+/*    color: var(--secondary-text-color);*/
+/*    font-weight: 400;*/
+/*}*/
 
 .dropdown-menu ul li{
     padding: 10px  0;
