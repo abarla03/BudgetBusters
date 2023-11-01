@@ -13,7 +13,8 @@ const Register = (props) => {
     const [email, setEmail] = useState(' ');
     const [age, setAge] = useState(' ');
     const [phoneNumber, setPhoneNumber] = useState(' ');
-    const [displayMessage, setDisplayMessage] = useState(false);
+    const [displayMessage, setDisplayMessage] = useState('');
+    //const [nameError, setNameError] = useState(null);
     const [googleUserData, setGoogleUserData] = useState({
         name: '',
         email: '',
@@ -25,18 +26,64 @@ const Register = (props) => {
             .then(() => {
                 // After successful sign-in with Google, navigate to the '/home' route
                 //navigate('/home');
+
             })
             .catch((error) => {
+                // implement UI message logic here too!
                 console.log(error);
             });
     };
 
-    const showMessage = () => {
-        setDisplayMessage(true);
+    const showMessage = (error) => {
+
+
+        if (error && error.message) {
+            // handle firebase errors
+            //setDisplayMessage(true);
+            const match = error.message.match(/\(([^)]+)\)/);
+            //const errorCode = match ? match[1] : null;
+
+            switch (error.message.match(/\(([^)]+)\)/)[1]) {
+                // diff firebase errors:
+                case 'auth/missing-password':
+                    setDisplayMessage("Please enter your password!");
+                    break;
+
+                case 'auth/missing-email':
+                    setDisplayMessage("Please enter your email!");
+                    break;
+
+                case 'Please enter your name!': // missing name field
+                    setDisplayMessage("Please enter your name!");
+                    break;
+
+                case 'auth/email-already-in-use':
+                    setDisplayMessage("You already have an account associated with this email, please log in!");
+                    break;
+
+                case 'auth/weak-password':
+                    setDisplayMessage("Password is too weak. Must be at least 6 characters.");
+                    break;
+
+                default:
+                    setDisplayMessage("An error occurred. Please try again.");
+            }
+        } else {
+            // non-firebase errors/messages
+            // check for success message:
+            if (error === "You have successfully created an account!") {
+                setDisplayMessage(error);
+            } else if (error === "Please enter your name!" ) {
+                setDisplayMessage(error);
+            } else {
+                setDisplayMessage("An error occurred. Please try again.");
+            }
+        }
     };
 
     /* populate register input fields with applicable Google account info */
     const populateGoogleUserData = () => {
+        // fix current population bug
         const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
         setName(googleUserData.name);
         setEmail(googleUserData.email);
@@ -53,23 +100,32 @@ const Register = (props) => {
         // todo: sign in
 
         e.preventDefault();
+
+        if (name.length < 1) {
+            console.log("no name!");
+            const nameError = "Please enter your name!";
+            showMessage(nameError);
+            return;
+        }
+
+            // e.preventDefault();
         createUserWithEmailAndPassword(auth, email, password)
+
             .then((userCredential) => {
                 console.log(userCredential);
+                //console.log('no actual error'); // THIS IS WHERE SUCCESSFUL LOGIN MESSAGE GOES
+                const successMessage = "You have successfully created an account!";
+                showMessage(successMessage);
+                //showMessage("You have successfully created an account!");
             })
             .catch((error) => {
-                console.log(error);
+                console.log(`showing the firebase error ${error}`);
+                showMessage(error);
             })
     }
 
 
     return (
-
-        // Debug Register button (compare Sign Up)
-        // changed type of name to 'text' instead of 'name' for better input handling
-
-        // <input value={name} onChange={(e) => setName(e.target.value)}type="text" id="name" placeholder="Full Name" name="Full Name" />
-        // put after label htmlFor
         <div className="auth-form-container">
 
             <form className="register-form" onSubmit={registerSubmit}>
@@ -84,9 +140,10 @@ const Register = (props) => {
                 <label htmlFor="password">Password</label>
                 <input value={password} onChange={(e) => setPassword(e.target.value)}type="password" placeholder="enter password" id="password" name="password" />
 
-                <button type="submit" onClick = { showMessage }>Register</button>
+                {/* incorporate logic for success/error messages in handle click/ showMessage method?*/}
+                <button type="submit" onClick = { registerSubmit }>Register</button>
 
-                {displayMessage && <p>You have successfully created an account.</p>}
+                {<p>{displayMessage}</p>}
 
             </form>
             <button className="link-btn" onClick={() => navigate('/login')}>Already have an account? Login here.</button>
@@ -95,7 +152,5 @@ const Register = (props) => {
         </div>
     )
 }
-
-// <button type="submit" onClick = { showMessage }>Register</button>
 
 export default Register
