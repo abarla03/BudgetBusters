@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { categories } from '../predefinedCategories'
-import Login from './auth/Login'
 import { auth } from "../firebase";
-// import SelectedCategoriesPage from './SelectedCategoriesPage'
+
+/* landing page of Set Monthly Goal: first page of the Set Monthly Goal form OR a display of the user's previously-inputted goal */
 function SetMonthlyGoal() {
     console.log("SetMonthlyGoal component is rendering.")
+    /* userEmail is used to as an identifier for if data already exists for a particular user */
+    const user = auth.currentUser;
+    const userEmail = user ? user.email : "";
+    const [isGoalStored, setIsGoalStored] = useState(Boolean(localStorage.getItem(`colorOptions_${userEmail}`)));
 
-    // try parsing user data
-    // const userData = JSON.parse(localStorage.getItem('userData')) || {};
-
+    /* useState variables needed for filling out setMonthlyGoal() information */
     const [budget, setBudget] = useState('');
-    const [error, setError] = useState('');
+    const [invalidBudgetError, setInvalidBudgetError] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [newCategory, setNewCategory] = useState('');
     const [createdCategories, setCreatedCategories] = useState([]);
@@ -18,36 +20,20 @@ function SetMonthlyGoal() {
     const [showAllCategories, setShowAllCategories] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [allCategories, setAllCategories] = useState([]);
-    const [isGoalSubmitted, setIsGoalSubmitted] = useState(false);
-    // for now, proceed with mock json object with static vals
+
+    /* colorOptions is used to remember the colors that the user selected for all their categories
+     * passed as a parameter for ColorCodeCategories() and DisplayMonthlyGoal() functions          */
+    const [colorOptions, setColorOptions] = useState(() => {
+        const storedColorOptions = localStorage.getItem(`colorOptions_${userEmail}`);
+        return storedColorOptions ? JSON.parse(storedColorOptions) : {};
+    });
+
+    /* need to call get request for actual json object, but this is a temp mock object */
     const mockGoalInfo = {
         email: "test@gmail.com",
         monthlyBudget: 500,
-        allCategories: ["Rent", "Gym"]
+        allCategories: ["Rent", "Groceries", "Gym"]
     }
-
-    // Get the user's unique identifier (e.g., email) after they log in
-    const user = auth.currentUser;
-    let firebaseEmail = "";
-    if (user) {
-        firebaseEmail = user.email;
-        // console.log(firebaseEmail);
-    }
-    const userIdentifier = firebaseEmail;
-    const isDataStored = Boolean(localStorage.getItem(userIdentifier));
-
-    // Initialize user data from localStorage or an empty object
-    const [userData, setUserData] = useState(JSON.parse(localStorage.getItem(userIdentifier)) || {});
-
-    // useEffect to set initial state with user data when available
-    useEffect(() => {
-        if (userData) {
-            setBudget(userData.monthlyBudget || '');
-            setSelectedCategories(userData.selectedCategories || []);
-            setCreatedCategories(userData.createdCategories || []);
-            setAllCategories(userData.allCategories || []);
-        }
-    }, [userData]);
 
     /* function handling non-numeric values in budget goal field */
     const handleBudgetChange = (event) => {
@@ -56,10 +42,10 @@ function SetMonthlyGoal() {
 
         if (numericRegex.test(inputBudget)) {
             setBudget(inputBudget);
-            setError('');
+            setInvalidBudgetError('');
         } else {
             setBudget(inputBudget);
-            setError('Invalid budget goal. Please provide a numerical input.');
+            setInvalidBudgetError('Invalid budget goal. Please provide a numerical input.');
         }
     };
 
@@ -91,123 +77,112 @@ function SetMonthlyGoal() {
         setAllCategories(allCategories.filter((c) => c !== categoryToRemove));
     };
 
-    const handleSubmit = () => {
+    /* function handling the next button (after user enters their budget & categories) */
+    const handleNext = () => {
+        // localStorage.setItem(`userData_${userIdentifier}`, JSON.stringify(data));
         setFormSubmitted(true);
         setShowAllCategories(true);
 
         // abstracted json object to send data to backend (Next button)
         const goalInfo = {
-            // email: Login.email,
-            monthlyBudget: budget,
+            email: userEmail,
+            monthlyBudget: 500,
             allCategories: allCategories
         }
-
-        const updatedUserData = {
-            ...userData,
-            monthlyBudget: budget,
-            selectedCategories: allCategories,
-            createdCategories: createdCategories,
-            allCategories: allCategories,
-        };
-
-        localStorage.setItem(userIdentifier, JSON.stringify(updatedUserData));
-        // setIsGoalSubmitted(true);
     };
 
-    // get request here
+    // set goal info object equal to get request here (currently mockGoalInfo is substitute for this)
 
     return (
-          <div>
-            {/*{formSubmitted ? (*/}
-            {/*{isDataStored ? <DisplayMonthlyGoal mockGoalInfo={mockGoalInfo} isGoalSubmitted={isDataStored} /> : null}*/}
-            {(isDataStored) || (formSubmitted && selectedCategories.length > 0) ? (
-                // <DisplayMonthlyGoal mockGoalInfo={mockGoalInfo} isGoalSubmitted={isDataStored} />
-                <SelectedCategoriesPage selectedCategories={allCategories} />
-            ) : (
-                <>
-                    <h3>Set Monthly Budget:</h3>
-                    <div className="input-container">
-                        <input className='user-input-field'
-                               type="text"
-                               placeholder="Enter your budget"
-                               value={budget}
-                               onChange={handleBudgetChange}
-                        />
-                        {error && <p className="error-message">{error}</p>}
-                    </div>
+        <div>
+            {isGoalStored ? (
+                <DisplayMonthlyGoal
+                    allCategories={mockGoalInfo.allCategories}
+                    colorOptions={colorOptions}
+                    mockGoalInfo={mockGoalInfo}
+                    userEmail={userEmail}
+                />
+            ) : formSubmitted ? (
+                    <ColorCodeCategories
+                        allCategories={allCategories}
+                        colorOptions={colorOptions}
+                        setColorOptions={setColorOptions}
+                        userEmail={userEmail}
+                        mockGoalInfo={mockGoalInfo}
+                    />
+                ) : (
+                    <>
+                        <h3>Set Monthly Budget:</h3>
+                        <div className="input-container">
+                            <input className='user-input-field'
+                                   type="text"
+                                   placeholder="Enter your budget"
+                                   value={budget}
+                                   onChange={handleBudgetChange}
+                            />
+                            {invalidBudgetError && <p className="error-message">{invalidBudgetError}</p>}
+                        </div>
 
-                    <h4>Select Categories:</h4>
-                    <div className="category-buttons">
-                        {categories.map((category) => (
-                            <button
-                                key={category}
-                                className={`category-button${selectedCategories.includes(category) ? ' selected' : ''}`}
-                                onClick={() => handleCategoryClick(category)}
-                            >
-                                {category}
-                            </button>
-                        ))}
-                    </div>
+                        <h4>Select Categories:</h4>
+                        <div className="category-buttons">
+                            {categories.map((category) => (
+                                <button
+                                    key={category}
+                                    className={`category-button${selectedCategories.includes(category) ? ' selected' : ''}`}
+                                    onClick={() => handleCategoryClick(category)}
+                                >
+                                    {category}
+                                </button>
+                            ))}
+                        </div>
 
-                    <div className="add-user-input">
-                        <h4>Create Categories:</h4>
-                        <button className="plus-button" onClick={() => setDisplayCreatedCategories(!displayCreatedCategories)}>+</button>
-                    </div>
+                        <div className="add-user-input">
+                            <h4>Create Categories:</h4>
+                            <button className="plus-button" onClick={() => setDisplayCreatedCategories(!displayCreatedCategories)}>+</button>
+                        </div>
 
-                    <div className="add-field">
-                        {displayCreatedCategories && (
-                            <div>
-                                <input className='category-field'
-                                       type="text"
-                                       placeholder="Enter a new category"
-                                       value={newCategory}
-                                       onChange={(e) => setNewCategory(e.target.value)}
-                                />
-                                <button className='add-button' onClick={handleCreateCategory}>Add</button>
-                            </div>
-                        )}
-                    </div>
+                        <div className="add-field">
+                            {displayCreatedCategories && (
+                                <div>
+                                    <input className='category-field'
+                                           type="text"
+                                           placeholder="Enter a new category"
+                                           value={newCategory}
+                                           onChange={(e) => setNewCategory(e.target.value)}
+                                    />
+                                    <button className='add-button' onClick={handleCreateCategory}>Add</button>
+                                </div>
+                            )}
+                        </div>
 
-                    <div className="category-buttons">
-                        {createdCategories.map((category) => (
-                            <button
-                                key={category}
-                                className={`created-category ${category}`}
-                                onClick={() => handleRemoveCategory(category)}>
-                                {category}
-                            </button>
-                        ))}
-                    </div>
+                        <div className="category-buttons">
+                            {createdCategories.map((category) => (
+                                <button
+                                    key={category}
+                                    className={`created-category ${category}`}
+                                    onClick={() => handleRemoveCategory(category)}>
+                                    {category}
+                                </button>
+                            ))}
+                        </div>
 
-                    <button
-                        className="submit-button"
-                        type="submit"
-                        onClick={handleSubmit}
-                        disabled={error !== ''}
-                    >
-                        Next
-                    </button>
-                </>
-            )}
+                        <button
+                            className="submit-button"
+                            type="submit"
+                            onClick={handleNext}
+                            disabled={invalidBudgetError !== ''}>
+                            Next
+                        </button>
+                    </>
+                )}
         </div>
     );
 }
 
-/* set monthly goal pt.2: function handling color coding categories */
-function SelectedCategoriesPage({ selectedCategories }) {
-    const [colorOptions, setColorOptions] = useState({});
-    const [error, setError] = useState('');
+/* second page of the Set Monthly Goal form (where the users color-code their categories) */
+function ColorCodeCategories({ allCategories, colorOptions, setColorOptions, mockGoalInfo, userEmail}) {
     const [submitted, setSubmitted] = useState(false);
-    // const [editableCategories, setEditableCategories] = useState([]);
-    const [categoryNames, setCategoryNames] = useState({});
-    const [monthlyGoalDisplay, setMonthlyGoalDisplay] = useState('');
-    const [allCategoriesDisplay, setAllCategoriesDisplay] = useState('');
-    const [isGoalSubmitted, setIsGoalSubmitted] = useState(false);
-    const mockGoalInfo = {
-        email: "test@gmail.com",
-        monthlyBudget: 500,
-        allCategories: ["Rent", "Gym"]
-    }
+    const [colorCodeError, setColorCodeError] = useState('');
 
     const hexColorOptions = {
         Red: '#ff5c70',
@@ -222,25 +197,6 @@ function SelectedCategoriesPage({ selectedCategories }) {
         Grey: '#ccc'
     };
 
-    useEffect(() => {
-        // Load previously saved data from localStorage
-        const savedData = JSON.parse(localStorage.getItem('selectedCategoriesData')) || {};
-
-        if (Object.keys(savedData).length > 0) {
-            setMonthlyGoalDisplay(savedData.monthlyGoalDisplay || '');
-            setCategoryNames(savedData.categoryNames || {});
-            setColorOptions(savedData.colorOptions || {});
-
-            // Convert selectedCategories and colorOptions to text format
-            const categoriesText = selectedCategories.map((category) => {
-                const color = colorOptions[category] || 'DefaultColor';
-                return `${category}: ${color}`;
-            });
-
-            setAllCategoriesDisplay(categoriesText.join(', '));
-        }
-    }, [selectedCategories]);
-
     /* function handling the color change of categories when hex code is specified */
     const handleColorChange = (category, color) => {
         setColorOptions((prevColorOptions) => ({
@@ -249,229 +205,51 @@ function SelectedCategoriesPage({ selectedCategories }) {
         }));
     };
 
-    /* function handling submit button and if all categories are colored */
+    /* function handling the submit button (after the user color codes their categories) */
     const handleSubmit = () => {
-        const allCategoriesColored = selectedCategories.every(
+        const allCategoriesColored = allCategories.every(
             (category) => colorOptions[category]
         );
 
         if (allCategoriesColored) {
-            setError('');
+            setColorCodeError('');
             setSubmitted(true);
 
             // collect colors in the order of selectedCategories
-            const selectedColors = selectedCategories.map((category) => colorOptions[category]);
+            const selectedColors = allCategories.map((category) => colorOptions[category]);
 
             // abstracted json object to send data to backend (Submit button)
             const colorInfo = {
-                // email: Login.email,
-                selectedCategories: selectedCategories,
+                email: userEmail,
+                selectedCategories: allCategories,
                 colors: selectedColors
             }
 
-            const dataToSave = {
-                monthlyGoalDisplay,
-                categoryNames,
-                colorOptions,
-            };
-
-            localStorage.setItem('selectedCategoriesData', JSON.stringify(dataToSave));
-            // setIsGoalSubmitted(true);
+            localStorage.setItem(`colorOptions_${userEmail}`, JSON.stringify(colorOptions));
         } else {
-            setError('Please enter a color for every category.');
+            setColorCodeError('Please enter a color for every category.');
         }
-        setIsGoalSubmitted(true);
     };
 
-    /* function handling the category editing (ensures that only one category is edited in edit mode) */
-    // const handleEditCategory = (category) => {
-    //     setEditableCategories((prevEditableCategories) => {
-    //         if (prevEditableCategories.includes(category)) {
-    //             return prevEditableCategories.filter((item) => item !== category);
-    //         } else {
-    //             return [...prevEditableCategories, category];
-    //         }
-    //     });
-    // };
-    //
-    // /* function to save modified category name */
-    // const handleSaveCategoryName = (category) => {
-    //     setCategoryNames((prevCategoryNames) => ({
-    //         ...prevCategoryNames,
-    //         [category]: categoryNames[category],
-    //     }));
-    //     setEditableCategories((prevEditableCategories) => prevEditableCategories.filter((item) => item !== category));
-    //
-    //     // creates a full list of category names (whether they have been modified or not)
-    //     const categoriesAfterEdit = selectedCategories.reduce((list, category) => {
-    //         list[category] = categoryNames[category] || category;
-    //         return list;
-    //     }, {});
-    //
-    //     // abstracted json object to send data to backend (Save button)
-    //     const modifiedCategoryInfo = {
-    //         // email: Login.email,
-    //         allCategories: categoriesAfterEdit
-    //     }
-    // };
+    // no need for get request here for the colors; colors are stored in localStorage in react
 
-//     return (
-//         <div>
-//             {isGoalSubmitted ? <h3>Monthly Goal:</h3> : null}
-//             {isGoalSubmitted ? <p>{mockGoalInfo.monthlyBudget}</p> : null}
-//             {isGoalSubmitted ? null :
-//                 <button
-//                     className="submit-button"
-//                     type="submit"
-//                     onClick={handleSubmit}
-//                 >
-//                 Submit
-//                 </button> }
-//             <h3>Selected Categories:</h3>
-//             {error && <p style={{ color: 'red'}}>{error}</p>}
-//             <ul>
-//                 {selectedCategories.map((category) => (
-//                     <li key={category}>
-//                         <div>
-//                             <button className="category-button"
-//                                     id={`button-${category}`}
-//                                     style={{ backgroundColor: colorOptions[category] || '#ccc' }}
-//                             >
-//                                 {submitted && editableCategories.includes(category) ? (
-//                                     <input
-//                                         type="text"
-//                                         value={categoryNames[category] || ''}
-//                                         onChange={(e) => setCategoryNames({ ...categoryNames, [category]: e.target.value })}
-//                                     />
-//                                 ) : (
-//                                     categoryNames[category] || category
-//                                 )}
-//                             </button>
-//                             {submitted && !editableCategories.includes(category) ? (
-//                                 <button
-//                                     className="edit-button"
-//                                     onClick={() => handleEditCategory(category)}
-//                                 >
-//                                     Edit
-//                                 </button>
-//                             ) : null}
-//                             {editableCategories.includes(category) ? (
-//                                 <button
-//                                     className="edit-button"
-//                                     onClick={() => handleSaveCategoryName(category)}
-//                                 >
-//                                     Save
-//                                 </button>
-//                             ) : null}
-//                             {submitted ? null : (
-//                                 <select
-//                                     onChange={(e) => handleColorChange(category, e.target.value)}
-//                                     value={colorOptions[category] || category}
-//                                 >
-//                                     <option value="">Choose Color</option>
-//                                     {Object.entries(hexColorOptions).map(([colorName, hexCode]) => (
-//                                         <option key={hexCode} value={hexCode}>
-//                                             {colorName}
-//                                         </option>
-//                                     ))}
-//                                 </select>
-//                             )}
-//                         </div>
-//                     </li>
-//                 ))}
-//             </ul>
-//             {/*<button*/}
-//             {/*    className="back-button"*/}
-//             {/*    type="submit"*/}
-//             {/*>*/}
-//             {/*    Back*/}
-//             {/*</button>*/}
-//             {/*<button*/}
-//             {/*    className="submit-button"*/}
-//             {/*    type="submit"*/}
-//             {/*    onClick={handleSubmit}*/}
-//             {/*>*/}
-//             {/*    Submit*/}
-//             {/*</button>*/}
-//         </div>
-//     );
-// }
     return (
-    //     <div>
-    //         {isGoalSubmitted ? (
-    //             <DisplayMonthlyGoal
-    //                 selectedCategories={selectedCategories}
-    //                 colorOptions={colorOptions}
-    //                 hexColorOptions={hexColorOptions}
-    //                 error={error}
-    //                 editableCategories={editableCategories}
-    //                 categoryNames={categoryNames}
-    //                 handleEditCategory={handleEditCategory}
-    //                 handleSaveCategoryName={handleSaveCategoryName}
-    //                 mockGoalInfo={mockGoalInfo}
-    //                 isGoalSubmitted={isGoalSubmitted} /> ) : null}
-    //         {/* Display the color code form for categories */}
-    //         <h3>Color Code Categories:</h3>
-    //         {error && <p style={{ color: 'red' }}>{error}</p>}
-    //         <ul>
-    //             {selectedCategories.map((category) => (
-    //                 <li key={category}>
-    //                     <div>
-    //                         <button
-    //                             className="category-button"
-    //                             id={`button-${category}`}
-    //                             style={{ backgroundColor: colorOptions[category] || '#ccc' }}
-    //                         >
-    //                             {category}
-    //                         </button>
-    //                         <select
-    //                             onChange={(e) => handleColorChange(category, e.target.value)}
-    //                             value={colorOptions[category] || ''}
-    //                         >
-    //                             <option value="">Choose Color</option>
-    //                             {Object.entries(hexColorOptions).map(([colorName, hexCode]) => (
-    //                                 <option key={hexCode} value={hexCode}>
-    //                                     {colorName}
-    //                                 </option>
-    //                             ))}
-    //                         </select>
-    //                     </div>
-    //                 </li>
-    //             ))}
-    //         </ul>
-    //         <button className="submit-button" type="submit" onClick={handleSubmit}>
-    //             Submit
-    //         </button>
-    //     </div>
-    // );
         <div>
-            {isGoalSubmitted ? (
+            {submitted ? (
                 <DisplayMonthlyGoal
-                    selectedCategories={selectedCategories}
+                    allCategories={allCategories}
                     colorOptions={colorOptions}
-                    hexColorOptions={hexColorOptions}
-                    error={error}
-                    // editableCategories={editableCategories}
-                    categoryNames={categoryNames}
-                    // handleEditCategory={handleEditCategory}
-                    // handleSaveCategoryName={handleSaveCategoryName}
                     mockGoalInfo={mockGoalInfo}
-                    isGoalSubmitted={isGoalSubmitted}
+                    userEmail={userEmail}
                 />
             ) : (
-                <div>
-                    {/* Display the color code form for categories */}
+                <>
                     <h3>Color Code Categories:</h3>
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
                     <ul>
-                        {selectedCategories.map((category) => (
+                        {allCategories.map((category) => (
                             <li key={category}>
                                 <div>
-                                    <button
-                                        className="category-button"
-                                        id={`button-${category}`}
-                                        style={{ backgroundColor: colorOptions[category] || '#ccc' }}
-                                    >
+                                    <button className="category-button" id={`button-${category}`} style={{ backgroundColor: colorOptions[category] || '#ccc' }}>
                                         {category}
                                     </button>
                                     <select
@@ -489,25 +267,25 @@ function SelectedCategoriesPage({ selectedCategories }) {
                             </li>
                         ))}
                     </ul>
-                    <button className="submit-button" type="submit" onClick={handleSubmit}>
+                    {colorCodeError && <p className="error-message4">{colorCodeError}</p>}
+                    <button
+                        className="submit-button"
+                        type="submit"
+                        onClick={handleSubmit}>
                         Submit
                     </button>
-                </div>
+                </>
             )}
         </div>
     );
 }
 
-function DisplayMonthlyGoal({ selectedCategories, colorOptions, categoryNames, error, mockGoalInfo, isGoalSubmitted }) {
-    const mock = {
-        email: "test@gmail.com",
-        monthlyBudget: 500,
-        allCategories: ["Rent", "Gym"]
-    }
+/* Display page: rendered after user completes the form AND as a landing page after the user previously inputted their goal */
+function DisplayMonthlyGoal({ allCategories, colorOptions, mockGoalInfo, userEmail }) {
     const [editableCategories, setEditableCategories] = useState([]);
-    // const [categoryNames, setCategoryNames] = useState({});
-    const [newNames, setNewNames] = useState(categoryNames);
+    const [categoryNames, setCategoryNames] = useState({});
 
+    /* function handling the category editing (ensures that only one category is edited in edit mode) */
     const handleEditCategory = (category) => {
         setEditableCategories((prevEditableCategories) => {
             if (prevEditableCategories.includes(category)) {
@@ -520,61 +298,67 @@ function DisplayMonthlyGoal({ selectedCategories, colorOptions, categoryNames, e
 
     /* function to save modified category name */
     const handleSaveCategoryName = (category) => {
-        setNewNames((prevCategoryNames) => ({
+        setCategoryNames((prevCategoryNames) => ({
             ...prevCategoryNames,
-            [category]: newNames[category],
+            [category]: categoryNames[category],
         }));
         setEditableCategories((prevEditableCategories) => prevEditableCategories.filter((item) => item !== category));
 
         // creates a full list of category names (whether they have been modified or not)
-        const categoriesAfterEdit = selectedCategories.reduce((list, category) => {
-            list[category] = newNames[category] || category;
+        const categoriesAfterEdit = allCategories.reduce((list, category) => {
+            list[category] = categoryNames[category] || category;
             return list;
         }, {});
 
         // abstracted json object to send data to backend (Save button)
         const modifiedCategoryInfo = {
-            // email: Login.email,
+            email: userEmail,
             allCategories: categoriesAfterEdit
         }
+
+        // put post request here (this ensures that when the user closes the app and logs in again, when
+        // SetMonthlyGoal() is called, the get request gets the new set of categories */
     };
 
     return (
         <div>
-            <h3>Monthly Goal:</h3>
-            <p>{mock.monthlyBudget}</p>
-            <h3>Selected Categories:</h3>
-        <ul>
-        {selectedCategories.map((category) => (
-            <li key={category}>
-                <div>
-                    <button className="category-button" id={`button-${category}`} style={{ backgroundColor: colorOptions[category] || '#ccc' }}>
-                        {editableCategories.includes(category) ? (
-                            <input
-                                type="text"
-                                value={newNames[category] || ''}
-                                onChange={(e) => handleSaveCategoryName(category, e.target.value)}
-                            />
-                        ) : (
-                            newNames[category] || category
-                        )}
-                    </button>
-                    {editableCategories.includes(category) ? (
-                        <button className="edit-button" onClick={() => handleEditCategory(category)}>
-                            Save
-                        </button>
-                    ) : (
-                        <button className="edit-button" onClick={() => handleEditCategory(category)}>
-                            Edit
-                        </button>
-                    )}
-                </div>
-            </li>
-        ))}
-    </ul>
-</div>
-);
+            <h8>Your Budget for this Month is  ${mockGoalInfo.monthlyBudget}</h8>
+            <h9>Your Spending Categories are: </h9>
+            <ul>
+                {allCategories.map((category) => (
+                    <li key={category}>
+                        <div>
+                            <button className="category-button" id={`button-${category}`}
+                                    style={{backgroundColor: colorOptions[category] || '#ccc'}}>
+                                {editableCategories.includes(category) ? (
+                                    <input
+                                        type="text"
+                                        value={categoryNames[category] || ''}
+                                        onChange={(e) => setCategoryNames({
+                                            ...categoryNames,
+                                            [category]: e.target.value
+                                        })}
+                                    />
+                                ) : (
+                                    categoryNames[category] || category
+                                )}
+                            </button>
+                            {!editableCategories.includes(category) ? (
+                                <button className="edit-button" onClick={() => handleEditCategory(category)}>
+                                    Edit
+                                </button>
+                            ) : null}
+                            {editableCategories.includes(category) ? (
+                                <button className="edit-button" onClick={() => handleSaveCategoryName(category)}>
+                                    Save
+                                </button>
+                            ) : null}
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 }
-
 
 export default SetMonthlyGoal;

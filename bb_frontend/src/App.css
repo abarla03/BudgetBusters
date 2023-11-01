@@ -296,15 +296,24 @@ h4 {
     position: relative;
 }
 
-/* style the error message */
+/* style the error message for invalid budget */
 .error-message {
     color: red;
     font-size: 14px;
-    font-weight: bold;
     font-family: 'Archivo Narrow', sans-serif;
     position: absolute;
     bottom: 5px;
     left: 200px;
+}
+
+/* style the error message for color coding */
+.error-message4 {
+    color: red;
+    font-size: 14px;
+    font-family: 'Archivo Narrow', sans-serif;
+    align-content: center;
+    /*bottom: 5px;*/
+    /*left: 200px;*/
 }
 
 /* category buttons styling */
@@ -436,7 +445,8 @@ select {
 /* remove bullets in list and add spacing between categories */
 ul {
     list-style-type: none;
-    margin-left: -205px;
+    align-content: center;
+    margin-left: -50px;
 }
 
 li {
@@ -458,6 +468,26 @@ li {
     bottom: 40px;
     right: 89%;
     display: flex;
+}
+
+h8 {
+    color: #333;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-weight: 600;
+    font-size: 23px;
+    margin-left: 675px;
+    display: flex;
+    margin-top: 30px;
+}
+
+h9 {
+    color: #333;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-weight: 600;
+    font-size: 23px;
+    margin-left: 690px;
+    display: flex;
+    margin-top: 40px;
 }
 /* -----------------------------------------------------------------------*/
 /* profile page button */
@@ -726,23 +756,6 @@ a {
     transform: translateY(-20px);
     transition: var(--speed) ease;
 }
-
-/*h3{*/
-/*    width: 100%;*/
-/*    text-align: center;*/
-/*    font-size: 18px;*/
-/*    padding: 20px 0;*/
-/*    font-weight: 500;*/
-/*    font-size: 18px;*/
-/*    color: var(--primary-text-color);*/
-/*    line-height: 1.2rem;*/
-/*}*/
-
-/*h3 span{*/
-/*    font-size: 14px;*/
-/*    color: var(--secondary-text-color);*/
-/*    font-weight: 400;*/
-/*}*/
 
 .dropdown-menu ul li{
     padding: 10px  0;
