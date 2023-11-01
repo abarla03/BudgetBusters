@@ -50,7 +50,6 @@ function ManageNotifications() {
 
     return (
         <div className="ManageNotifications">
-            <h3>Welcome to the Manage Notifications Page!</h3>
             <h3>Select Notification Method</h3>
 
             {/*selectable options:*/}
