@@ -5,6 +5,7 @@ import { signInWithGoogle } from "../../firebase";
 import logo from "../../BBLogo.png";
 import { useNavigate } from "react-router-dom";
 import GoogleSignInButton from '../GoogleSignInButton';
+import GoogleSignUpButton from "../GoogleSignUpButton";
 
 const Register = (props) => {
     const navigate = useNavigate();
@@ -81,20 +82,20 @@ const Register = (props) => {
         }
     };
 
-    /* populate register input fields with applicable Google account info */
-    const populateGoogleUserData = () => {
-        // fix current population bug
-        const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
-        setName(googleUserData.name);
-        setEmail(googleUserData.email);
-        setPhoneNumber(googleUserData.phoneNumber);
-        /* add in other relevant fields */
-    }
+    /* DON'T NEED THIS ANYMORE - populate register input fields with applicable Google account info */
+    // const populateGoogleUserData = () => {
+    //     // fix current population bug
+    //     const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
+    //     setName(googleUserData.name);
+    //     setEmail(googleUserData.email);
+    //     setPhoneNumber(googleUserData.phoneNumber);
+    //     /* add in other relevant fields */
+    // }
 
-    /* call the appropriate method to populate fields */
-    useEffect (() => {
-        populateGoogleUserData();
-    }, []);
+    // /* call the appropriate method to populate fields */
+    // useEffect (() => {
+    //     populateGoogleUserData();
+    // }, []);
 
     const registerSubmit = (e) => {
         // todo: sign in
@@ -115,7 +116,9 @@ const Register = (props) => {
                 console.log(userCredential);
                 //console.log('no actual error'); // THIS IS WHERE SUCCESSFUL LOGIN MESSAGE GOES
                 const successMessage = "You have successfully created an account!";
-                showMessage(successMessage);
+                console.log(successMessage);
+                navigate('/login')
+                //showMessage(successMessage);
                 //showMessage("You have successfully created an account!");
             })
             .catch((error) => {
@@ -147,7 +150,7 @@ const Register = (props) => {
 
             </form>
             <button className="link-btn" onClick={() => navigate('/login')}>Already have an account? Login here.</button>
-            <GoogleSignInButton/>
+            <GoogleSignUpButton/>
 
         </div>
     )
