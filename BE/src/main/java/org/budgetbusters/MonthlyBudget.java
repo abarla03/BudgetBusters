@@ -15,5 +15,5 @@ public class MonthlyBudget {
     private String email;
     private Integer monthlyBudget;
     private List<String> allCategories;
-//    private Map<String, String> catAndCol; // use for category + color
+    private List<String> colors;
 }
