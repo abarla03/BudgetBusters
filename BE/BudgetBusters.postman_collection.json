@@ -35,13 +35,13 @@
 			"response": []
 		},
 		{
-			"name": "updateUser",
+			"name": "createNotification",
 			"request": {
-				"method": "PUT",
+				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"firstName\" : \"Jimmy\",\n    \"lastName\" : \"Purdue\",\n    \"age\" : 23,\n    \"email\" : \"james@purdue.edu\",\n    \"phoneNumber\" : 211111111\n}",
+					"raw": "{\n    \"email\" : \"test@purdue.edu\",\n    \"preferredMethod\" : \"email\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -49,68 +49,13 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/updateUser",
+					"raw": "localhost:8080/createNotification",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"updateUser"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "deleteUser",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/deleteUser?email=joseph@gmail.com",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"deleteUser"
-					],
-					"query": [
-						{
-							"key": "email",
-							"value": "joseph@gmail.com"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "deletePurchase",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080//deletePurchase/:email/:index",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"",
-						"deletePurchase",
-						":email",
-						":index"
-					],
-					"variable": [
-						{
-							"key": "email",
-							"value": "test@gmail.com"
-						},
-						{
-							"key": "index",
-							"value": "0"
-						}
+						"createNotification"
 					]
 				}
 			},
@@ -171,6 +116,62 @@
 			"response": []
 		},
 		{
+			"name": "deleteUser",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/deleteUser/:email",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"deleteUser",
+						":email"
+					],
+					"variable": [
+						{
+							"key": "email",
+							"value": "john@purdue.edu"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deletePurchase",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080//deletePurchase/:email/:index",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"",
+						"deletePurchase",
+						":email",
+						":index"
+					],
+					"variable": [
+						{
+							"key": "email",
+							"value": "test@gmail.com"
+						},
+						{
+							"key": "index",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "getBudget",
 			"request": {
 				"method": "GET",
@@ -196,6 +197,31 @@
 			"response": []
 		},
 		{
+			"name": "getUser",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getUser/:email",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getUser",
+						":email"
+					],
+					"variable": [
+						{
+							"key": "email",
+							"value": "john@purdue.edu"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "getPurchase",
 			"request": {
 				"method": "GET",
@@ -214,6 +240,31 @@
 						{
 							"key": "email",
 							"value": "test@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getNotifications",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getNotifications/:email",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getNotifications",
+						":email"
+					],
+					"variable": [
+						{
+							"key": "email",
+							"value": "test@purdue.edu"
 						}
 					]
 				}
@@ -275,6 +326,33 @@
 			"response": []
 		},
 		{
+			"name": "updateNotifications",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"test@purdue.edu\",\n    \"preferredMethod\" : \"text\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/updateNotifications",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"updateNotifications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "updateBudgetCategories",
 			"request": {
 				"method": "PUT",
@@ -323,6 +401,33 @@
 					"port": "8080",
 					"path": [
 						"updateBudgetColors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateUser",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\" : \"Jimmy\",\n    \"lastName\" : \"Purdue\",\n    \"age\" : 23,\n    \"email\" : \"john@purdue.edu\",\n    \"phoneNumber\" : 211111111\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/updateUser",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"updateUser"
 					]
 				}
 			},
