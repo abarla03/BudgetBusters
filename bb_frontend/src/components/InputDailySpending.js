@@ -173,11 +173,7 @@ function InputDailySpending() {
                         </button>
                         <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>
 
-                        {isSubmitted ? (<button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>)
-                        :
-                            (
-                                <button className="remove-purchase-button" disabled>Edit</button>
-                            )}
+                        <button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>
 
                         {isEditing && (
                             <button className="remove-purchase-button" onClick={handleSaveEdit}>Save Edit</button>
