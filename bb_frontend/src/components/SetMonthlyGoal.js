@@ -373,7 +373,7 @@ function DisplayMonthlyGoal({ allCategories, colorOptions, mockGoalInfo, userEma
                                     Save
                                 </button>
                             ) : null}
-                            {duplicateCategoryError2 && <p className="error-message">{duplicateCategoryError2}</p>}
+                            {duplicateCategoryError2 && <p className="error-message5">{duplicateCategoryError2}</p>}
                         </div>
                     </li>
                 ))}

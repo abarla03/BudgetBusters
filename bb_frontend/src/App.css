@@ -317,6 +317,16 @@ h4 {
     /*left: 200px;*/
 }
 
+/* style the error message for duplicate category (modify) */
+.error-message5 {
+    color: red;
+    font-size: 14px;
+    font-family: 'Archivo Narrow', sans-serif;
+    position: absolute;
+    bottom: 30px;
+    left: 660px;
+}
+
 /* category buttons styling */
 .category-button {
     background-color: #ccc; /* Default button color */
