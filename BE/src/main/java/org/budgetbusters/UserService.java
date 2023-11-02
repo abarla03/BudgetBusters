@@ -17,6 +17,13 @@ public class UserService {
         return "Monthly Budget created for " + monthlyBudget.getEmail() + " at " + collectionsApiFuture.get().getUpdateTime();
     }
 
+    public String createNotification(Notifications notifications) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("Notifications").document(notifications.getEmail()).set(notifications);
+        return "Preferred method selected is " + notifications.getPreferredMethod() + " for " + notifications.getEmail() + " at " + collectionsApiFuture.get().getUpdateTime();
+
+    }
+
     public String createPurchase(InputDailySpending inputDailySpending) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("DailyPurchases").document(inputDailySpending.getEmail()).set(inputDailySpending);
@@ -26,14 +33,14 @@ public class UserService {
 
     public String createUser(User user) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("crud_user").document(user.getEmail()).set(user);
-        return "You have successfully created an account." + collectionsApiFuture.get().getUpdateTime();
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("BudgetBusterUser").document(user.getEmail()).set(user);
+        return "Account for " + user.getEmail() + "has been created at " + collectionsApiFuture.get().getUpdateTime();
     }
 
-    public String deleteUser(String userId) throws ExecutionException, InterruptedException {
+    public String deleteUser(String email) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> writeResult = dbFirestore.collection("crud_user").document(userId).delete();
-        return "Successfully deleted " + userId;
+        ApiFuture<WriteResult> writeResult = dbFirestore.collection("BudgetBusterUser").document(email).delete();
+        return "Successfully deleted account of " + email;
     }
 
     public String deletePurchase(String email, int index) throws ExecutionException, InterruptedException, BudgetBustersException {
@@ -60,6 +67,19 @@ public class UserService {
         return null;
     }
 
+    public Notifications getNotifications(String email) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        DocumentReference documentReference = dbFirestore.collection("Notifications").document(email);
+        ApiFuture<DocumentSnapshot> future = documentReference.get();
+        DocumentSnapshot document = future.get();
+        Notifications notifications;
+        if (document.exists()) {
+            notifications = document.toObject(Notifications.class);
+            return notifications;
+        }
+        return null;
+    }
+
     public InputDailySpending getPurchase(String email) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         DocumentReference documentReference = dbFirestore.collection("DailyPurchases").document(email);
@@ -73,9 +93,9 @@ public class UserService {
         return null;
     }
 
-    public User getUser(String userId) throws ExecutionException, InterruptedException {
+    public User getUser(String email) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference documentReference = dbFirestore.collection("crud_user").document(userId);
+        DocumentReference documentReference = dbFirestore.collection("BudgetBusterUser").document(email);
         ApiFuture<DocumentSnapshot> future = documentReference.get();
         DocumentSnapshot document = future.get();
         User user;
@@ -114,6 +134,20 @@ public class UserService {
         return "Categories updated for " + budget.getEmail();
     }
 
+    public String updateNotifications(Notifications notifications) throws ExecutionException, InterruptedException, BudgetBustersException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        // check if already exists
+        DocumentReference documentReference = dbFirestore.collection("Notifications").document(notifications.getEmail());
+        ApiFuture<DocumentSnapshot> future = documentReference.get();
+        DocumentSnapshot document = future.get();
+        if (document == null) {
+            throw new BudgetBustersException("No preferred method selected for user: " + notifications.getEmail());
+        }
+
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("Notifications").document(notifications.getEmail()).set(notifications);
+        return "Preferred method updated for " + notifications.getEmail() + " at " + collectionsApiFuture.get().getUpdateTime();
+    }
+
     public String updatePurchase(InputDailySpending inputDailySpending) throws ExecutionException, InterruptedException, BudgetBustersException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         // check if already exists
@@ -131,10 +165,8 @@ public class UserService {
 
     public String updateUser(User user) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("crud_user").document(user.getEmail()).set(user);
-        return "User Profile Information modified" + collectionsApiFuture.get().getUpdateTime();
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("BudgetBusterUser").document(user.getEmail()).set(user);
+        return "User Profile Information modified for " + user.getEmail() + " at " + collectionsApiFuture.get().getUpdateTime();
     }
-
-
 
 }
