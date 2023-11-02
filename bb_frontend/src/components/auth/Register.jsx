@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import React, { useEffect, useState } from 'react';
 import { auth } from "../../firebase";
 import { signInWithGoogle } from "../../firebase";
@@ -6,7 +6,7 @@ import logo from "../../BBLogo.png";
 import { useNavigate } from "react-router-dom";
 import GoogleSignInButton from '../GoogleSignInButton';
 import GoogleSignUpButton from "../GoogleSignUpButton";
-
+import * as currentUser from "firebase/auth";
 const Register = (props) => {
     const navigate = useNavigate();
     const [name, setName ] = useState('');
@@ -97,6 +97,7 @@ const Register = (props) => {
     //     populateGoogleUserData();
     // }, []);
 
+    /* send confirmation email */
     const registerSubmit = (e) => {
         // todo: sign in
 

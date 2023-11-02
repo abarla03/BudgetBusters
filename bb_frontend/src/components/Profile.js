@@ -42,6 +42,11 @@ function Profile() {
     const [email, setEmail] = useState('');
     const [age, setAge] = useState('');
     const [phone, setPhone] = useState();
+    const [phoneValidationMessage, setPhoneValidationMessage] = useState('');
+
+// checking for user input values
+    const [inputValue, setInputValue] = useState('');
+    const [validationMessage, setValidationMessage] = useState('');
 
     /* populate name and email fields with already-inputted info */
     const populateProfileData = () => {
@@ -76,15 +81,49 @@ function Profile() {
         setIsEditMode(false);
     };
 
+    const handleInputChange = (event) => {
+        const value = event.target.value;
+        setAge(value);
+
+        // Use regular expression to check if the input is a valid integer
+        const isValidInteger = /^[0-9]*$/.test(value);
+
+        if (!isValidInteger) {
+            setValidationMessage('Please enter a valid integer.');
+        } else {
+            setValidationMessage('');
+        }
+    }
+
+    const isValidPhoneNumber = (phoneNumber) => {
+        // Example: Check if the phone number is exactly 10 digits long and consists of only numbers
+        const numericRegex = /^[0-9]*$/;
+        return phoneNumber.length === 10 && numericRegex.test(phoneNumber);
+    };
+
+    /* handle input change for phone */
+    const handlePhoneInputChange = (event) => {
+        const value = event.target.value;
+        setPhone(value);
+
+        // You can add validation for the phone number here
+        // For example, you can check the length, format, or any other validation criteria you need.
+
+        if (!isValidPhoneNumber(value)) {
+            setPhoneValidationMessage('Please enter a valid phone number. A valid phone number has 10 digits');
+        } else {
+            setPhoneValidationMessage('');
+        }
+    }
+
+
     /* delete account */
-    const handleDeleteAccountClick = () => {
+    const handleDeleteAccount = () => {
         if (window.confirm("Are you sure you want to delete your account?")) {
-            // Call the deleteAccount function from firebase.js
+
             deleteAccount()
                 .then(() => {
-                    // Optionally, you can navigate to a different page or perform other actions upon successful deletion
-                    // For example, navigate to the login page after account deletion
-                    // navigate('/login');
+
                     navigate("/register");
                     console.log("account is deleted");
                 })
@@ -94,15 +133,35 @@ function Profile() {
         }
     };
 
-
-
     return (
         <div>
 
             <h5> Name: <input value={fullName} onChange={(e) => setFullName(e.target.value)}type="name" id="name" placeholder="" name="name" /> </h5>
             <h5> Email: <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" id="email" placeholder="" name="email" /> </h5>
-            <h5> Age: <input value={age} onChange={(e) => setAge(e.target.value)}type="age" id="age" placeholder="Enter your age" name="age" /> </h5>
-            <h5> Phone number: <input value={phone} onChange={(e) => setPhone(e.target.value)}type="phone" id="phone" placeholder="Enter your phone number" name="phone" /> </h5>
+
+            <h5>Age:
+                <input
+                    value={age}
+                    onChange={handleInputChange}
+                    type="text" // Change type to "text" to accept string input
+                    id="age"
+                    placeholder="Enter your age"
+                    name="age"
+                />
+            </h5>
+            <p>{validationMessage}</p>
+
+            <h5> Phone number:
+                <input
+                    value={phone}
+                    onChange={handlePhoneInputChange}
+                    type="text"
+                    id="phone"
+                    placeholder="Enter your phone number"
+                    name="phone"
+                />
+            </h5>
+            <p>{phoneValidationMessage}</p>
 
             <div>
                 {isEditMode ? (
@@ -113,7 +172,7 @@ function Profile() {
 
             </div>
 
-            <button className="submit-button" onClick={handleDeleteAccountClick}>Delete Account</button>
+            <button className="submit-button" onClick={handleDeleteAccount}>Delete Account</button>
         </div>
     );
 }
