@@ -43,6 +43,25 @@ function Profile() {
     const [age, setAge] = useState('');
     const [phone, setPhone] = useState();
 
+// checking for user input values
+    const [inputValue, setInputValue] = useState('');
+    const [validationMessage, setValidationMessage] = useState('');
+
+
+    const handleInputChange = (event) => {
+        const value = event.target.value;
+
+        // Use regular expression to check if the input is a valid integer
+        const isValidInteger = /^[0-9]*$/.test(value);
+
+
+        if (!isValidInteger) {
+            setValidationMessage('Please enter a valid integer.');
+        } else {
+            setValidationMessage('');
+        }
+    }
+
     /* populate name and email fields with already-inputted info */
     const populateProfileData = () => {
         //const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
@@ -97,7 +116,18 @@ function Profile() {
 
             <h5> Name: <input value={fullName} onChange={(e) => setFullName(e.target.value)}type="name" id="name" placeholder="" name="name" /> </h5>
             <h5> Email: <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" id="email" placeholder="" name="email" /> </h5>
-            <h5> Age: <input value={age} onChange={(e) => setAge(e.target.value)}type="age" id="age" placeholder="Enter your age" name="age" /> </h5>
+            <h5>Age:
+                <input
+                    value={age}
+                    onChange={handleInputChange}
+                    type="text" // Change type to "text" to accept string input
+                    id="age"
+                    placeholder="Enter your age"
+                    name="age"
+                />
+            </h5>
+            <p>{validationMessage}</p>
+
             <h5> Phone number: <input value={phone} onChange={(e) => setPhone(e.target.value)}type="phone" id="phone" placeholder="Enter your phone number" name="phone" /> </h5>
 
             <div>

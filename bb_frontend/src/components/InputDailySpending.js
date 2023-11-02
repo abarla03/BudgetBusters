@@ -9,6 +9,11 @@ function InputDailySpending() {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [purchases, setPurchases] = useState([]); // State to store added purchases
     const [message, setMessage] = useState("You did not spend anything today.");
+    const [isEditing, setIsEditing] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+
+    const [editIndex, setEditIndex] = useState(null);
 
     /* dummy category data */
     const selectedCategories = Object.values({ category1: "hello", category2: "world" });
@@ -41,6 +46,8 @@ function InputDailySpending() {
             setPurchaseAmount('');
             setSelectedCategory('');
             setInputPurchaseError('');
+            setEditIndex(null); // Reset editIndex
+            setIsEditing(false); // Exit "Edit" mode
         } else {
             setInputPurchaseError('Please fill in all fields.');
         }
@@ -52,6 +59,7 @@ function InputDailySpending() {
             setMessage(message);
         } else {
             setMessage("Today's purchases:");
+            setIsSubmitted(true);
         }
         setShowPurchaseFields(false);
         setPurchases(purchases.slice().reverse());
@@ -66,6 +74,37 @@ function InputDailySpending() {
         setPurchases(updatedPurchases);
         if (updatedPurchases.length === 0) {
             setMessage('You did not spend anything today.');
+        }
+    };
+
+    /* function to edit input spending */
+    const handleEditPurchase = (index) => {
+        const purchaseToEdit = purchases[index];
+        setPurchasedItem(purchaseToEdit.item);
+        setPurchaseAmount(purchaseToEdit.amount);
+        setSelectedCategory(purchaseToEdit.category);
+        setEditIndex(index);
+        setIsEditing(true); // Exit "Edit" mode
+    };
+
+    const handleSaveEdit = () => {
+        if (editIndex !== null) {
+            const updatedPurchases = [...purchases];
+            updatedPurchases[editIndex] = {
+                item: purchasedItem,
+                amount: purchaseAmount,
+                category: selectedCategory,
+            };
+            setPurchases(updatedPurchases);
+            setEditIndex(null); // Reset editIndex
+            setIsEditing(false); // Exit "Edit" mode
+            // Reset input fields and any error messages
+            setPurchasedItem('');
+            setPurchaseAmount('');
+            setSelectedCategory('');
+            setInputPurchaseError('');
+        } else {
+            setInputPurchaseError('No purchase selected for editing.');
         }
     };
 
@@ -133,6 +172,17 @@ function InputDailySpending() {
                             </div>
                         </button>
                         <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>
+
+                        {isSubmitted ? (<button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>)
+                        :
+                            (
+                                <button className="remove-purchase-button" disabled>Edit</button>
+                            )}
+
+                        {isEditing && (
+                            <button className="remove-purchase-button" onClick={handleSaveEdit}>Save Edit</button>
+                        )}
+
                     </div>
                 ))}
             </div>
