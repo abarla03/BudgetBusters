@@ -34,6 +34,7 @@ public class UserController {
         return monthlyBudget;
     }
 
+
     @GetMapping("/getUser")
     public User getUser(@RequestParam String userId) throws InterruptedException, ExecutionException {
         return userService.getUser(userId);
@@ -42,6 +43,16 @@ public class UserController {
     @PutMapping("/updateBudget")
     public String updateBudget(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException, BudgetBustersException {
         return userService.updateMonthlyBudget(monthlyBudget);
+    }
+
+    @PutMapping("/updateBudgetColors")
+    public String updateBudgetColors(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException, BudgetBustersException {
+        return userService.updateMonthlyBudgetColors(monthlyBudget);
+    }
+
+    @PutMapping("/updateBudgetCategories")
+    public String updateBudgetCategories(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException, BudgetBustersException {
+        return userService.updateMonthlyBudgetCategories(monthlyBudget);
     }
 
     @PutMapping("/updateUser")

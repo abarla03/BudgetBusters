@@ -74,4 +74,18 @@ public class UserService {
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("crud_user").document(user.getEmail()).set(user);
         return "User Profile Information modified" + collectionsApiFuture.get().getUpdateTime();
     }
+
+    public String updateMonthlyBudgetColors(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException, BudgetBustersException {
+        MonthlyBudget budget = getBudget(monthlyBudget.getEmail());
+        budget.setColors(monthlyBudget.getColors());
+        updateMonthlyBudget(budget);
+        return "Colors updated for " + budget.getEmail();
+    }
+
+    public String updateMonthlyBudgetCategories(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException, BudgetBustersException {
+        MonthlyBudget budget = getBudget(monthlyBudget.getEmail());
+        budget.setAllCategories(monthlyBudget.getAllCategories());
+        updateMonthlyBudget(budget);
+        return "Categories updated for " + budget.getEmail();
+    }
 }
