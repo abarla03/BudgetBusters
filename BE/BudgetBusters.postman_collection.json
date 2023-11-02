@@ -3,8 +3,8 @@
 		"_postman_id": "5cef0916-3560-4299-bc76-1474be89d87e",
 		"name": "BudgetBusters",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "30256980",
-		"_collection_link": "https://lively-star-705095.postman.co/workspace/My-Workspace~dbe10769-935a-48ec-8353-80f21ddfb9cc/collection/30256980-5cef0916-3560-4299-bc76-1474be89d87e?action=share&source=collection_link&creator=30256980"
+		"_exporter_id": "30849096",
+		"_collection_link": "https://lively-star-705095.postman.co/workspace/My-Workspace~dbe10769-935a-48ec-8353-80f21ddfb9cc/collection/30256980-5cef0916-3560-4299-bc76-1474be89d87e?action=share&source=collection_link&creator=30849096"
 	},
 	"item": [
 		{
@@ -86,6 +86,37 @@
 			"response": []
 		},
 		{
+			"name": "deletePurchase",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080//deletePurchase/:email/:index",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"",
+						"deletePurchase",
+						":email",
+						":index"
+					],
+					"variable": [
+						{
+							"key": "email",
+							"value": "test@gmail.com"
+						},
+						{
+							"key": "index",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "createBudget",
 			"request": {
 				"method": "POST",
@@ -113,23 +144,76 @@
 			"response": []
 		},
 		{
-			"name": "getBudget",
+			"name": "createPurchase",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"test@gmail.com\",\n    \"numPurchases\" : 2,\n    \"purchases\" : [{\"purchaseName\":\"coffee\", \"purchaseAmount\":5, \"purchaseCategory\" : \"drink\"}, \n    {\"purchaseName\":\"donut\", \"purchaseAmount\":2.5, \"purchaseCategory\" : \"food\"}]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "localhost:8080/getBudget?email=jane@gmail.com",
+					"raw": "localhost:8080/createPurchase",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"getBudget"
+						"createPurchase"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getBudget",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getBudget/:email",
+					"host": [
+						"localhost"
 					],
-					"query": [
+					"port": "8080",
+					"path": [
+						"getBudget",
+						":email"
+					],
+					"variable": [
 						{
 							"key": "email",
-							"value": "jane@gmail.com"
+							"value": "gigi@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getPurchase",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getPurchase/:email",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getPurchase",
+						":email"
+					],
+					"variable": [
+						{
+							"key": "email",
+							"value": "test@gmail.com"
 						}
 					]
 				}
@@ -158,6 +242,87 @@
 					"port": "8080",
 					"path": [
 						"updateBudget"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updatePurchase",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"test@gmail.com\",\n    \"numPurchases\" : 2,\n    \"purchases\" : [{\"purchaseName\":\"coffee\", \"purchaseAmount\":5, \"purchaseCategory\" : \"drink\"}, \n    {\"purchaseName\":\"donut\", \"purchaseAmount\":4, \"purchaseCategory\" : \"food\"}]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/updatePurchase",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"updatePurchase"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateBudgetCategories",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"test@gmail.com\",\n    \"allCategories\" : [\"Groceries\", \"Gym\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/updateBudgetCategories",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"updateBudgetCategories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateBudgetColors",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"gigi@gmail.com\",\n    \"allCategories\" : [\"Groceries\", \"Rent\"], \n    \"colors\" : [\"red\",\"green\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/updateBudgetColors",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"updateBudgetColors"
 					]
 				}
 			},
