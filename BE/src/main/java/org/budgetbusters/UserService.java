@@ -14,7 +14,8 @@ public class UserService {
     public String createMonthlyBudget(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("monthlyBudget").document(monthlyBudget.getEmail()).set(monthlyBudget);
-        return "Monthly Budget created: " + collectionsApiFuture.get().getUpdateTime();
+//        return "Monthly Budget created: " + collectionsApiFuture.get().getUpdateTime();
+        return "Monthly Budget created for " + monthlyBudget.getEmail() + " at " + collectionsApiFuture.get().getUpdateTime();
     }
 
     public String createUser(User user) throws ExecutionException, InterruptedException {
@@ -73,5 +74,19 @@ public class UserService {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("crud_user").document(user.getEmail()).set(user);
         return "User Profile Information modified" + collectionsApiFuture.get().getUpdateTime();
+    }
+
+    public String updateMonthlyBudgetColors(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException, BudgetBustersException {
+        MonthlyBudget budget = getBudget(monthlyBudget.getEmail());
+        budget.setColors(monthlyBudget.getColors());
+        updateMonthlyBudget(budget);
+        return "Colors updated for " + budget.getEmail();
+    }
+
+    public String updateMonthlyBudgetCategories(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException, BudgetBustersException {
+        MonthlyBudget budget = getBudget(monthlyBudget.getEmail());
+        budget.setAllCategories(monthlyBudget.getAllCategories());
+        updateMonthlyBudget(budget);
+        return "Categories updated for " + budget.getEmail();
     }
 }
