@@ -14,6 +14,7 @@ function SetMonthlyGoal() {
     /* useState variables needed for filling out setMonthlyGoal() information */
     const [budget, setBudget] = useState('');
     const [invalidBudgetError, setInvalidBudgetError] = useState('');
+    const [duplicateCategoryError, setDuplicateCategoryError] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [newCategory, setNewCategory] = useState('');
     const [createdCategories, setCreatedCategories] = useState([]);
@@ -64,10 +65,18 @@ function SetMonthlyGoal() {
     /* function handling user's ability to create new categories */
     const handleCreateCategory = () => {
         if (newCategory.trim() !== '') {
-            const updatedCategories = [...createdCategories, newCategory];
-            setCreatedCategories(updatedCategories);
-            setAllCategories([...allCategories, newCategory]);
-            setNewCategory('');
+            const newCategoryLowercase = newCategory.toLowerCase();
+
+            if (categories.some(category => category.toLowerCase() === newCategoryLowercase) ||
+                createdCategories.some(category => category.toLowerCase() === newCategoryLowercase)) {
+                setDuplicateCategoryError('This category name already exists. Please create another name.');
+            } else {
+                const updatedCategories = [...createdCategories, newCategory];
+                setCreatedCategories(updatedCategories);
+                setAllCategories([...allCategories, newCategory]);
+                setNewCategory('');
+                setDuplicateCategoryError('');
+            }
         }
     };
 
@@ -154,6 +163,7 @@ function SetMonthlyGoal() {
                                 <button className='add-button' onClick={handleCreateCategory}>Add</button>
                             </div>
                         )}
+                        {duplicateCategoryError && <p className="error-message6">{duplicateCategoryError}</p>}
                     </div>
 
                     <div className="category-buttons">
@@ -171,7 +181,7 @@ function SetMonthlyGoal() {
                         className="submit-button"
                         type="submit"
                         onClick={handleNext}
-                        disabled={invalidBudgetError !== ''}>
+                        disabled={invalidBudgetError !== '' || duplicateCategoryError !== ''}>
                         Next
                     </button>
                 </>

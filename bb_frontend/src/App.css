@@ -327,6 +327,16 @@ h4 {
     left: 660px;
 }
 
+.error-message6 {
+    color: red;
+    font-size: 14px;
+    font-weight: 100;
+    font-family: 'Archivo Narrow', sans-serif;
+    position: absolute;
+    bottom: 1px;
+    left: 200px;
+}
+
 /* category buttons styling */
 .category-button {
     background-color: #ccc; /* Default button color */
