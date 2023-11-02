@@ -4,47 +4,36 @@ import { auth } from "../firebase";
 import {post, put, get} from "./ApiClient";
 
 /* landing page of Set Monthly Goal: first page of the Set Monthly Goal form OR a display of the user's previously-inputted goal */
-function SetMonthlyGoal() {
+const SetMonthlyGoal = () =>  {
     console.log("SetMonthlyGoal component is rendering.")
 
     /* userEmail is used to as an identifier for if data already exists for a particular user */
     const user = auth.currentUser;
     const userEmail = user ? user.email : "";
-    // const getBudgetDataFromDB= async () => {
-    //     let budgetData = {};
-    //     try {
-    //         // Make the GET request to retrieve the budget
-    //         budgetData = await get(`/getBudget/${userEmail}`);
-    //         console.log("Budget data:", budgetData);
-    //     } catch (error) {
-    //         console.error("Error creating or fetching budget:", error);
-    //     }
-    //     return budgetData;
-    // }
-    // const budgetGoalInfo = getBudgetDataFromDB();
-    //
-    const [budgetGoalInfo, setBudgetGoalInfo] = useState({});
+    const [budgetGoalObj, setBudgetGoalObj] = useState({});
+    const [budgetUpdated, setBudgetUpdated] = useState(false); // to re-fetch budget info whenever update happens
     // const [isGoalStored, setIsGoalStored] = useState(false);
-    let budgetGoalObj = {};
+
+
+    // let budgetGoalObj = {};
     useEffect(() => {
-        async function fetchBudgetData() {
+        function fetchBudgetData() {
             let data;
             try {
                 // Make the GET request to retrieve the budget
-                data = await get(`/getBudget/${userEmail}`);
-                setBudgetGoalInfo(data);
-                // setIsGoalStored(data !== null && data !== undefined); // Check if data is not null or undefined
-                console.log("Budget data:", data);
+                data = get(`/getBudget/${userEmail}`)
             } catch (error) {
                 console.error("Error creating or fetching budget:", error);
             }
             return data;
         }
-        budgetGoalObj = fetchBudgetData();
-
+        fetchBudgetData().then((response) => {
+            setBudgetGoalObj(response.data);
+        });
+        setBudgetUpdated(false)
         console.log("budgetGoalObj", budgetGoalObj)
 
-    }, []);
+    }, [userEmail, budgetUpdated]);
 
     const [isGoalStored, setIsGoalStored] = useState(Boolean(localStorage.getItem(`colorOptions_${userEmail}`)));
 
@@ -66,12 +55,12 @@ function SetMonthlyGoal() {
         return storedColorOptions ? JSON.parse(storedColorOptions) : {};
     });
 
-    /* need to call get request for actual json object, but this is a temp mock object */
-    const mockGoalInfo = {
-        email: "test@gmail.com",
-        monthlyBudget: 500,
-        allCategories: ["Rent", "Groceries", "Gym"]
-    }
+    // /* need to call get request for actual json object, but this is a temp mock object */
+    // const mockGoalInfo = {
+    //     email: "test@gmail.com",
+    //     monthlyBudget: 500,
+    //     allCategories: ["Rent", "Groceries", "Gym"]
+    // }
 
     /* function handling non-numeric values in budget goal field */
     const handleBudgetChange = (event) => {
@@ -125,12 +114,13 @@ function SetMonthlyGoal() {
         // abstracted json object to send data to backend (Next button)
         const goalInfo = {
             email: userEmail,
-            monthlyBudget: 500,
+            monthlyBudget: budget,
             allCategories: allCategories,
             color: null
         }
         console.log(goalInfo);
         const createBudgetResponse = await post('/createBudget', goalInfo);
+        setBudgetUpdated(true)
         console.log(createBudgetResponse);
 
         // set goal info object equal to get request here (currently mockGoalInfo is substitute for this)
@@ -151,7 +141,7 @@ function SetMonthlyGoal() {
                 <div>
                     <div>{budgetGoalObj.monthlyBudget}</div>
                     <div>{budgetGoalObj.allCategories}</div>
-                    <div>Budget Goal Does Exist. </div>
+                    {/*<div>Budget Goal Does Exist. </div>*/}
                 </div>
             );
         } else {
@@ -164,7 +154,7 @@ function SetMonthlyGoal() {
         //     return <div>No monthly goals available.</div>;
         // }
     }
-    // console.log(budgetGoalObj)
+    console.log(budgetGoalObj)
 
 
     return (
@@ -303,6 +293,7 @@ function ColorCodeCategories({ allCategories, colorOptions, setColorOptions, bud
             }
             console.log(colorInfo);
             const updateBudgetResponse = await put('/updateBudgetColors', colorInfo);
+            setBudgetUpdated(true)
             console.log(updateBudgetResponse);
 
             localStorage.setItem(`colorOptions_${userEmail}`, JSON.stringify(colorOptions));
@@ -398,6 +389,8 @@ function DisplayMonthlyGoal({ monthlyBudget, allCategories, colorOptions, budget
         }
         // console.log(modifiedCategoryInfo);
         // const updateBudgetResponse = await put('/updateBudgetCategories', modifiedCategoryInfo);
+        // setBudgetUpdated(true)
+
         // console.log(updateBudgetResponse);
         // put post request here (this ensures that when the user closes the app and logs in again, when
         // SetMonthlyGoal() is called, the get request gets the new set of categories */
