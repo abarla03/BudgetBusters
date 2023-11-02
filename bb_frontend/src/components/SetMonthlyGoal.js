@@ -3,7 +3,7 @@ import { categories } from '../predefinedCategories'
 import Login from './auth/Login'
 import {post, put, get} from "./ApiClient";
 function SetMonthlyGoal() {
-    console.log("SetMonthlyGoal component is rendering.");
+    console.log("SetMonthlyGoal component is rendering.")
     // return (
     //   <div>
     //     <h3>Set Monthly Budget:</h3>
@@ -63,22 +63,17 @@ function SetMonthlyGoal() {
         setAllCategories(allCategories.filter((c) => c !== categoryToRemove));
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         setFormSubmitted(true);
         setShowAllCategories(true);
 
         // abstracted json object to send data to backend (Next button)
         const goalInfo = {
-            // email: Login.email,
-            email: "test@gmail.com",
+            email: Login.email,
             monthlyBudget: budget,
             allCategories: allCategories,
             colors: null
         }
-        // ----Angela's code ----- //
-        console.log(goalInfo);
-        const createBudgetResponse = await post('/createBudget', goalInfo);
-        console.log(createBudgetResponse);
     };
 
     return (
@@ -185,7 +180,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
     };
 
     /* function handling submit button and if all categories are colored */
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         const allCategoriesColored = selectedCategories.every(
             (category) => colorOptions[category]
         );
@@ -196,21 +191,13 @@ function SelectedCategoriesPage({ selectedCategories }) {
 
             // collect colors in the order of selectedCategories
             const selectedColors = selectedCategories.map((category) => colorOptions[category]);
-            console.log(selectedCategories); // expectedOutput ['rent', 'gym']
-            console.log(selectedColors); // expectedOutput ['#ff5c70', '#ffb267']
 
             // abstracted json object to send data to backend (Submit button)
             const colorInfo = {
-                // email: Login.email,
-                email: "test@gmail.com",
+                email: Login.email,
                 allCategories: selectedCategories,
                 colors: selectedColors
             }
-            // ----Angela's code ----- //
-            console.log(colorInfo);
-            const updateBudgetResponse = await put('/updateBudgetColors', colorInfo);
-            console.log(updateBudgetResponse);
-
         } else {
             setError('Please enter a color for every category.');
         }
@@ -228,7 +215,7 @@ function SelectedCategoriesPage({ selectedCategories }) {
     };
 
     /* function to save modified category name */
-    const handleSaveCategoryName = async (category) => {
+    const handleSaveCategoryName = (category) => {
         setCategoryNames((prevCategoryNames) => ({
             ...prevCategoryNames,
             [category]: categoryNames[category],
@@ -241,33 +228,11 @@ function SelectedCategoriesPage({ selectedCategories }) {
             return list;
         }, {});
 
-        // const editedCat = categoriesAfterEdit
-        // get the edited categories as a list
-
-
-        // // ----Angela's code ----- // how to handle edit?
-        // // get the current category names from Firebase ?
-        // try {
-        //     // Make the GET request to retrieve the budget
-        //     // const budgetCategories = await get(`/getBudgetCategories/${Login.email}`);
-        //     const budgetCategories = await get(`/getBudgetCategories/${"test@gmail.com"}`);
-        //     console.log("Budget data:", budgetCategories);
-        // } catch (error) {
-        //     console.error("Error creating or fetching budget:", error);
-        // }
-        //
-        // // check edited list has duplicates
-        // // display the following message: “This category name already exists. Please create another name.” + categories should be displayed as originally shown
-
         // abstracted json object to send data to backend (Save button)
         const modifiedCategoryInfo = {
-            // email: Login.email,
-            email: "test@gmail.com",
+            email: Login.email,
             allCategories: categoriesAfterEdit
         }
-        console.log(modifiedCategoryInfo);
-        const updateBudgetResponse = await put('/updateBudgetCategories', modifiedCategoryInfo);
-        console.log(updateBudgetResponse);
     };
 
     return (
