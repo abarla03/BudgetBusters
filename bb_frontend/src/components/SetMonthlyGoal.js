@@ -285,11 +285,13 @@ function ColorCodeCategories({ allCategories, colorOptions, setColorOptions, moc
 /* Display page: rendered after user completes the form AND as a landing page after the user previously inputted their goal */
 function DisplayMonthlyGoal({ allCategories, colorOptions, mockGoalInfo, userEmail }) {
     const [editableCategories, setEditableCategories] = useState([]);
+    const [duplicateCategoryError2, setDuplicateCategoryError2] = useState('');
+
+    /* obtains the list of modified categories from local storage if it exists and sets equal to categoryNames */
     const storedModifiedCategories = localStorage.getItem(`modifiedCategories_${userEmail}`);
     const modifiedCategories = storedModifiedCategories
         ? JSON.parse(storedModifiedCategories)
         : {};
-
     const [categoryNames, setCategoryNames] = useState(modifiedCategories);
 
     /* function handling the category editing (ensures that only one category is edited in edit mode) */
@@ -305,11 +307,20 @@ function DisplayMonthlyGoal({ allCategories, colorOptions, mockGoalInfo, userEma
 
     /* function to save modified category name */
     const handleSaveCategoryName = (category) => {
-        setCategoryNames((prevCategoryNames) => ({
-            ...prevCategoryNames,
-            [category]: categoryNames[category],
-        }));
-        setEditableCategories((prevEditableCategories) => prevEditableCategories.filter((item) => item !== category));
+        // put error handling here
+        const modifiedCategoryName = categoryNames[category] || ''; // Get the modified category name.
+
+        // check if the modified category exists in the list of user categories
+        if (Object.values(categoryNames).filter(name => name === modifiedCategoryName).length > 1) {
+            setDuplicateCategoryError2('This category name already exists. Please enter a new name.');
+        } else {
+            setCategoryNames((prevCategoryNames) => ({
+                ...prevCategoryNames,
+                [category]: categoryNames[category],
+            }));
+            setEditableCategories((prevEditableCategories) => prevEditableCategories.filter((item) => item !== category));
+            setDuplicateCategoryError2(''); // Clear any previous error message.
+        }
 
         // creates a full list of category names (whether they have been modified or not)
         const categoriesAfterEdit = allCategories.reduce((list, category) => {
@@ -334,7 +345,7 @@ function DisplayMonthlyGoal({ allCategories, colorOptions, mockGoalInfo, userEma
             <h8>Your Budget for this Month is  ${mockGoalInfo.monthlyBudget}</h8>
             <h9>Your Spending Categories are: </h9>
             <ul>
-                {((modifiedCategories.length = 0) ? Object.keys(modifiedCategories) : allCategories).map((category) => (
+                {((modifiedCategories.length === 0) ? Object.keys(modifiedCategories) : allCategories).map((category) => (
                     <li key={category}>
                         <div>
                             <button className="category-button" id={`button-${category}`}
@@ -362,6 +373,7 @@ function DisplayMonthlyGoal({ allCategories, colorOptions, mockGoalInfo, userEma
                                     Save
                                 </button>
                             ) : null}
+                            {duplicateCategoryError2 && <p className="error-message">{duplicateCategoryError2}</p>}
                         </div>
                     </li>
                 ))}
