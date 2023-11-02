@@ -17,6 +17,11 @@ public class UserController {
     public String createBudget(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException {
         return userService.createMonthlyBudget(monthlyBudget);
     }
+
+    @PostMapping("/createNotification")
+    public String createNotification(@RequestBody Notifications notifications) throws InterruptedException, ExecutionException {
+        return userService.createNotification(notifications);
+    }
     @PostMapping("/createPurchase")
     public String createPurchase(@RequestBody InputDailySpending inputDailySpending) throws InterruptedException, ExecutionException {
         return userService.createPurchase(inputDailySpending);
@@ -26,9 +31,9 @@ public class UserController {
         return userService.createUser(user);
     }
 
-    @DeleteMapping("/deleteUser")
-    public String deleteUser(@RequestParam String userId) throws InterruptedException, ExecutionException {
-        return userService.deleteUser(userId);
+    @DeleteMapping("/deleteUser/{email}")
+    public String deleteUser(@PathVariable String email) throws InterruptedException, ExecutionException {
+        return userService.deleteUser(email);
     }
 
     @DeleteMapping("/deletePurchase/{email}/{index}")
@@ -42,15 +47,21 @@ public class UserController {
         return monthlyBudget;
     }
 
+    @GetMapping("/getNotifications/{email}")
+    public Notifications getNotifications(@PathVariable String email) throws InterruptedException, ExecutionException {
+        Notifications notifications = userService.getNotifications(email);
+        return notifications;
+    }
+
     @GetMapping("/getPurchase/{email}")
     public InputDailySpending getPurchase(@PathVariable String email) throws InterruptedException, ExecutionException {
         InputDailySpending inputDailySpending = userService.getPurchase(email);
         return inputDailySpending;
     }
 
-    @GetMapping("/getUser")
-    public User getUser(@RequestParam String userId) throws InterruptedException, ExecutionException {
-        return userService.getUser(userId);
+    @GetMapping("/getUser/{email}")
+    public User getUser(@PathVariable String email) throws InterruptedException, ExecutionException {
+        return userService.getUser(email);
     }
 
     @PutMapping("/updateBudget")
@@ -65,6 +76,11 @@ public class UserController {
     @PutMapping("/updateBudgetCategories")
     public String updateBudgetCategories(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException, BudgetBustersException {
         return userService.updateMonthlyBudgetCategories(monthlyBudget);
+    }
+
+    @PutMapping("/updateNotifications")
+    public String updateNotifications(@RequestBody Notifications notifications) throws InterruptedException, ExecutionException, BudgetBustersException {
+        return userService.updateNotifications(notifications);
     }
 
     @PutMapping("/updatePurchase")
