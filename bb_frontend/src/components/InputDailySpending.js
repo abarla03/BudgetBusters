@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
+import {post, put, get} from "./ApiClient";
+import { auth } from "../firebase";
 
-function InputDailySpending() {
+
+const InputDailySpending = (props) =>  {
+    const user = auth.currentUser;
+    const userEmail = user ? user.email : "";
     const [showPurchaseFields, setShowPurchaseFields] = useState(false);
     const [purchasedItem, setPurchasedItem] = useState('');
     const [purchaseAmount, setPurchaseAmount] = useState('');
@@ -10,8 +15,30 @@ function InputDailySpending() {
     const [purchases, setPurchases] = useState([]); // State to store added purchases
     const [message, setMessage] = useState("You did not spend anything today.");
 
+    const [purchaseObj, setPurchaseObj] = useState({});
+    const [purchaseUpdated, setPurchaseUpdated] = useState(false);
     /* dummy category data */
     const selectedCategories = Object.values({ category1: "hello", category2: "world" });
+
+    // use following similar to the SetMonthlyGoal page
+    useEffect(() => {
+        function fetchPurchaseData() {
+            let data;
+            try {
+                // Make the GET request to retrieve the purchases
+                data = get(`/getPurchase/${userEmail}`)
+            } catch (error) {
+                console.error("Error creating or fetching purchases:", error);
+            }
+            return data;
+        }
+        fetchPurchaseData().then((response) => {
+            setPurchaseObj(response.data);
+        });
+        setPurchaseUpdated(false)
+        console.log("purchaseObj", purchaseObj)
+
+    }, [userEmail, purchaseUpdated]);
 
     /* function handling non-numeric values in purchase amount field */
     const handlePurchaseAmountChange = (event) => {
@@ -44,6 +71,7 @@ function InputDailySpending() {
         } else {
             setInputPurchaseError('Please fill in all fields.');
         }
+
     };
 
     /* function handling the submit button for finalizing user purchases and displaying them in reverse order */
@@ -56,7 +84,22 @@ function InputDailySpending() {
         setShowPurchaseFields(false);
         setPurchases(purchases.slice().reverse());
 
+        const userPurchaseInfo = {
+            email: userEmail,
+            numPurchases: purchases.length,
+            purchases: purchases.map((purchase) => ({
+                purchaseName:purchase.item,
+                purchaseAmount:purchase.amount,
+                purchaseCategory:purchase.category
+            }))
+        };
+
         // send json object
+        post('/createPurchase', userPurchaseInfo).then(
+            (response) => {
+                setPurchases(response.data)
+        });
+
     };
 
     /* function handling purchase removal and associated default message */

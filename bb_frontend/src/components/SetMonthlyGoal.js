@@ -293,7 +293,7 @@ function ColorCodeCategories({ allCategories, colorOptions, setColorOptions, bud
             }
             console.log(colorInfo);
             const updateBudgetResponse = await put('/updateBudgetColors', colorInfo);
-            setBudgetUpdated(true)
+            // setBudgetUpdated(true)
             console.log(updateBudgetResponse);
 
             localStorage.setItem(`colorOptions_${userEmail}`, JSON.stringify(colorOptions));
