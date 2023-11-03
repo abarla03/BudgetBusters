@@ -14,7 +14,7 @@ function InputDailySpending() {
     const [editIndex, setEditIndex] = useState(null);
 
     /* dummy category data */
-    const selectedCategories = Object.values({ category1: "hello", category2: "world" });
+    const selectedCategories = Object.values({ category1: "Rent", category2: "Groceries", category3: "Gym"});
 
     /* function handling non-numeric values in purchase amount field */
     const handlePurchaseAmountChange = (event) => {
@@ -63,6 +63,7 @@ function InputDailySpending() {
         setPurchases(purchases.slice().reverse());
 
         // send json object
+        window.alert("Added purchase(s)!");
     };
 
     /* function handling purchase removal and associated default message */
@@ -171,10 +172,13 @@ function InputDailySpending() {
                             </div>
                         </button>
                         <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>
-                        <button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>
-
-                        {isEditing && (
-                            <button className="remove-purchase-button" onClick={handleSaveEdit}>Save Edit</button>
+                        {isSubmitted ? null: (
+                            <>
+                                <button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>
+                                {isEditing && (
+                                    <button className="remove-purchase-button" onClick={handleSaveEdit}>Save Edit</button>
+                                )}
+                            </>
                         )}
                     </div>
                 ))}
