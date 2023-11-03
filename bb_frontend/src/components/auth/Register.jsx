@@ -118,6 +118,7 @@ const Register = (props) => {
                 //console.log('no actual error'); // THIS IS WHERE SUCCESSFUL LOGIN MESSAGE GOES
                 const successMessage = "You have successfully created an account!";
                 console.log(successMessage);
+                window.alert("You have successfully created an account!");
                 navigate('/login')
                 //showMessage(successMessage);
                 //showMessage("You have successfully created an account!");
