@@ -23,7 +23,8 @@ function Profile() {
         console.log("here's their email: ");
         console.log(user.email);
         firebaseEmail = user.email;
-        firebaseDisplayName = user.displayName;
+        //firebaseDisplayName = user.displayName;
+        firebaseDisplayName = (user.email).match(/([^@]+)/)[0];
     }
 
 
