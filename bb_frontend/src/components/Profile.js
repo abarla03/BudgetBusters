@@ -75,11 +75,8 @@ function Profile() {
 
     /* function handling the saved information from edit */
     const handleSaveClick = () => {
-        setFullName(document.getElementById('fullName').value);
-        setEmail(document.getElementById('email').value);
-        setAge(document.getElementById('age').value);
-        setPhone(document.getElementById('phone').value);
         setIsEditMode(false);
+        window.alert("User Profile Information Modified.")
     };
 
     const handleInputChange = (event) => {
