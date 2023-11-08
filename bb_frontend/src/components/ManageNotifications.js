@@ -14,7 +14,7 @@ const methods = [
 function ManageNotifications() {
     console.log("Manage Notifications component is rendering.");
 
-    const [isEditMode, setIsEditMode] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(true);
     const [selectedMethods, setSelectedMethods] = useState([]);
     const [allMethods, setAllMethods] = useState([]);
 
@@ -43,7 +43,16 @@ function ManageNotifications() {
         // setEmail(document.getElementById('email').value);
         // setAge(document.getElementById('age').value);
         // setPhone(document.getElementById('phone').value);
-        setIsEditMode(false);
+        //setIsEditMode(false);
+        if (selectedMethods.length === 0) {
+            // If no methods are selected, show the popup
+            //setShowPopup(true);
+            window.alert("Please select a method of notification!");
+        } else {
+            // If methods are selected, proceed with saving
+            setIsEditMode(false);
+            // Save the selected methods to the backend or do whatever is needed
+        }
 
         // have to save new options in backend/db
     };
