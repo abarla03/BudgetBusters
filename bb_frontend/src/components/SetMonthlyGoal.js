@@ -7,6 +7,7 @@ import {post, put, get} from "./ApiClient";
 const SetMonthlyGoal = () => {
     console.log("SetMonthlyGoal component is rendering.")
 
+
     /* userEmail is used to as an identifier for if data already exists for a particular user */
     const user = auth.currentUser;
     const userEmail = user ? user.email : "";
