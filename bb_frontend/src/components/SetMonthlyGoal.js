@@ -4,7 +4,7 @@ import { auth } from "../firebase";
 import {post, put, get} from "./ApiClient";
 
 /* landing page of Set Monthly Goal: first page of the Set Monthly Goal form OR a display of the user's previously-inputted goal */
-const SetMonthlyGoal = () =>  {
+const SetMonthlyGoal = () => {
     console.log("SetMonthlyGoal component is rendering.")
 
     /* userEmail is used to as an identifier for if data already exists for a particular user */
@@ -27,8 +27,10 @@ const SetMonthlyGoal = () =>  {
             }
             return data;
         }
+
         fetchBudgetData().then((response) => {
             setBudgetGoalObj(response.data);
+            // budgetGoalObj = response.data;
         });
         setBudgetUpdated(false)
         console.log("budgetGoalObj", budgetGoalObj)
@@ -135,115 +137,202 @@ const SetMonthlyGoal = () =>  {
         //     console.error("Error creating or fetching budget:", error);
         // }
     };
-    if (isGoalStored) {
-        if (budgetGoalObj && budgetGoalObj.monthlyBudget && budgetGoalObj.allCategories) {
-            return (
-                <div>
-                    <div>{budgetGoalObj.monthlyBudget}</div>
-                    <div>{budgetGoalObj.allCategories}</div>
-                    {/*<div>Budget Goal Does Exist. </div>*/}
-                </div>
-            );
-        } else {
-            return <div>Budget Goal Does Not Exist. </div>
-        }
+    // if (isGoalStored) {
+    //     // if (budgetGoalObj && budgetGoalObj.monthlyBudget && budgetGoalObj.allCategories) {
+    //         return (
+    //             <div>
+    //                 <div>{budgetGoalObj.monthlyBudget}</div>
+    //                 <div>{budgetGoalObj.allCategories}</div>
+    //                 {/*<div>Budget Goal Does Exist. </div>*/}
+    //             </div>
+    //         );
+        // } else {
+        //     return <div>Budget Goal Does Not Exist. </div>
+        // }
 
         // if (!budgetGoalObj.allCategories || budgetGoalObj.allCategories.length === 0) {
         //     // If monthlyGoals is undefined or an empty array, you can handle this case here.
         //     // For example, you can return a message indicating that there are no monthly goals.
         //     return <div>No monthly goals available.</div>;
         // }
-    }
-    console.log(budgetGoalObj)
+    // }
+    // console.log(budgetGoalObj)
 
+    if (isGoalStored) {
+        return (
+            <DisplayMonthlyGoal
+                monthlyBudget={budgetGoalObj.monthlyBudget}
+                allCategories={budgetGoalObj.allCategories}
+                colorOptions={colorOptions}
+                budgetGoalInfo={budgetGoalObj}
+                userEmail={userEmail}
+            />
+        );
+        //     <div>
+        //         {isGoalStored ? (
+        //             <DisplayMonthlyGoal
+        //                 monthlyBudget={budgetGoalObj.monthlyBudget}
+        //                 allCategories={budgetGoalObj.allCategories}
+        //                 colorOptions={colorOptions}
+        //                 budgetGoalInfo={budgetGoalObj}
+        //                 userEmail={userEmail}
+        //             />
+        //         ) : formSubmitted ? (
+        //             <ColorCodeCategories
+        //                 allCategories={budgetGoalObj.allCategories}
+        //                 colorOptions={colorOptions}
+        //                 setColorOptions={setColorOptions}
+        //                 userEmail={userEmail}
+        //                 budgetGoalInfo={budgetGoalObj}
+        //             />
+        //         ) : (
+        //             <>
+        //                 <h3>Set Monthly Budget:</h3>
+        //                 <div className="input-container">
+        //                     <input className='user-input-field'
+        //                            type="text"
+        //                            placeholder="Enter your budget"
+        //                            value={budget}
+        //                            onChange={handleBudgetChange}
+        //                     />
+        //                     {invalidBudgetError && <p className="error-message">{invalidBudgetError}</p>}
+        //                 </div>
+        //
+        //                 <h4>Select Categories:</h4>
+        //                 <div className="category-buttons">
+        //                     {categories.map((category) => (
+        //                         <button
+        //                             key={category}
+        //                             className={`category-button${selectedCategories.includes(category) ? ' selected' : ''}`}
+        //                             onClick={() => handleCategoryClick(category)}
+        //                         >
+        //                             {category}
+        //                         </button>
+        //                     ))}
+        //                 </div>
+        //
+        //                 <div className="add-user-input">
+        //                     <h4>Create Categories:</h4>
+        //                     <button className="plus-button"
+        //                             onClick={() => setDisplayCreatedCategories(!displayCreatedCategories)}>+
+        //                     </button>
+        //                 </div>
+        //
+        //                 <div className="add-field">
+        //                     {displayCreatedCategories && (
+        //                         <div>
+        //                             <input className='category-field'
+        //                                    type="text"
+        //                                    placeholder="Enter a new category"
+        //                                    value={newCategory}
+        //                                    onChange={(e) => setNewCategory(e.target.value)}
+        //                             />
+        //                             <button className='add-button' onClick={handleCreateCategory}>Add</button>
+        //                         </div>
+        //                     )}
+        //                 </div>
+        //
+        //                 <div className="category-buttons">
+        //                     {createdCategories.map((category) => (
+        //                         <button
+        //                             key={category}
+        //                             className={`created-category ${category}`}
+        //                             onClick={() => handleRemoveCategory(category)}>
+        //                             {category}
+        //                         </button>
+        //                     ))}
+        //                 </div>
+        //
+        //                 <button
+        //                     className="submit-button"
+        //                     type="submit"
+        //                     onClick={handleNext}
+        //                     disabled={invalidBudgetError !== ''}>
+        //                     Next
+        //                 </button>
+        //             </>
+        //         )}
+        //     </div>
+        // );
+    } else {
+        // return <div>Budget Goal Does Not Exist. </div>
+        return (
+            formSubmitted ? (
+                    <ColorCodeCategories
+                        allCategories={budgetGoalObj.allCategories}
+                        colorOptions={colorOptions}
+                        setColorOptions={setColorOptions}
+                        userEmail={userEmail}
+                        budgetGoalInfo={budgetGoalObj}
+                    />
+                ) :
+            <div>
+                <h3>Set Monthly Budget:</h3>
+                <div className="input-container">
+                    <input className='user-input-field'
+                           type="text"
+                           placeholder="Enter your budget"
+                           value={budget}
+                           onChange={handleBudgetChange}
+                    />
+                    {invalidBudgetError && <p className="error-message">{invalidBudgetError}</p>}
+                </div>
 
-    return (
-        <div>
-            {isGoalStored ? (
-                <DisplayMonthlyGoal
-                    monthlyBudget={budgetGoalObj.monthlyBudget}
-                    allCategories={budgetGoalObj.allCategories}
-                    colorOptions={colorOptions}
-                    budgetGoalInfo={budgetGoalObj}
-                    userEmail={userEmail}
-                />
-            ) : formSubmitted ? (
-                <ColorCodeCategories
-                    allCategories={allCategories}
-                    colorOptions={colorOptions}
-                    setColorOptions={setColorOptions}
-                    userEmail={userEmail}
-                    budgetGoalInfo={budgetGoalObj}
-                />
-            ) : (
-                <>
-                    <h3>Set Monthly Budget:</h3>
-                    <div className="input-container">
-                        <input className='user-input-field'
-                               type="text"
-                               placeholder="Enter your budget"
-                               value={budget}
-                               onChange={handleBudgetChange}
-                        />
-                        {invalidBudgetError && <p className="error-message">{invalidBudgetError}</p>}
-                    </div>
-
-                    <h4>Select Categories:</h4>
-                    <div className="category-buttons">
-                        {categories.map((category) => (
-                            <button
-                                key={category}
-                                className={`category-button${selectedCategories.includes(category) ? ' selected' : ''}`}
-                                onClick={() => handleCategoryClick(category)}
-                            >
-                                {category}
-                            </button>
-                        ))}
-                    </div>
-
-                    <div className="add-user-input">
-                        <h4>Create Categories:</h4>
-                        <button className="plus-button"
-                                onClick={() => setDisplayCreatedCategories(!displayCreatedCategories)}>+
+                <h4>Select Categories:</h4>
+                <div className="category-buttons">
+                    {categories.map((category) => (
+                        <button
+                            key={category}
+                            className={`category-button${selectedCategories.includes(category) ? ' selected' : ''}`}
+                            onClick={() => handleCategoryClick(category)}
+                        >
+                            {category}
                         </button>
-                    </div>
+                    ))}
+                </div>
 
-                    <div className="add-field">
-                        {displayCreatedCategories && (
-                            <div>
-                                <input className='category-field'
-                                       type="text"
-                                       placeholder="Enter a new category"
-                                       value={newCategory}
-                                       onChange={(e) => setNewCategory(e.target.value)}
-                                />
-                                <button className='add-button' onClick={handleCreateCategory}>Add</button>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="category-buttons">
-                        {createdCategories.map((category) => (
-                            <button
-                                key={category}
-                                className={`created-category ${category}`}
-                                onClick={() => handleRemoveCategory(category)}>
-                                {category}
-                            </button>
-                        ))}
-                    </div>
-
-                    <button
-                        className="submit-button"
-                        type="submit"
-                        onClick={handleNext}
-                        disabled={invalidBudgetError !== ''}>
-                        Next
+                <div className="add-user-input">
+                    <h4>Create Categories:</h4>
+                    <button className="plus-button"
+                            onClick={() => setDisplayCreatedCategories(!displayCreatedCategories)}>+
                     </button>
-                </>
-            )}
-        </div>
-    );
+                </div>
+
+                <div className="add-field">
+                    {displayCreatedCategories && (
+                        <div>
+                            <input className='category-field'
+                                   type="text"
+                                   placeholder="Enter a new category"
+                                   value={newCategory}
+                                   onChange={(e) => setNewCategory(e.target.value)}
+                            />
+                            <button className='add-button' onClick={handleCreateCategory}>Add</button>
+                        </div>
+                    )}
+                </div>
+
+                <div className="category-buttons">
+                    {createdCategories.map((category) => (
+                        <button
+                            key={category}
+                            className={`created-category ${category}`}
+                            onClick={() => handleRemoveCategory(category)}>
+                            {category}
+                        </button>
+                    ))}
+                </div>
+
+                <button
+                    className="submit-button"
+                    type="submit"
+                    onClick={handleNext}
+                    disabled={invalidBudgetError !== ''}>
+                    Next
+                </button>
+            </div>
+        )
+    }
 }
 
 /* second page of the Set Monthly Goal form (where the users color-code their categories) */
@@ -303,7 +392,7 @@ function ColorCodeCategories({ allCategories, colorOptions, setColorOptions, bud
     };
 
     // no need for get request here for the colors; colors are stored in localStorage in react
-
+    const categoryElements = [];
     return (
         <div>
             {submitted ? (
@@ -318,7 +407,7 @@ function ColorCodeCategories({ allCategories, colorOptions, setColorOptions, bud
                 <>
                     <h3>Color Code Categories:</h3>
                     <ul>
-                        {allCategories.map((category) => (
+                        {allCategories?.map((category) => (
                             <li key={category}>
                                 <div>
                                     <button className="category-button" id={`button-${category}`} style={{ backgroundColor: colorOptions[category] || '#ccc' }}>
@@ -334,6 +423,23 @@ function ColorCodeCategories({ allCategories, colorOptions, setColorOptions, bud
                                                 {colorName}
                                             </option>
                                         ))}
+                        {/*budgetGoalInfo.allCategories.forEach((category) => {*/}
+                        {/*categoryElements.push(*/}
+                        {/*<li key={category}>*/}
+                        {/*    <div>*/}
+                        {/*        <button className="category-button" id={`button-${category}`} style={{ backgroundColor: colorOptions[category] || '#ccc' }}>*/}
+                        {/*            {category}*/}
+                        {/*        </button>*/}
+                        {/*        <select*/}
+                        {/*            onChange={(e) => handleColorChange(category, e.target.value)}*/}
+                        {/*            value={colorOptions[category] || ''}*/}
+                        {/*        >*/}
+                        {/*            <option value="">Choose Color</option>*/}
+                        {/*            {Object.entries(hexColorOptions).map(([colorName, hexCode]) => (*/}
+                        {/*                <option key={hexCode} value={hexCode}>*/}
+                        {/*                    {colorName}*/}
+                        {/*                </option>*/}
+                        {/*            ))}*/}
                                     </select>
                                 </div>
                             </li>
@@ -401,7 +507,7 @@ function DisplayMonthlyGoal({ monthlyBudget, allCategories, colorOptions, budget
             <h8>Your Budget for this Month is  ${monthlyBudget}</h8>
             <h9>Your Spending Categories are: </h9>
             <ul>
-                {allCategories.map((category) => (
+                {(budgetGoalInfo.allCategories)?.map((category) => (
                     <li key={category}>
                         <div>
                             <button className="category-button" id={`button-${category}`}
