@@ -125,10 +125,9 @@ function SetMonthlyGoal() {
     if (isGoalStored) {
         return (
             <DisplayMonthlyGoal
-                // monthlyBudget={budgetGoalObj.monthlyBudget}
-                // allCategories={budgetGoalObj.allCategories}
                 budgetGoalObj={budgetGoalObj}
                 userEmail={userEmail}
+                setBudgetUpdated={setBudgetUpdated}
                 colorOptions={colorOptions}
             />
         );
@@ -136,9 +135,9 @@ function SetMonthlyGoal() {
         return (
             formSubmitted ? (
                     <ColorCodeCategories
-                        // allCategories={budgetGoalObj.allCategories}
                         budgetGoalObj={budgetGoalObj}
                         userEmail={userEmail}
+                        setBudgetUpdated={setBudgetUpdated}
                         colorOptions={colorOptions}
                         setColorOptions={setColorOptions}
                     />
@@ -213,7 +212,7 @@ function SetMonthlyGoal() {
 }
 
 /* second page of the Set Monthly Goal form (where the users color-code their categories) */
-function ColorCodeCategories({ budgetGoalObj, userEmail, colorOptions, setColorOptions}) {
+function ColorCodeCategories({ budgetGoalObj, userEmail, setBudgetUpdated, colorOptions, setColorOptions}) {
     const [submitted, setSubmitted] = useState(false);
     const [colorCodeError, setColorCodeError] = useState('');
     const allCategories = budgetGoalObj.allCategories;
@@ -261,7 +260,7 @@ function ColorCodeCategories({ budgetGoalObj, userEmail, colorOptions, setColorO
 
             console.log(colorInfo);
             const updateBudgetResponse = await put('/updateBudgetColors', colorInfo);
-            // setBudgetUpdated(true)
+            setBudgetUpdated(true);
             console.log(updateBudgetResponse);
 
             localStorage.setItem(`colorOptions_${userEmail}`, JSON.stringify(colorOptions));
@@ -276,10 +275,10 @@ function ColorCodeCategories({ budgetGoalObj, userEmail, colorOptions, setColorO
         <div>
             {submitted ? (
                 <DisplayMonthlyGoal
-                    allCategories={allCategories}
-                    colorOptions={colorOptions}
                     budgetGoalObj={budgetGoalObj}
                     userEmail={userEmail}
+                    setBudgetUpdated={setBudgetUpdated}
+                    colorOptions={colorOptions}
                 />
             ) : (
                 <>
@@ -320,7 +319,7 @@ function ColorCodeCategories({ budgetGoalObj, userEmail, colorOptions, setColorO
 }
 
 /* Display page: rendered after user completes the form AND as a landing page after the user previously inputted their goal */
-function DisplayMonthlyGoal({ budgetGoalObj, userEmail, colorOptions }) {
+function DisplayMonthlyGoal({ budgetGoalObj, userEmail, setBudgetUpdated, colorOptions }) {
     const [editableCategories, setEditableCategories] = useState([]);
     const [duplicateCategoryError2, setDuplicateCategoryError2] = useState('');
     const allCategories = budgetGoalObj.allCategories;
@@ -344,7 +343,7 @@ function DisplayMonthlyGoal({ budgetGoalObj, userEmail, colorOptions }) {
     };
 
     /* function to save modified category name */
-    const handleSaveCategoryName = (category) => {
+    const handleSaveCategoryName = async (category) => {
         // put error handling here
         const modifiedCategoryName = categoryNames[category] || ''; // Get the modified category name.
 
@@ -362,9 +361,9 @@ function DisplayMonthlyGoal({ budgetGoalObj, userEmail, colorOptions }) {
 
         // creates a full list of category names (whether they have been modified or not)
         const categoriesAfterEdit = allCategories.reduce((list, category) => {
-            list[category] = categoryNames[category] || category;
+            list.push(categoryNames[category] || category);
             return list;
-        }, {});
+        }, []);
 
         localStorage.setItem(`modifiedCategories_${userEmail}`, JSON.stringify(categoriesAfterEdit));
 
@@ -374,8 +373,10 @@ function DisplayMonthlyGoal({ budgetGoalObj, userEmail, colorOptions }) {
             allCategories: categoriesAfterEdit
         }
 
-        // put post request here (this ensures that when the user closes the app and logs in again, when
-        // SetMonthlyGoal() is called, the get request gets the new set of categories */
+        console.log(modifiedCategoryInfo);
+        const updateBudgetResponse = await put('/updateBudgetCategories', modifiedCategoryInfo);
+        setBudgetUpdated(true);
+        console.log(updateBudgetResponse);
     };
 
     return (
