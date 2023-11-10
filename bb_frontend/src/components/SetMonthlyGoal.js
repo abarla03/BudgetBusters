@@ -128,7 +128,6 @@ function SetMonthlyGoal() {
                 budgetGoalObj={budgetGoalObj}
                 userEmail={userEmail}
                 setBudgetUpdated={setBudgetUpdated}
-                colorOptions={colorOptions}
             />
         );
     } else {
@@ -215,7 +214,7 @@ function SetMonthlyGoal() {
 function ColorCodeCategories({ budgetGoalObj, userEmail, setBudgetUpdated, colorOptions, setColorOptions}) {
     const [submitted, setSubmitted] = useState(false);
     const [colorCodeError, setColorCodeError] = useState('');
-    const allCategories = budgetGoalObj.allCategories;
+    const allCategories = budgetGoalObj?.allCategories;
 
     const hexColorOptions = {
         Red: '#ff5c70',
@@ -240,7 +239,7 @@ function ColorCodeCategories({ budgetGoalObj, userEmail, setBudgetUpdated, color
 
     /* function handling the submit button (after the user color codes their categories) */
     const handleSubmit = async () => {
-        const allCategoriesColored = allCategories.every(
+        const allCategoriesColored = allCategories?.every(
             (category) => colorOptions[category]
         );
 
@@ -249,7 +248,7 @@ function ColorCodeCategories({ budgetGoalObj, userEmail, setBudgetUpdated, color
             setSubmitted(true);
 
             // collect colors in the order of selectedCategories
-            const selectedColors = allCategories.map((category) => colorOptions[category]);
+            const selectedColors = allCategories?.map((category) => colorOptions[category]);
 
             // abstracted json object to send data to backend (Submit button)
             const colorInfo = {
@@ -278,7 +277,6 @@ function ColorCodeCategories({ budgetGoalObj, userEmail, setBudgetUpdated, color
                     budgetGoalObj={budgetGoalObj}
                     userEmail={userEmail}
                     setBudgetUpdated={setBudgetUpdated}
-                    colorOptions={colorOptions}
                 />
             ) : (
                 <>
@@ -319,10 +317,10 @@ function ColorCodeCategories({ budgetGoalObj, userEmail, setBudgetUpdated, color
 }
 
 /* Display page: rendered after user completes the form AND as a landing page after the user previously inputted their goal */
-function DisplayMonthlyGoal({ budgetGoalObj, userEmail, setBudgetUpdated, colorOptions }) {
+function DisplayMonthlyGoal({ budgetGoalObj, userEmail, setBudgetUpdated }) {
     const [editableCategories, setEditableCategories] = useState([]);
     const [duplicateCategoryError2, setDuplicateCategoryError2] = useState('');
-    const allCategories = budgetGoalObj.allCategories;
+    const allCategories = budgetGoalObj?.allCategories || [];
 
     /* obtains the list of modified categories from local storage if it exists and sets equal to categoryNames */
     const storedModifiedCategories = localStorage.getItem(`modifiedCategories_${userEmail}`);
@@ -330,6 +328,11 @@ function DisplayMonthlyGoal({ budgetGoalObj, userEmail, setBudgetUpdated, colorO
         ? JSON.parse(storedModifiedCategories)
         : {};
     const [categoryNames, setCategoryNames] = useState(modifiedCategories);
+    const categoryIndexMap = {};
+    for (let index = 0; index < allCategories?.length; index++) {
+        const category = allCategories[index];
+        categoryIndexMap[category] = index;
+    }
 
     /* function handling the category editing (ensures that only one category is edited in edit mode) */
     const handleEditCategory = (category) => {
@@ -384,12 +387,12 @@ function DisplayMonthlyGoal({ budgetGoalObj, userEmail, setBudgetUpdated, colorO
             <h8>Your Budget for this Month is  ${budgetGoalObj.monthlyBudget}</h8>
             <h9>Your Spending Categories are: </h9>
             <ul>
-                {/*{((modifiedCategories.length === 0) ? Object.keys(modifiedCategories) : allCategories)?.map((category) => (*/}
                 {allCategories?.map((category) => (
                     <li key={category}>
                         <div>
                             <button className="category-button" id={`button-${category}`}
-                                    style={{backgroundColor: colorOptions[category] || '#ccc'}}>
+                                style={{backgroundColor: (budgetGoalObj.colors && (budgetGoalObj.colors)[categoryIndexMap[category]]) || '#ccc'}}>
+
                                 {editableCategories.includes(category) ? (
                                     <input
                                         type="text"
@@ -409,7 +412,9 @@ function DisplayMonthlyGoal({ budgetGoalObj, userEmail, setBudgetUpdated, colorO
                                 </button>
                             ) : null}
                             {editableCategories.includes(category) ? (
-                                <button className="edit-button" onClick={() => handleSaveCategoryName(category)}>
+                                <button
+                                    className="edit-button"
+                                    onClick={() => handleSaveCategoryName(category)}>
                                     Save
                                 </button>
                             ) : null}
