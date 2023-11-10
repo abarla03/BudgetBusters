@@ -698,6 +698,35 @@ h7 {
     color: #000000;
 }
 
+.current-notifications {
+    font-size: 22px;
+    font-weight: 100;
+    font-family: 'Archivo Narrow', sans-serif;
+    color: #333;
+    font-style: normal;
+    margin-top: 50px;
+    /*margin-left: 300px;*/
+    margin-left: -200px;
+    margin-bottom: 50px;
+}
+
+.budget-limit-checkbox {
+    font-size: 22px;
+    font-weight: 100;
+    font-family: 'Archivo Narrow', sans-serif;
+    color: #333;
+    font-style: normal;
+    /*left: 75%;*/
+    /*text-align: left;*/
+    margin-top: 50px;
+    /*margin-left: 300px;*/
+    margin-left: -200px;
+    margin-bottom: 50px;
+}
+
+
+
+
 /* nav drop down bar */
 :root {
     --primary-bg: #242526;
