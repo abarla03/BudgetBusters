@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth } from "../firebase";
 
-function SetNotifications() {
+function SetNotifications(bool) {
     const user = auth.currentUser;
     const userEmail = user ? user.email : "";
     const [formSubmitted, setFormSubmitted] = useState(false);
@@ -35,6 +35,7 @@ function SetNotifications() {
     const [dollarThreshold, setDollarThreshold] = useState(0); // may not need this; calculations could be done in backend
 
     const [hasSubmittedOnce, setHasSubmittedOnce] = useState(Boolean(localStorage.getItem(`hasSubmittedOnce_${userEmail}`)));
+    // const [areNotificationsStored, setAreNotificationsStored] = useState(Boolean(localStorage.getItem(`userPreferences_${userEmail}`)));
 
     /* function handling user's ability to select multiple notification methods */
     const handleMethodClick = (method) => {
@@ -68,132 +69,161 @@ function SetNotifications() {
         setFormSubmitted(true);
     };
 
+    /* attempt to store user data between logins/redirections */
+    // const [areNotificationsStored, setAreNotificationsStored] = useState(Boolean(localStorage.getItem(`userPreferences_${userEmail}`)));
+    // useEffect(() => {
+    //     // Save hasSubmittedOnce to local storage whenever it changes
+    //     localStorage.setItem(`hasSubmittedOnce_${userEmail}`, hasSubmittedOnce);
+    //     localStorage.setItem(`userPreferences_${userEmail}`, JSON.stringify({
+    //         selectedMethods,
+    //         selectedHour,
+    //         warningNotificationChoice,
+    //         percentageThreshold
+    //     }));
+    // }, [hasSubmittedOnce, selectedMethods, selectedHour, warningNotificationChoice, percentageThreshold, userEmail]);
     useEffect(() => {
         // Save hasSubmittedOnce to local storage whenever it changes
         localStorage.setItem(`hasSubmittedOnce_${userEmail}`, hasSubmittedOnce);
     }, [hasSubmittedOnce, `hasSubmittedOnce_${userEmail}`]);
 
-    return (
-        <div className="notification-container">
-            {formSubmitted ? (
-                <DisplayNotifications
-                    selectedMethods={selectedMethods}
-                    selectedHour={selectedHour}
-                    warningNotificationChoice={warningNotificationChoice}
-                    setWarningNotificationChoice={setWarningNotificationChoice}
-                    percentageThreshold={percentageThreshold}
-                    handleEdit={() => setFormSubmitted(!formSubmitted)}
-                />
-            ) : (
-                <>
-                    <div className="ManageNotifications">
-                        {/* NOTIFICATION GROUP 1 - METHOD - email, text */}
-                        <h3>Select Notification Method:</h3>
-                        {/*selectable options:*/}
-                        <div className="notification-method-buttons">
-                            {methods.map((method) => (
-                                <button
-                                    key={method}
-                                    className={`notification-method-button${
-                                        selectedMethods.includes(method) ? ' selected' : ''
-                                    }`}
-                                    onClick={() => handleMethodClick(method)}
-                                >
-                                    {method}
-                                </button>
-                            ))}
+    /* attempt to make similar format to set monthly goal */
+    // if (hasSubmittedOnce) {
+    //     return (
+    //         <DisplayNotifications
+    //             selectedMethods={selectedMethods}
+    //             selectedHour={selectedHour}
+    //             warningNotificationChoice={warningNotificationChoice}
+    //             setWarningNotificationChoice={setWarningNotificationChoice}
+    //             percentageThreshold={percentageThreshold}
+    //             hasSubmittedOnce={hasSubmittedOnce}
+    //             handleEdit={() => setFormSubmitted(!formSubmitted)}
+    //         />
+    //     );
+    // } else {
+        return (
+            <div className="notification-container">
+                {formSubmitted ? (
+                    <DisplayNotifications
+                        selectedMethods={selectedMethods}
+                        selectedHour={selectedHour}
+                        warningNotificationChoice={warningNotificationChoice}
+                        setWarningNotificationChoice={setWarningNotificationChoice}
+                        percentageThreshold={percentageThreshold}
+                        hasSubmittedOnce={hasSubmittedOnce}
+                        handleEdit={() => setFormSubmitted(!formSubmitted)}
+                    />
+                ) : (
+                    <>
+                        <div className="ManageNotifications">
+                            {/* NOTIFICATION GROUP 1 - METHOD - email, text */}
+                            <h3>Select Notification Method:</h3>
+                            {/*selectable options:*/}
+                            <div className="notification-method-buttons">
+                                {methods.map((method) => (
+                                    <button
+                                        key={method}
+                                        className={`notification-method-button${
+                                            selectedMethods.includes(method) ? ' selected' : ''
+                                        }`}
+                                        onClick={() => handleMethodClick(method)}
+                                    >
+                                        {method}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Input Daily Notification Time */}
-                    <h3>Select Input Daily Spending Notification Time:</h3>
-                    <div>
-                        <select
-                            id="selectedHour"
-                            value={selectedHour}
-                            onChange={(e) => setSelectedHour(e.target.value)}
-                        >
-                            <option value="">Select a time</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                        </select>
-                        {/* add am/pm dropdown in this div, and adjust CSS so that dropdown shows right after colon*/}
-                    </div>
-
-                    <h3>Set Budget Limit Warning Notification (optional):</h3>
-                    <div>
-                        <label htmlFor="warningNotificationChoice">Do you want to set a Budget Limit Warning Notification?  </label>
-                        <select
-                            id="warningNotificationChoice"
-                            value={warningNotificationChoice}
-                            onChange={handleWarningNotificationChange}
-                        >
-                            <option value="">Select an option</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                        </select>
-                    </div>
-
-                    {showPercentageDropdown && (
+                        {/* Input Daily Notification Time */}
+                        <h3>Select Input Daily Spending Notification Time:</h3>
                         <div>
-                            <label htmlFor="percentageThreshold">Select a percentage threshold:</label>
                             <select
-                                id="percentageThreshold"
-                                value={percentageThreshold}
-                                onChange={(e) => setPercentageThreshold(e.target.value)}
+                                id="selectedHour"
+                                value={selectedHour}
+                                onChange={(e) => setSelectedHour(e.target.value)}
                             >
-                                <option value="">Select a percentage</option>
-                                <option value="50">50%</option>
-                                <option value="55">55%</option>
-                                <option value="60">60%</option>
-                                <option value="65">65%</option>
-                                <option value="70">70%</option>
-                                <option value="75">75%</option>
-                                <option value="80">80%</option>
-                                <option value="85">85%</option>
-                                <option value="90">90%</option>
-                                <option value="95">95%</option>
-                                {/* Add more options as needed */}
+                                <option value="">Select a time</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
                             </select>
-                            {/* adjust the Yes/No dropdown so that it is after the colon (remove the question) and other css styling */}
+                            {/* add am/pm dropdown in this div, and adjust CSS so that dropdown shows right after colon*/}
                         </div>
-                    )}
 
-                    {hasSubmittedOnce && (
-                        <button className="edit-button" type="submit" onClick={handleSave}>
-                            Save
-                        </button>
-                    )}
-                    {!hasSubmittedOnce && (
-                        <button className="submit-button" type="submit" onClick={handleSubmit}>
-                            Submit
-                        </button>
-                    )}
+                        <h3>Set Budget Limit Warning Notification (optional):</h3>
+                        <div>
+                            <label htmlFor="warningNotificationChoice">Do you want to set a Budget Limit Warning
+                                Notification? </label>
+                            <select
+                                id="warningNotificationChoice"
+                                value={warningNotificationChoice}
+                                onChange={handleWarningNotificationChange}
+                            >
+                                <option value="">Select an option</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
 
-                    {/*<button*/}
-                    {/*    className="submit-button"*/}
-                    {/*    type="submit"*/}
-                    {/*    onClick={handleSubmit}*/}
-                    {/*>*/}
-                    {/*    Submit*/}
-                    {/*</button>*/}
-                </>
-            )}
-        </div>
-    );
+                        {showPercentageDropdown && (
+                            <div>
+                                <label htmlFor="percentageThreshold">Select a percentage threshold:</label>
+                                <select
+                                    id="percentageThreshold"
+                                    value={percentageThreshold}
+                                    onChange={(e) => setPercentageThreshold(e.target.value)}
+                                >
+                                    <option value="">Select a percentage</option>
+                                    <option value="50">50%</option>
+                                    <option value="55">55%</option>
+                                    <option value="60">60%</option>
+                                    <option value="65">65%</option>
+                                    <option value="70">70%</option>
+                                    <option value="75">75%</option>
+                                    <option value="80">80%</option>
+                                    <option value="85">85%</option>
+                                    <option value="90">90%</option>
+                                    <option value="95">95%</option>
+                                    {/* Add more options as needed */}
+                                </select>
+                                {/* adjust the Yes/No dropdown so that it is after the colon (remove the question) and other css styling */}
+                            </div>
+                        )}
+
+                        {hasSubmittedOnce && (
+                            <button className="edit-button" type="submit" onClick={handleSave}>
+                                Save
+                            </button>
+                        )}
+                        {!hasSubmittedOnce && (
+                            <button className="submit-button" type="submit" onClick={handleSubmit}>
+                                Submit
+                            </button>
+                        )}
+
+                        {/*<button*/}
+                        {/*    className="submit-button"*/}
+                        {/*    type="submit"*/}
+                        {/*    onClick={handleSubmit}*/}
+                        {/*>*/}
+                        {/*    Submit*/}
+                        {/*</button>*/}
+                    </>
+                )}
+            </div>
+        );
+    //}
 }
 
-function DisplayNotifications({ selectedMethods, selectedHour, warningNotificationChoice, percentageThreshold, handleEdit }) {
+function DisplayNotifications({ selectedMethods, selectedHour, warningNotificationChoice, percentageThreshold, hasSubmittedOnce, handleEdit }) {
     return (
         <div className="notification-container">
             <div className="ManageNotifications">
