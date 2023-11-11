@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendSignInLinkToEmail } from "firebase/auth";
 import React, { useEffect, useState } from 'react';
 import { auth} from "../../firebase";
 
@@ -21,6 +21,33 @@ const Register = (props) => {
         email: '',
         phoneNumber: ''
     })
+
+    const [confirmationSent, setConfirmationSent] = useState(false);
+
+    const sendSignInLink = (email) => {
+        const actionCodeSettings = {
+            // URL where the link will take the user upon success
+            url: 'http://localhost:57573/login',
+            handleCodeInApp: true, // This should be set to true for the web app
+        };
+
+        auth.sendSignInLinkToEmail(email, actionCodeSettings)
+            .then(() => {
+                // The sign-in link has been sent to the user's email
+                // You can display a success message or navigate to a confirmation page.
+            })
+            .catch((error) => {
+                // Handle any errors that occur during the process
+                console.error(error);
+            });
+    };
+
+    // Example button click handler
+    const handleSendSignInLink = () => {
+        sendSignInLink(email);
+    };
+
+
 
     const signInWithGoogleHandler = () => {
         signInWithGoogle()
@@ -59,6 +86,9 @@ const Register = (props) => {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log(userCredential);
+
+                handleSendSignInLink();
+                showMessage();
             })
             .catch((error) => {
                 console.log(error);
@@ -87,7 +117,7 @@ const Register = (props) => {
                 <label htmlFor="password">Password</label>
                 <input value={password} onChange={(e) => setPassword(e.target.value)}type="password" placeholder="enter password" id="password" name="password" />
 
-                <button type="submit" onClick = { showMessage }>Register</button>
+                <button type="submit">Register</button>
 
                 {displayMessage && <p>You have successfully created an account.</p>}
 
