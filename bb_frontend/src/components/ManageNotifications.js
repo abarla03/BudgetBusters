@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import '../App.css';
+import emailjs from '@emailjs/browser';
 import logo from '../BBLogo.png';
 import { Route, Routes, Link  } from 'react-router-dom';
 import SetMonthlyGoal from './SetMonthlyGoal'; // Import your components
@@ -29,6 +30,20 @@ function ManageNotifications() {
         }
     };
 
+    function sendEmail(e) {
+        e.preventDefault();
+
+        emailjs.sendForm('gmail', 'template_no3wmb8', e.target, 'AAzDvqkC34g_vsDuZ')
+            .then((result) => {
+                console.log(result.text);
+            }, (error) => {
+                console.log(error.text);
+            });
+
+        setIsEditMode(false);
+
+    };
+
     /* function handling the edit mode */
     const handleEditClick = () => {
         setIsEditMode(!isEditMode);
@@ -44,6 +59,8 @@ function ManageNotifications() {
         // setAge(document.getElementById('age').value);
         // setPhone(document.getElementById('phone').value);
         setIsEditMode(false);
+
+
 
         // have to save new options in backend/db
     };
@@ -70,9 +87,9 @@ function ManageNotifications() {
 
             <div>
                 {isEditMode ? (
-                    <button className='edit-button' onClick={handleSaveClick}>Save</button>
+                    <button className='edit-button' onClick={sendEmail}>Save</button>
                 ) : (
-                    <button className='edit-button' onClick={handleEditClick}>Edit</button>
+                    <button className='edit-button' onClick={sendEmail}>Edit</button>
                 )}
 
             </div>
