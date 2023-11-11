@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor; // takes care of all the setters and getters
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -12,5 +14,7 @@ import lombok.Setter;
 
 public class Notifications {
     private String email;
-    private String preferredMethod; // email or text option
+    private List<String> preferredMethod; // email or text option
+    private String notifTime;
+    private Integer budgetWarning;  // percentage threshold set by the user
 }
