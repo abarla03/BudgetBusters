@@ -34,6 +34,8 @@ const Login = (props) => {
             })
     }
 
+    // test
+
     const handleResetPassword = () => {
         console.log("clicked on reset password link");
         //console.log("here's the email: " + email);
