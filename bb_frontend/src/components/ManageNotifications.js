@@ -30,6 +30,7 @@ function ManageNotifications() {
         }
     };
 
+    /* function to send email notification, along with API token */
     function sendEmail(e) {
         e.preventDefault();
 
@@ -43,8 +44,8 @@ function ManageNotifications() {
         setIsEditMode(false);
 
     };
-
     /* function handling the edit mode */
+
     const handleEditClick = () => {
         setIsEditMode(!isEditMode);
         // have to revert to default color
