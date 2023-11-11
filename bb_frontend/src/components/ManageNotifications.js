@@ -96,7 +96,7 @@ function SetNotifications(bool) {
                     handleSave={handleSave}
                 />
             )}
-            {!hasSubmittedOnce || isEditMode && (
+            {(!hasSubmittedOnce || isEditMode) && (
                 <>
                     {formSubmitted && !isEditMode ? (
                         <DisplayNotifications
