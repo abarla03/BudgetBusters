@@ -710,6 +710,12 @@ h7 {
     cursor: pointer;
 }
 
+.select-method-message {
+    /*margin-right: 700px;*/
+    margin-left: 375px;
+    margin-bottom: 5px;
+}
+
 .select-time{
     /*margin-right: 5px;*/
     margin-left: -60px;

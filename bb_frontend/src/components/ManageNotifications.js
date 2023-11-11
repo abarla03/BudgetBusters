@@ -14,6 +14,7 @@ function SetNotifications(bool) {
         "Email",
         "Text"
     ]
+    // const phone = 1234567890; // get value from backend
 
     /* select time */
     //time
@@ -249,6 +250,7 @@ function SetNotifications(bool) {
 }
 
 function DisplayNotifications({ selectedMethods, selectedHour, warningNotificationChoice, percentageThreshold, hasSubmittedOnce, handleEdit }) {
+    const phoneNum = 1234567890;
     return (
         <div className="notification-container">
             <div className="notification-method-container">
@@ -262,8 +264,15 @@ function DisplayNotifications({ selectedMethods, selectedHour, warningNotificati
                             >
                                 {method}
                             </button>
+
                         ))}
+                        {/*<h4>"You will be sent a text to "</h4>*/}
                     </div>
+                <div className="select-method-message">
+                    <h5>You will be sent a text to: {phoneNum} </h5>
+                {/*    get phone number value from backend @angela*/}
+                </div>
+
                 {/*</div>*/}
             </div>
 
