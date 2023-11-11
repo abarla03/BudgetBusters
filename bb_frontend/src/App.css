@@ -676,9 +676,84 @@ h7 {
 }
 
 /* --------------------Manage Notifications--------------- */
+.notification-method-container {
+    display: flex;
+    align-items: center;
+
+}
+
+.notification-method-container h3 {
+    margin-right: 250px; /* Adjust as needed */
+    /*margin-bottom: 50px;*/
+}
+
+.notification-method-container h5 {
+    margin-right: 5px;
+
+    margin-top: 47px;
+    font-size: 22px;
+    /*margin-left: -90px;*/
+    /*margin-left: -50px;*/
+
+}
+
+.notification-method-container select {
+    margin-right: 250px; /* Adjust as needed */
+    /*margin-bottom: 50px;*/
+    margin-top: 27px;
+    margin-left: -150px;
+    /*padding: 10px 20px;*/
+    /*border: none;*/
+    /*border-radius: 5px;*/
+    /*margin: 1px 15px;*/
+    /*margin-top: 23px;*/
+    cursor: pointer;
+}
+
+.select-time{
+    /*margin-right: 5px;*/
+    margin-left: -60px;
+    display: flex;
+    align-items: center;
+}
+
+.am-pm {
+    margin-left: -100px;
+}
+
+.warning-dropdown {
+    margin-left: -290px;
+    /*align-items: center;*/
+
+}
+
+.warning-dropdown label {
+    margin-left: 50px;
+}
+
+.warning-dropdown select {
+    /*padding: 8px;*/
+    margin-left: 10px;
+}
+
+.selected-warning-notif-container {
+    display: flex;
+    align-items: center;
+    margin-left: 215px;
+    margin-right: 50px;
+}
+
+.selected-warning-notif-container h5 {
+    font-size: 22px;
+}
+
+
+
+
+
 .notification-method-buttons {
-    margin-left: -200px;
-    margin-bottom: 50px;
+    margin-left: -225px;
+    /*margin-bottom: 50px;*/
 }
 
 /* category buttons styling */
@@ -686,46 +761,25 @@ h7 {
     background-color: #ccc; /* Default button color */
     border: none;
     padding: 10px 20px;
-    border: none;
     border-radius: 5px;
     margin: 1px 15px;
+    margin-top: 23px;
     cursor: pointer;
+
 }
 
 /* selected category buttons styling */
 .notification-method-button.selected {
     background-color: #dad873;
     color: #000000;
+    /*border: none;*/
+    /*padding: 10px 20px;*/
+    /*border-radius: 5px;*/
+    /*margin: 1px 15px;*/
+    /*margin-top: 23px;*/
+
+
 }
-
-.current-notifications {
-    font-size: 22px;
-    font-weight: 100;
-    font-family: 'Archivo Narrow', sans-serif;
-    color: #333;
-    font-style: normal;
-    margin-top: 50px;
-    /*margin-left: 300px;*/
-    margin-left: -200px;
-    margin-bottom: 50px;
-}
-
-.budget-limit-checkbox {
-    font-size: 22px;
-    font-weight: 100;
-    font-family: 'Archivo Narrow', sans-serif;
-    color: #333;
-    font-style: normal;
-    /*left: 75%;*/
-    /*text-align: left;*/
-    margin-top: 50px;
-    /*margin-left: 300px;*/
-    margin-left: -200px;
-    margin-bottom: 50px;
-}
-
-
-
 
 /* nav drop down bar */
 :root {
