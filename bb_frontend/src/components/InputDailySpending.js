@@ -1,6 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { auth } from "../firebase";
 
 function InputDailySpending() {
+    const user = auth.currentUser;
+    const userEmail = user ? user.email : "";
+    // const [arePurchasesStored, setArePurchasesStored] = useState(Boolean(localStorage.getItem(`purchases_${userEmail}`)));
+    useEffect(() => {
+        const storedPurchases = JSON.parse(localStorage.getItem(`purchases_${userEmail}`));
+        if (storedPurchases && storedPurchases.length > 0) {
+            setPurchases(storedPurchases);
+            setIsSubmitted(true);
+            // Other necessary state updates
+        }
+    }, []);
+
     const [showPurchaseFields, setShowPurchaseFields] = useState(false);
     const [purchasedItem, setPurchasedItem] = useState('');
     const [purchaseAmount, setPurchaseAmount] = useState('');
@@ -17,16 +30,20 @@ function InputDailySpending() {
     const mockInputDailyInfo = {
         email: "roro@gmail.com",
         numPurchases: "2",
-        purchases: [{purchaseName: "item1",
-                    purchaseAmount: "50",
-                    purchaseCategory: "category1"},
-                    {purchaseName: "item2",
-                     purchaseAmount: "100",
-                     purchaseCategory: "category2"}]
+        purchases: [{
+            purchaseName: "item1",
+            purchaseAmount: "50",
+            purchaseCategory: "category1"
+        },
+            {
+                purchaseName: "item2",
+                purchaseAmount: "100",
+                purchaseCategory: "category2"
+            }]
     }
 
     /* dummy category data */
-    const selectedCategories = Object.values({ category1: "Rent", category2: "Groceries", category3: "Gym"});
+    const selectedCategories = Object.values({category1: "Rent", category2: "Groceries", category3: "Gym"});
 
     /* function handling non-numeric values in purchase amount field */
     const handlePurchaseAmountChange = (event) => {
@@ -75,7 +92,9 @@ function InputDailySpending() {
         setPurchases(purchases.slice().reverse());
         setIsAddMode(false);
 
-        // send json object
+        localStorage.setItem(`purchases_${userEmail}`, JSON.stringify(purchases));
+
+        // send json obj
         window.alert("Added purchase(s)!");
     };
 
@@ -120,240 +139,285 @@ function InputDailySpending() {
             setEditPurchaseError('No purchase selected for editing.');
         }
     };
+    const arePurchasesStored = purchases.length > 0;
 
-    return (
-        <div>
-            <h2>{message}</h2>
-            <div className="add-user-input">
-                <h4>Input Purchase:</h4>
-                <button
-                    className={'plus-button'}
-                    onClick={() => {
-                        setShowPurchaseFields(!showPurchaseFields);
-                        setIsAddMode(true);
-                        setPurchasedItem(''); // Clear previous values when switching to Add mode
-                        setPurchaseAmount('');
-                        setSelectedCategory('');
-                    }}
-                >
-                    +
-                </button>
-            </div>
-
-            <div className="add-field">
-                {showPurchaseFields && (
-                    <div className={'input-purchase'}>
-                        <h5>Purchase:</h5>
-                        <input
-                            className={'purchase-item'}
-                            type="text"
-                            value={purchasedItem}
-                            onChange={(e) => setPurchasedItem(e.target.value)}
-                            placeholder="Enter your purchased item"
-                        />
-                        <div>
-                            <h6>Amount:</h6>
-                            <input
-                                className={'amount-input'}
-                                type="text"
-                                value={purchaseAmount}
-                                onChange={handlePurchaseAmountChange}
-                                placeholder="Item Amount"
-                            />
-                        </div>
-                        <div className="category-container">
-                            <h7>Select Category:</h7>
-                            <select
-                                className='category-dropdown'
-                                value={selectedCategory}
-                                onChange={(e) => setSelectedCategory(e.target.value)}
-                            >
-                                <option value="">Select a category</option>
-                                {selectedCategories.map((category) => (
-                                    <option key={category} value={category}>
-                                        {category}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        {amountError && <p className="error-message2">{amountError}</p>}
-                        {addPurchaseError && <p className="error-message3">{addPurchaseError}</p>}
-                        <button
-                            className="add-button2"
-                            onClick={isAddMode ? handleAddPurchase : handleSaveEdit}
-                            disabled={amountError !== ''}
-                        >
-                            {isAddMode ? "Add Purchase" : "Save Edit"}
-                        </button>
-                    </div>
-                )}
-            </div>
-
+    // if (arePurchasesStored) {
+    //     return (
+    //         <DisplayDailySpending
+    //             purchases={purchases}
+    //             purchasedItem={purchasedItem}
+    //             setPurchasedItem={setPurchasedItem}
+    //             purchaseAmount={purchaseAmount}
+    //             handlePurchaseAmountChange={handlePurchaseAmountChange}
+    //             selectedCategory={selectedCategory}
+    //             setSelectedCategory={setSelectedCategory}
+    //             selectedCategories={selectedCategories}
+    //             amountError={amountError}
+    //             editPurchaseError={editPurchaseError}
+    //             handleRemovePurchase={handleRemovePurchase}
+    //             mockInputDailyInfo={mockInputDailyInfo}
+    //             isSubmitted={isSubmitted}
+    //             setPurchaseAmount={setPurchaseAmount}
+    //             isAddMode={false}
+    //             // handleSaveEdit={handleSaveEdit}
+    //         />
+    //     );
+    // } else {
+        return (
             <div>
-                {isAddMode ? (
-                    purchases.map((purchase, index) => (
-                        <div key={index}>
-                            <button className="purchase-info-button">
-                                <div className={'span'}>
-                                    {'Purchase: ' + purchase.item}<br />
-                                    {'Amount: ' + purchase.amount}<br />
-                                    {'Category: ' + purchase.category}
-                                </div>
+                <h2>{message}</h2>
+                <div className="add-user-input">
+                    <h4>Input Purchase:</h4>
+                    <button
+                        className={'plus-button'}
+                        onClick={() => {
+                            setShowPurchaseFields(!showPurchaseFields);
+                            setIsAddMode(true);
+                            setPurchasedItem(''); // Clear previous values when switching to Add mode
+                            setPurchaseAmount('');
+                            setSelectedCategory('');
+                        }}
+                    >
+                        +
+                    </button>
+                </div>
+
+                <div className="add-field">
+                    {showPurchaseFields && (
+                        <div className={'input-purchase'}>
+                            <h5>Purchase:</h5>
+                            <input
+                                className={'purchase-item'}
+                                type="text"
+                                value={purchasedItem}
+                                onChange={(e) => setPurchasedItem(e.target.value)}
+                                placeholder="Enter your purchased item"
+                            />
+                            <div>
+                                <h6>Amount:</h6>
+                                <input
+                                    className={'amount-input'}
+                                    type="text"
+                                    value={purchaseAmount}
+                                    onChange={handlePurchaseAmountChange}
+                                    placeholder="Item Amount"
+                                />
+                            </div>
+                            <div className="category-container">
+                                <h7>Select Category:</h7>
+                                <select
+                                    className='category-dropdown'
+                                    value={selectedCategory}
+                                    onChange={(e) => setSelectedCategory(e.target.value)}
+                                >
+                                    <option value="">Select a category</option>
+                                    {selectedCategories.map((category) => (
+                                        <option key={category} value={category}>
+                                            {category}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            {amountError && <p className="error-message2">{amountError}</p>}
+                            {addPurchaseError && <p className="error-message3">{addPurchaseError}</p>}
+                            <button
+                                className="add-button2"
+                                onClick={isAddMode ? handleAddPurchase : handleSaveEdit}
+                                disabled={amountError !== ''}
+                            >
+                                {isAddMode ? "Add Purchase" : "Save Edit"}
                             </button>
-                            <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>
-                            {isSubmitted && ( // render edit button only when user submits
-                                <button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>
-                            )}
-                            {isEditing && editIndex === index && (
-                                <div className="edit-purchase"> {/* prepopulate input fields when editing */}
-                                    <h5>Purchase:</h5>
-                                    <input
-                                        className={'purchase-item'}
-                                        type="text"
-                                        value={purchasedItem}
-                                        onChange={(e) => setPurchasedItem(e.target.value)}
-                                        placeholder="Enter your purchased item"
-                                    />
-                                    <div>
-                                        <h6>Amount:</h6>
-                                        <input
-                                            className={'amount-input'}
-                                            type="text"
-                                            value={purchaseAmount}
-                                            onChange={handlePurchaseAmountChange}
-                                            placeholder="Item Amount"
-                                        />
-                                    </div>
-                                    <div className="category-container">
-                                        <h7>Select Category:</h7>
-                                        <select
-                                            className='category-dropdown'
-                                            value={selectedCategory}
-                                            onChange={(e) => setSelectedCategory(e.target.value)}
-                                        >
-                                            <option value="">Select a category</option>
-                                            {selectedCategories.map((category) => (
-                                                <option key={category} value={category}>
-                                                    {category}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    {amountError && <p className="error-message7">{amountError}</p>}
-                                    {editPurchaseError && <p className="error-message8">{editPurchaseError}</p>}
-                                    <button
-                                        className="add-button2"
-                                        onClick={handleSaveEdit}
-                                        disabled={amountError !== ''}
-                                    >
-                                        Save Edit
-                                    </button>
-                                </div>
-                            )}
                         </div>
-                    ))
-                ) : <p>not in add mode</p>}
-                {/*{purchases.map((purchase, index) => (*/}
-                {/*    <div key={index}>*/}
-                {/*        <button className="purchase-info-button">*/}
-                {/*            <div className={'span'}>*/}
-                {/*                {'Purchase: ' + purchase.item}<br />*/}
-                {/*                {'Amount: ' + purchase.amount}<br />*/}
-                {/*                {'Category: ' + purchase.category}*/}
-                {/*            </div>*/}
-                {/*        </button>*/}
-                {/*        <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>*/}
-                {/*        {isSubmitted && ( // render edit button only when user submits*/}
-                {/*            <button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>*/}
-                {/*        )}*/}
-                {/*        {isEditing && editIndex === index && (*/}
-                {/*            <div className="edit-purchase"> /!* prepopulate input fields when editing *!/*/}
-                {/*                <h5>Purchase:</h5>*/}
-                {/*                <input*/}
-                {/*                    className={'purchase-item'}*/}
-                {/*                    type="text"*/}
-                {/*                    value={purchasedItem}*/}
-                {/*                    onChange={(e) => setPurchasedItem(e.target.value)}*/}
-                {/*                    placeholder="Enter your purchased item"*/}
-                {/*                />*/}
-                {/*                <div>*/}
-                {/*                    <h6>Amount:</h6>*/}
-                {/*                    <input*/}
-                {/*                        className={'amount-input'}*/}
-                {/*                        type="text"*/}
-                {/*                        value={purchaseAmount}*/}
-                {/*                        onChange={handlePurchaseAmountChange}*/}
-                {/*                        placeholder="Item Amount"*/}
-                {/*                    />*/}
-                {/*                </div>*/}
-                {/*                <div className="category-container">*/}
-                {/*                    <h7>Select Category:</h7>*/}
-                {/*                    <select*/}
-                {/*                        className='category-dropdown'*/}
-                {/*                        value={selectedCategory}*/}
-                {/*                        onChange={(e) => setSelectedCategory(e.target.value)}*/}
-                {/*                    >*/}
-                {/*                        <option value="">Select a category</option>*/}
-                {/*                        {selectedCategories.map((category) => (*/}
-                {/*                            <option key={category} value={category}>*/}
-                {/*                                {category}*/}
-                {/*                            </option>*/}
-                {/*                        ))}*/}
-                {/*                    </select>*/}
-                {/*                </div>*/}
-                {/*                {amountError && <p className="error-message7">{amountError}</p>}*/}
-                {/*                {editPurchaseError && <p className="error-message8">{editPurchaseError}</p>}*/}
-                {/*                <button*/}
-                {/*                    className="add-button2"*/}
-                {/*                    onClick={handleSaveEdit}*/}
-                {/*                    disabled={amountError !== ''}*/}
-                {/*                >*/}
-                {/*                    Save Edit*/}
-                {/*                </button>*/}
-                {/*            </div>*/}
-                {/*        )}*/}
-                {/*    </div>*/}
-                {/*))}*/}
+                    )}
+                </div>
+
+                <div>
+                    {isAddMode ? (
+                        purchases.map((purchase, index) => (
+                            <div key={index}>
+                                {(!arePurchasesStored) && (
+                                <div>
+                                    <button className="purchase-info-button">
+                                        <div className={'span'}>
+                                            {/*{'Purchase: ' + purchase.purchaseName}<br />*/}
+                                            {/*{'Amount: ' + purchase.purchaseAmount}<br />*/}
+                                            {/*{'Category: ' + purchase.purchaseCategory}*/}
+                                            {'Purchase: ' + purchase.item}<br />
+                                            {'Amount: ' + purchase.amount}<br />
+                                            {'Category: ' + purchase.category}
+                                        </div>
+                                    </button>
+                                    <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>
+                                </div>
+                                )}
+                                {/*<button className="purchase-info-button">*/}
+                                {/*    <div className={'span'}>*/}
+                                {/*        {'Purchase: ' + purchase.item}<br/>*/}
+                                {/*        {'Amount: ' + purchase.amount}<br/>*/}
+                                {/*        {'Category: ' + purchase.category}*/}
+                                {/*    </div>*/}
+                                {/*</button>*/}
+                                {/*<button className="remove-purchase-button"*/}
+                                {/*        onClick={() => handleRemovePurchase(index)}>X*/}
+                                {/*</button>*/}
+                                {(isSubmitted && !isAddMode) ? ( // render edit button only when user submits
+                                    <button className="remove-purchase-button"
+                                            onClick={() => handleEditPurchase(index)}>Edit</button>
+                                ) : null}
+                                {isEditing && editIndex === index && (
+                                    <div className="edit-purchase"> {/* prepopulate input fields when editing */}
+                                        <h5>Purchase:</h5>
+                                        <input
+                                            className={'purchase-item'}
+                                            type="text"
+                                            value={purchasedItem}
+                                            onChange={(e) => setPurchasedItem(e.target.value)}
+                                            placeholder="Enter your purchased item"
+                                        />
+                                        <div>
+                                            <h6>Amount:</h6>
+                                            <input
+                                                className={'amount-input'}
+                                                type="text"
+                                                value={purchaseAmount}
+                                                onChange={handlePurchaseAmountChange}
+                                                placeholder="Item Amount"
+                                            />
+                                        </div>
+                                        <div className="category-container">
+                                            <h7>Select Category:</h7>
+                                            <select
+                                                className='category-dropdown'
+                                                value={selectedCategory}
+                                                onChange={(e) => setSelectedCategory(e.target.value)}
+                                            >
+                                                <option value="">Select a category</option>
+                                                {selectedCategories.map((category) => (
+                                                    <option key={category} value={category}>
+                                                        {category}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        {amountError && <p className="error-message7">{amountError}</p>}
+                                        {editPurchaseError && <p className="error-message8">{editPurchaseError}</p>}
+                                        <button
+                                            className="add-button2"
+                                            onClick={handleSaveEdit}
+                                            disabled={amountError !== ''}
+                                        >
+                                            Save Edit
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        ))
+                    ) : <p>not in add mode</p>}
+                    {/*{purchases.map((purchase, index) => (*/}
+                    {/*    <div key={index}>*/}
+                    {/*        <button className="purchase-info-button">*/}
+                    {/*            <div className={'span'}>*/}
+                    {/*                {'Purchase: ' + purchase.item}<br />*/}
+                    {/*                {'Amount: ' + purchase.amount}<br />*/}
+                    {/*                {'Category: ' + purchase.category}*/}
+                    {/*            </div>*/}
+                    {/*        </button>*/}
+                    {/*        <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>*/}
+                    {/*        {isSubmitted && ( // render edit button only when user submits*/}
+                    {/*            <button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>*/}
+                    {/*        )}*/}
+                    {/*        {isEditing && editIndex === index && (*/}
+                    {/*            <div className="edit-purchase"> /!* prepopulate input fields when editing *!/*/}
+                    {/*                <h5>Purchase:</h5>*/}
+                    {/*                <input*/}
+                    {/*                    className={'purchase-item'}*/}
+                    {/*                    type="text"*/}
+                    {/*                    value={purchasedItem}*/}
+                    {/*                    onChange={(e) => setPurchasedItem(e.target.value)}*/}
+                    {/*                    placeholder="Enter your purchased item"*/}
+                    {/*                />*/}
+                    {/*                <div>*/}
+                    {/*                    <h6>Amount:</h6>*/}
+                    {/*                    <input*/}
+                    {/*                        className={'amount-input'}*/}
+                    {/*                        type="text"*/}
+                    {/*                        value={purchaseAmount}*/}
+                    {/*                        onChange={handlePurchaseAmountChange}*/}
+                    {/*                        placeholder="Item Amount"*/}
+                    {/*                    />*/}
+                    {/*                </div>*/}
+                    {/*                <div className="category-container">*/}
+                    {/*                    <h7>Select Category:</h7>*/}
+                    {/*                    <select*/}
+                    {/*                        className='category-dropdown'*/}
+                    {/*                        value={selectedCategory}*/}
+                    {/*                        onChange={(e) => setSelectedCategory(e.target.value)}*/}
+                    {/*                    >*/}
+                    {/*                        <option value="">Select a category</option>*/}
+                    {/*                        {selectedCategories.map((category) => (*/}
+                    {/*                            <option key={category} value={category}>*/}
+                    {/*                                {category}*/}
+                    {/*                            </option>*/}
+                    {/*                        ))}*/}
+                    {/*                    </select>*/}
+                    {/*                </div>*/}
+                    {/*                {amountError && <p className="error-message7">{amountError}</p>}*/}
+                    {/*                {editPurchaseError && <p className="error-message8">{editPurchaseError}</p>}*/}
+                    {/*                <button*/}
+                    {/*                    className="add-button2"*/}
+                    {/*                    onClick={handleSaveEdit}*/}
+                    {/*                    disabled={amountError !== ''}*/}
+                    {/*                >*/}
+                    {/*                    Save Edit*/}
+                    {/*                </button>*/}
+                    {/*            </div>*/}
+                    {/*        )}*/}
+                    {/*    </div>*/}
+                    {/*))}*/}
+                </div>
+
+                <button className="submit-button" onClick={handleSubmit}>
+                    Submit
+                </button>
+
+                {((purchases.length > 0 && !isAddMode) || (arePurchasesStored)) &&
+                // {((purchases.length > 0 && !isAddMode)) &&
+                    <DisplayDailySpending
+                        purchases={purchases}
+                        purchasedItem={purchasedItem}
+                        setPurchasedItem={setPurchasedItem}
+                        purchaseAmount={purchaseAmount}
+                        handlePurchaseAmountChange={handlePurchaseAmountChange}
+                        selectedCategory={selectedCategory}
+                        setSelectedCategory={setSelectedCategory}
+                        selectedCategories={selectedCategories}
+                        amountError={amountError}
+                        editPurchaseError={editPurchaseError}
+                        handleRemovePurchase={handleRemovePurchase}
+                        mockInputDailyInfo={mockInputDailyInfo}
+                        isSubmitted={isSubmitted}
+                        setPurchaseAmount={setPurchaseAmount}
+                        isAddMode={false}
+                        arePurchasesStored={arePurchasesStored}
+                        // handleSaveEdit={handleSaveEdit}
+                    />
+                }
+                {/*{purchases.length > 0 && (*/}
+                {/*    <button*/}
+                {/*        className="submit-button"*/}
+                {/*        onClick={handleSubmit}*/}
+                {/*    >*/}
+                {/*        Submit*/}
+                {/*    </button>*/}
+                {/*)}*/}
             </div>
-
-            <button className="submit-button" onClick={handleSubmit}>
-                Submit
-            </button>
-
-            {(purchases.length > 0 && !isAddMode) &&
-                <DisplayDailySpending
-                    purchases={purchases}
-                    purchasedItem={purchasedItem}
-                    setPurchasedItem={setPurchasedItem}
-                    purchaseAmount={purchaseAmount}
-                    handlePurchaseAmountChange={handlePurchaseAmountChange}
-                    selectedCategory={selectedCategory}
-                    setSelectedCategory={setSelectedCategory}
-                    selectedCategories={selectedCategories}
-                    amountError={amountError}
-                    editPurchaseError={editPurchaseError}
-                    handleRemovePurchase={handleRemovePurchase}
-                    mockInputDailyInfo={mockInputDailyInfo}
-                    isSubmitted={isSubmitted}
-                    setPurchaseAmount={setPurchaseAmount}
-                    // handleSaveEdit={handleSaveEdit}
-                />
-            }
-            {/*{purchases.length > 0 && (*/}
-            {/*    <button*/}
-            {/*        className="submit-button"*/}
-            {/*        onClick={handleSubmit}*/}
-            {/*    >*/}
-            {/*        Submit*/}
-            {/*    </button>*/}
-            {/*)}*/}
-        </div>
-    );
+        );
+    // }
 }
 
 function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purchaseAmount,
                                   handlePurchaseAmountChange, setPurchaseAmount, selectedCategory, setSelectedCategory, selectedCategories,
-                              amountError, editPurchaseError, handleRemovePurchase, isSubmitted, mockInputDailyInfo }) {
+                              amountError, editPurchaseError, handleRemovePurchase, isSubmitted, mockInputDailyInfo, isAddMode, arePurchasesStored }) {
     // return (<p> this is the display page</p>)
 
     const [isEditing, setIsEditing] = useState(false);
@@ -416,6 +480,8 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
             {/*{(mockInputDailyInfo.purchases).map((purchase, index) => (*/}
             {purchases.map((purchase, index) => (
                 <div key={index}>
+                    {/*{(isSubmitted && arePurchasesStored) && (*/}
+                        <div>
                     <button className="purchase-info-button">
                         <div className={'span'}>
                             {/*{'Purchase: ' + purchase.purchaseName}<br />*/}
@@ -427,9 +493,11 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                         </div>
                     </button>
                     <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>
-                    {isSubmitted && ( // render edit button only when user submits
+                        </div>
+                        {/*)}*/}
+                    {(isSubmitted && !isAddMode) ? ( // render edit button only when user submits
                         <button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>
-                    )}
+                    ) : null}
                     {isEditing && editIndex === index && (
                         <div className="edit-purchase"> {/* prepopulate input fields when editing */}
                             <h5>Purchase:</h5>
