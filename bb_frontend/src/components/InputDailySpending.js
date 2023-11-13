@@ -72,6 +72,7 @@ function InputDailySpending() {
             setPurchasedItem('');
             setPurchaseAmount('');
             setSelectedCategory('');
+
             setAddPurchaseError('');
             setEditIndex(null);
             setIsEditing(false);
@@ -85,7 +86,7 @@ function InputDailySpending() {
         if (purchases.length === 0) {
             setMessage(message);
         } else {
-            setMessage("Today's purchases:");
+            setMessage("");
             setIsSubmitted(true);
         }
         setShowPurchaseFields(false);
@@ -165,7 +166,9 @@ function InputDailySpending() {
     // } else {
         return (
             <div>
-                <h2>{message}</h2>
+                {purchases.length === 0 && (
+                    <h2>{message}</h2>
+                )}
                 <div className="add-user-input">
                     <h4>Input Purchase:</h4>
                     <button
@@ -312,7 +315,7 @@ function InputDailySpending() {
                                 )}
                             </div>
                         ))
-                    ) : <p>not in add mode</p>}
+                    ) : null}
                     {/*{purchases.map((purchase, index) => (*/}
                     {/*    <div key={index}>*/}
                     {/*        <button className="purchase-info-button">*/}
@@ -399,6 +402,8 @@ function InputDailySpending() {
                         setPurchaseAmount={setPurchaseAmount}
                         isAddMode={false}
                         arePurchasesStored={arePurchasesStored}
+                        setPurchases={setPurchases}
+                        showPurchaseFields={showPurchaseFields}
                         // handleSaveEdit={handleSaveEdit}
                     />
                 }
@@ -417,7 +422,7 @@ function InputDailySpending() {
 
 function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purchaseAmount,
                                   handlePurchaseAmountChange, setPurchaseAmount, selectedCategory, setSelectedCategory, selectedCategories,
-                              amountError, editPurchaseError, handleRemovePurchase, isSubmitted, mockInputDailyInfo, isAddMode, arePurchasesStored }) {
+                              amountError, editPurchaseError, handleRemovePurchase, isSubmitted, mockInputDailyInfo, isAddMode, arePurchasesStored, setPurchases, showPurchaseFields }) {
     // return (<p> this is the display page</p>)
 
     const [isEditing, setIsEditing] = useState(false);
@@ -436,18 +441,17 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
         setPurchasedItem(selectedPurchase.item);
         setPurchaseAmount(selectedPurchase.amount);
         setSelectedCategory(selectedPurchase.category);
-        return (<p>in edit mode</p>);
     };
 
-    const handleSaveEdit = (index, editedPurchase) => {
+    const handleSaveEdit = (index) => {
         if (index !== null) {
             if (purchasedItem.trim() && purchaseAmount.trim() && selectedCategory) {
-                const updatedPurchases = [...mockInputDailyInfo.purchases];
-                updatedPurchases[index] = {
-                    purchaseName: purchasedItem,
-                    purchaseAmount: purchaseAmount,
-                    purchaseCategory: selectedCategory,
-                };
+            //     const updatedPurchases = [...mockInputDailyInfo.purchases];
+            //     updatedPurchases[index] = {
+            //         purchaseName: purchasedItem,
+            //         purchaseAmount: purchaseAmount,
+            //         purchaseCategory: selectedCategory,
+            //     };
 
                 // Update the state in the parent component or handle it as needed
                 // Assuming you have a function like setMockInputDailyInfo to update the state
@@ -458,30 +462,45 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
 
                 setIsEditing(false);
                 setEditIndex(null);
-                setPurchasedItem('');
-                setPurchaseAmount('');
-                setSelectedCategory('');
+                // setPurchasedItem(updatedPurchases[index].purchaseName);
+                // setPurchaseAmount(updatedPurchases[index].purchaseAmount);
+                // setSelectedCategory(updatedPurchases[index].purchaseCategory);
+
+                // setPurchasedItem(editedPurchase.purchaseName);
+                // setPurchaseAmount(editedPurchase.purchaseAmount);
+                // setSelectedCategory(editedPurchase.purchaseCategory);
+                // console.log("variables are updated")
+                // console.log("name " + purchasedItem)
+                // console.log("amount " + purchaseAmount)
+                // console.log("category " + selectedCategory)
+                const updatedPurchases = [...purchases];
+                updatedPurchases[editIndex] = {
+                    item: purchasedItem,
+                    amount: purchaseAmount,
+                    category: selectedCategory,
+                };
+                // purchases = updatedPurchases;
+                setPurchases(updatedPurchases);
+
             } else {
-                return (<p>please fill in all fields</p>)
+                console.log("please fill in all fields")
             }
         } else {
-            return (<p>no edit index</p>)
+            console.log("index doesn't exist")
         }
-        // // Save the edited purchase data (you may need to pass a function to update the state in the parent component)
-        // setIsEditing(false);
-        //
-        // setPurchasedItem('');
-        // setPurchaseAmount('');
-        // setSelectedCategory('');
+        console.log("handle save is rendering")
     };
 
+    // let editedPurchase = {purchaseName: "", purchaseAmount: "", purchaseCategory: ""};
     return (
         <div>
+            {(!showPurchaseFields && isSubmitted && purchases.length > 0) && (
+                <h2>Today's Purchases</h2>
+            )}
             {/*{(mockInputDailyInfo.purchases).map((purchase, index) => (*/}
             {purchases.map((purchase, index) => (
                 <div key={index}>
                     {/*{(isSubmitted && arePurchasesStored) && (*/}
-                        <div>
                     <button className="purchase-info-button">
                         <div className={'span'}>
                             {/*{'Purchase: ' + purchase.purchaseName}<br />*/}
@@ -493,7 +512,6 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                         </div>
                     </button>
                     <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>
-                        </div>
                         {/*)}*/}
                     {(isSubmitted && !isAddMode) ? ( // render edit button only when user submits
                         <button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>
@@ -508,6 +526,7 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                                 onChange={(e) => setPurchasedItem(e.target.value)}
                                 placeholder="Enter your purchased item"
                             />
+                            {/*{editedPurchase.purchaseName = purchasedItem}*/}
                             <div>
                                 <h6>Amount:</h6>
                                 <input
@@ -518,6 +537,7 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                                     placeholder="Item Amount"
                                 />
                             </div>
+                            {/*{editedPurchase.purchaseAmount = purchaseAmount}*/}
                             <div className="category-container">
                                 <h7>Select Category:</h7>
                                 <select
@@ -533,6 +553,7 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                                     ))}
                                 </select>
                             </div>
+                            {/*{editedPurchase.purchaseCategory = selectedCategory}*/}
                             {amountError && <p className="error-message7">{amountError}</p>}
                             {editPurchaseError && <p className="error-message8">{editPurchaseError}</p>}
                             <button
