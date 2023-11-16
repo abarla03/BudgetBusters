@@ -11,3 +11,7 @@ export function get(url, params) {
 export function put(url, body) {
     return axios.put(url, body);
 }
+
+export function del(url) {
+    return axios.delete(url);
+}
