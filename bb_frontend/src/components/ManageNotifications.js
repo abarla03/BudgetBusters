@@ -51,6 +51,7 @@ function SetNotifications() {
             emailjs.init("user_yourEmailJsUserId");
 
             return () => {
+                // resets the email
                 emailjs.reset();
             };
         }, []);
