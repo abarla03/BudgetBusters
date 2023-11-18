@@ -56,6 +56,26 @@ function SetNotifications() {
         }, []);
     }
 
+    const sendEmail = () => {
+        const templateParams = {
+            to_email: 'recipient@example.com',
+            subject: 'Your Subject',
+            // other template parameters
+        };
+
+        emailjs.send(
+            'your_service_id',
+            'your_template_id',
+            templateParams
+        )
+            .then((response) => {
+                console.log('Email sent successfully:', response);
+            })
+            .catch((error) => {
+                console.error('Email could not be sent:', error);
+            });
+    };
+
     /* yes/no dropdown for user's budget limit warning notification choice */
     const handleWarningNotificationChange = (e) => {
         setWarningNotificationChoice(e.target.value);
