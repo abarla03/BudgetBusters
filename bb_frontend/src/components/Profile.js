@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import 'firebase/auth';
 import { auth } from "../firebase";
 
-function Profile() {
+function CreateProfile() {
     const user = auth.currentUser;
 
     let firebaseEmail = "";
@@ -29,7 +29,8 @@ function Profile() {
     const [age, setAge] = useState('');
     const [phone, setPhone] = useState('');
     const [phoneValidationMessage, setPhoneValidationMessage] = useState('');
-    const [isProfileSubmitted, setIsProfileSubmitted] = useState(false);
+    // const [isProfileSubmitted, setIsProfileSubmitted] = useState(false);
+    const [isProfileSubmitted, setIsProfileSubmitted] = useState(Boolean(localStorage.getItem(`profileInfo_${firebaseEmail}`)));
 
     // checking for user input values
     const [inputValue, setInputValue] = useState('');
@@ -40,6 +41,12 @@ function Profile() {
     const [editAge, setEditAge] = useState('');
     const [editPhone, setEditPhone] = useState('');
 
+    // const mockProfileData = {
+    //     fullName: "Dummy Data",
+    //     email: "dummydata@gmail.com",
+    //     age: 90,
+    //     phoneNumber: 1234567890
+    // }
     /* populate name and email fields with already-inputted info */
     const populateProfileData = () => {
         //const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
@@ -67,6 +74,8 @@ function Profile() {
     const handleEditClick = () => {
         populateProfileData();
         setIsEditMode(true);
+
+        console.log("in handle edit click function");
     };
 
     /* function handling the saved information from edit */
@@ -134,6 +143,7 @@ function Profile() {
     const handleCreateProfile = () => {
         // Add logic to submit profile information
         setIsProfileSubmitted(true);
+        localStorage.setItem(`profileInfo_${firebaseEmail}`, JSON.stringify(user));
     };
 
     // return (
@@ -216,74 +226,90 @@ function Profile() {
         );
     };
 
-    const displayProfile = () => {
-        return (
-            // <div>
-            //     <h5>Name: {fullName}</h5>
-            //     <h5>Email: {email}</h5>
-            //     <h5>Age: {age}</h5>
-            //     <h5>Phone number: {phone}</h5>
-            //
-            //     <div>
-            //         {isEditMode ? (
-            //             <button className='edit-button' onClick={handleSaveClick}>Save</button>
-            //         ) : (
-            //             <button className='edit-button' onClick={handleEditClick}>Edit</button>
-            //         )}
-            //     </div>
-            // </div>
-            <div>
-                <h5>Name: {isEditMode ? <input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} /> : fullName}</h5>
-                <h5>Email: {isEditMode ? <input value={editEmail} onChange={(e) => setEditEmail(e.target.value)} /> : email}</h5>
-
-                <h5>Age:
-                    {isEditMode ? (
-                        <input
-                            value={editAge}
-                            onChange={(e) => setEditAge(e.target.value)}
-                            type="text"
-                            id="age"
-                            placeholder="Enter your age"
-                            name="age"
-                        />
-                    ) : (
-                        <span>{age}</span>
-                    )}
-                </h5>
-                <p>{validationMessage}</p>
-
-                <h5>Phone number:
-                    {isEditMode ? (
-                        <input
-                            value={editPhone}
-                            onChange={(e) => setEditPhone(e.target.value)}
-                            type="text"
-                            id="phone"
-                            placeholder="Enter your phone number"
-                            name="phone"
-                        />
-                    ) : (
-                        <span>{phone}</span>
-                    )}
-                </h5>
-                <p>{phoneValidationMessage}</p>
-
-                <div>
-                    {isEditMode ? (
-                        <button className='edit-button' onClick={handleSaveClick}>Save</button>
-                    ) : (
-                        <button className='edit-button' onClick={handleEditClick}>Edit</button>
-                    )}
-                </div>
-
-                <button className="submit-button" onClick={handleDeleteAccount}>Delete Account</button>
-            </div>
-        );
-    };
+    // const displayProfile = () => {
+    //     return (
+    //         // <div>
+    //         //     <h5>Name: {fullName}</h5>
+    //         //     <h5>Email: {email}</h5>
+    //         //     <h5>Age: {age}</h5>
+    //         //     <h5>Phone number: {phone}</h5>
+    //         //
+    //         //     <div>
+    //         //         {isEditMode ? (
+    //         //             <button className='edit-button' onClick={handleSaveClick}>Save</button>
+    //         //         ) : (
+    //         //             <button className='edit-button' onClick={handleEditClick}>Edit</button>
+    //         //         )}
+    //         //     </div>
+    //         // </div>
+    //         <div>
+    //             <h5>Name: {isEditMode ? <input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} /> : fullName}</h5>
+    //             <h5>Email: {isEditMode ? <input value={editEmail} onChange={(e) => setEditEmail(e.target.value)} /> : email}</h5>
+    //
+    //             <h5>Age:
+    //                 {isEditMode ? (
+    //                     <input
+    //                         value={editAge}
+    //                         onChange={(e) => setEditAge(e.target.value)}
+    //                         type="text"
+    //                         id="age"
+    //                         placeholder="Enter your age"
+    //                         name="age"
+    //                     />
+    //                 ) : (
+    //                     <span>{age}</span>
+    //                 )}
+    //             </h5>
+    //             <p>{validationMessage}</p>
+    //
+    //             <h5>Phone number:
+    //                 {isEditMode ? (
+    //                     <input
+    //                         value={editPhone}
+    //                         onChange={(e) => setEditPhone(e.target.value)}
+    //                         type="text"
+    //                         id="phone"
+    //                         placeholder="Enter your phone number"
+    //                         name="phone"
+    //                     />
+    //                 ) : (
+    //                     <span>{phone}</span>
+    //                 )}
+    //             </h5>
+    //             <p>{phoneValidationMessage}</p>
+    //
+    //             <div>
+    //                 {isEditMode ? (
+    //                     <button className='edit-button' onClick={handleSaveClick}>Save</button>
+    //                 ) : (
+    //                     <button className='edit-button' onClick={handleEditClick}>Edit</button>
+    //                 )}
+    //             </div>
+    //
+    //             <button className="submit-button" onClick={handleDeleteAccount}>Delete Account</button>
+    //         </div>
+    //     );
+    // };
 
     return (
         <div>
-            {isProfileSubmitted ? displayProfile() : createProfile()}
+            {isProfileSubmitted ?
+                <DisplayProfile
+                    firebaseDisplayName={firebaseDisplayName}
+                    setEmail={firebaseDisplayName}
+                    firebaseEmail={firebaseEmail}
+                    fullName={fullName}
+                    email={email}
+                    age={age}
+                    validationMessage={validationMessage}
+                    phone={phone}
+                    phoneValidationMessage={phoneValidationMessage}
+                    handleSaveClick={handleSaveClick}
+                    handleEditClick={handleEditClick}
+                    handleDeleteAccount={handleDeleteAccount}
+                />
+
+                : createProfile()}
 
             <button className="submit-button"
                     onClick={handleDeleteAccount}>Delete Account</button>
@@ -291,6 +317,131 @@ function Profile() {
     );
 }
 
-export default Profile;
+function DisplayProfile(handleSaveClick, handleDeleteAccount, mockProfileData) {
+
+    const [email, setEmail] = useState('');
+    const [fullName, setFullName] = useState('');
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [editFullName, setEditFullName] = useState('');
+    const [editEmail, setEditEmail] = useState('');
+    const [editPhone, setEditPhone] = useState('');
+    const [editAge, setEditAge] = useState('');
+    const firebaseDisplayName = "haha"
+    const firebaseEmail = "haha@gmail.com"
+    const age = 20;
+    const validationMessage = "haha2"
+    const phone = 5677555645654
+    const phoneValidationMessage = "haha3"
+
+    // const handleEditClick = () => {
+    //     // setIsEditMode(true);
+    //
+    //     console.log("in handle edit click function");
+    // };
+    const populateProfileData = () => {
+        //const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
+        setFullName(firebaseDisplayName);
+        setEmail(firebaseEmail);
+
+        // users will enter this info for the first time, so don't populate
+        // unless we extract phone from google account settings...
+
+        //setAge(dummyAge);
+        //setPhone(dummyPhone);
+        setEditFullName(firebaseDisplayName);
+        setEditEmail(firebaseEmail);
+        setEditAge(age);
+        setEditPhone(phone);
+
+    }
+
+    /* call the appropriate method to populate fields */
+    useEffect (() => {
+        populateProfileData();
+    }, []);
+
+    /* function handling the edit mode */
+    const handleEditClick = () => {
+        populateProfileData();
+        setIsEditMode(true);
+
+        console.log("in handle edit click function");
+    };
+
+    return (
+        // <div>
+        //     <h5>Name: {fullName}</h5>
+        //     <h5>Email: {email}</h5>
+        //     <h5>Age: {age}</h5>
+        //     <h5>Phone number: {phone}</h5>
+        //
+        //     <div>
+        //         {isEditMode ? (
+        //             <button className='edit-button' onClick={handleSaveClick}>Save</button>
+        //         ) : (
+        //             <button className='edit-button' onClick={handleEditClick}>Edit</button>
+        //         )}
+        //     </div>
+        // </div>
+
+
+
+        <div>
+            <h2>display mode</h2>
+            <h5>Name: {isEditMode ? <input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} /> : fullName}</h5>
+            <h5>Email: {isEditMode ? <input value={editEmail} onChange={(e) => setEditEmail(e.target.value)} /> : email}</h5>
+
+            <h5>Age:
+                {isEditMode ? (
+                    <input
+                        value={editAge}
+                        onChange={(e) => setEditAge(e.target.value)}
+                        type="text"
+                        id="age"
+                        placeholder="Enter your age"
+                        name="age"
+                    />
+                ) : (
+                    <span>{age}</span>
+                )}
+            </h5>
+            <p>{validationMessage}</p>
+
+            <h5>Phone number:
+                {isEditMode ? (
+                    <input
+                        value={editPhone}
+                        onChange={(e) => setEditPhone(e.target.value)}
+                        type="text"
+                        id="phone"
+                        placeholder="Enter your phone number"
+                        name="phone"
+                    />
+                ) : (
+                    <span>{phone}</span>
+                )}
+            </h5>
+            <p>{phoneValidationMessage}</p>
+
+            <div>
+                {isEditMode ? (
+                    <div>
+                    <h2>in edit mode.</h2>
+                    <button className='edit-button' onClick={handleSaveClick}>Save</button>
+                    </div>
+                ) : (
+                    <div>
+                        <h2>NOT in edit mode.</h2>
+                    <button className='edit-button' onClick={handleEditClick}>Edit</button>
+                    </div>
+                )}
+            </div>
+
+            <button className="submit-button" onClick={handleDeleteAccount}>Delete Account</button>
+        </div>
+    );
+}
+
+export default CreateProfile;
 
 // export default Profile;
