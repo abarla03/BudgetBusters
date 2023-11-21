@@ -17,6 +17,9 @@ function InputDailySpending() {
     const [inputDailyObj, setInputDailyObj] = useState({});
     const [inputDailyUpdated, setInputDailyUpdated] = useState(false); // to re-fetch budget info whenever update happens
 
+    const [budgetGoalObj, setBudgetGoalObj] = useState({});
+    const [budgetUpdated, setBudgetUpdated] = useState(false); // to re-fetch budget info whenever update happens
+
     /* obtaining input daily spending object from user input */
     useEffect(() => {
         function fetchInputDailyData() {
@@ -29,14 +32,33 @@ function InputDailySpending() {
             }
             return data;
         }
-
         fetchInputDailyData().then((response) => {
             setInputDailyObj(response.data);
         });
-        setInputDailyUpdated(false)
-        console.log("inputDailyObj", inputDailyObj)
-
+        setInputDailyUpdated(false);
+        console.log("inputDailyObj", inputDailyObj);
     }, [userEmail, inputDailyUpdated]);
+
+    /* obtaining budget goal object from user input */
+    useEffect(() => {
+        function fetchBudgetData() {
+            let data;
+            try {
+                // Make the GET request to retrieve the budget
+                data = get(`/getBudget/${userEmail}`)
+            } catch (error) {
+                console.error("Error creating or fetching budget:", error);
+            }
+            return data;
+        }
+
+        fetchBudgetData().then((response) => {
+            setBudgetGoalObj(response.data);
+        });
+        setBudgetUpdated(false)
+        // console.log("budgetGoalObj", budgetGoalObj)
+
+    }, [userEmail, budgetUpdated]);
 
     const [showPurchaseFields, setShowPurchaseFields] = useState(false);
     const [purchasedItem, setPurchasedItem] = useState('');
@@ -53,8 +75,8 @@ function InputDailySpending() {
     const [isAddMode, setIsAddMode] = useState(true);
     const arePurchasesStored = purchases.length > 0;
 
-    /* dummy category data */
-    const selectedCategories = Object.values({category1: "Rent", category2: "Groceries", category3: "Gym"});
+    /* category data from setMonthlyGoal Page*/
+    const selectedCategories = budgetGoalObj.allCategories;
 
     /* function handling non-numeric values in purchase amount field */
     const handlePurchaseAmountChange = (event) => {
@@ -249,7 +271,7 @@ function InputDailySpending() {
                                 onChange={(e) => setSelectedCategory(e.target.value)}
                             >
                                 <option value="">Select a category</option>
-                                {selectedCategories.map((category) => (
+                                {selectedCategories?.map((category) => (
                                     <option key={category} value={category}>
                                         {category}
                                     </option>
@@ -317,7 +339,7 @@ function InputDailySpending() {
                                             onChange={(e) => setSelectedCategory(e.target.value)}
                                         >
                                             <option value="">Select a category</option>
-                                            {selectedCategories.map((category) => (
+                                            {selectedCategories?.map((category) => (
                                                 <option key={category} value={category}>
                                                     {category}
                                                 </option>
@@ -475,7 +497,7 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                                     onChange={(e) => setSelectedCategory(e.target.value)}
                                 >
                                     <option value="">Select a category</option>
-                                    {selectedCategories.map((category) => (
+                                    {selectedCategories?.map((category) => (
                                         <option key={category} value={category}>
                                             {category}
                                         </option>
