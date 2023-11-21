@@ -43,6 +43,8 @@ exports.sendSMS = (phoneNumber, message) => {
     });
 };
 
+// USE NOTIFICATIONS.JAVA for getting backend user info
+
 // Scheduled function to send daily notifications
 exports.dailyNotification = functions.pubsub.schedule('every day 08:00').timeZone('America/New_York').onRun((context) => {
     const phoneNumber = '+12247049742';
@@ -58,4 +60,25 @@ exports.dailyNotification = functions.pubsub.schedule('every day 08:00').timeZon
             return null;
         });
 });
+
+// Scheduled function to send setMonthlyGoal (monthly) notifications
+exports.monthlyNotification = functions.pubsub.schedule('every month 08:00').timeZone('America/New_York').onRun((context) => {
+    const phoneNumber = '+12247049742';
+    const message = 'Your monthly notification message';
+
+    return exports.sendSMS(phoneNumber, message)
+        .then(() => {
+            console.log('monthly notification sent!');
+            return null;
+        })
+        .catch((error) => {
+            console.error('Error sending monthly notification:', error);
+            return null;
+        });
+});
+
+
+// function to send budgetWarning
+
+
 
