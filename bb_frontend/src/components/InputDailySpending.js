@@ -1,17 +1,567 @@
+// most recent aj_ra_input_daily (with bug fixes)
+// import React, { useState, useEffect } from 'react';
+// import { auth } from "../firebase";
+// // import {post, put, get, del} from "./ApiClient";
+//
+// function InputDailySpending() {
+//     const user = auth.currentUser;
+//     const userEmail = user ? user.email : "";
+//     // useEffect(() => {
+//     //     const storedPurchases = JSON.parse(localStorage.getItem(`purchases_${userEmail}`));
+//     //     if (storedPurchases && storedPurchases.length > 0) {
+//     //         setPurchases(storedPurchases);
+//     //         setIsSubmitted(true);
+//     //         // Other necessary state updates
+//     //     }
+//     // }, []);
+//
+//     const [inputDailyObj, setInputDailyObj] = useState({});
+//     const [inputDailyUpdated, setInputDailyUpdated] = useState(false); // to re-fetch budget info whenever update happens
+//
+//     /* obtaining input daily spending object from user input */
+//     // useEffect(() => {
+//     //     function fetchInputDailyData() {
+//     //         let data;
+//     //         try {
+//     //             // Make the GET request to retrieve the budget
+//     //             data = get(`/getPurchase/${userEmail}`)
+//     //         } catch (error) {
+//     //             console.error("Error creating or fetching purchase(s):", error);
+//     //         }
+//     //         return data;
+//     //     }
+//     //
+//     //     fetchInputDailyData().then((response) => {
+//     //         setInputDailyObj(response.data);
+//     //     });
+//     //     setInputDailyUpdated(false)
+//     //     console.log("inputDailyObj", inputDailyObj)
+//     //
+//     // }, [userEmail, inputDailyUpdated]);
+//
+//     const [showPurchaseFields, setShowPurchaseFields] = useState(false);
+//     const [purchasedItem, setPurchasedItem] = useState('');
+//     const [purchaseAmount, setPurchaseAmount] = useState('');
+//     const [amountError, setAmountError] = useState('');
+//     const [addPurchaseError, setAddPurchaseError] = useState('');
+//     const [editPurchaseError, setEditPurchaseError] = useState('');
+//     const [selectedCategory, setSelectedCategory] = useState('');
+//     const [purchases, setPurchases] = useState([]); // State to store added purchases
+//     const [message, setMessage] = useState("You did not spend anything today.");
+//     const [isEditing, setIsEditing] = useState(false);
+//     const [isSubmitted, setIsSubmitted] = useState(false);
+//     const [editIndex, setEditIndex] = useState(null);
+//     const [isAddMode, setIsAddMode] = useState(true);
+//     const arePurchasesStored = purchases.length > 0;
+//
+//     /* dummy category data */
+//     const selectedCategories = Object.values({category1: "Rent", category2: "Groceries", category3: "Gym"});
+//
+//     /* function handling non-numeric values in purchase amount field */
+//     const handlePurchaseAmountChange = (event) => {
+//         const inputAmount = event.target.value;
+//         const numericRegex = /^[0-9]*$/;
+//
+//         if (numericRegex.test(inputAmount)) {
+//             setPurchaseAmount(inputAmount);
+//             setAmountError('');
+//         } else {
+//             setPurchaseAmount(inputAmount);
+//             setAmountError('Invalid purchase amount. Please provide a numerical input.');
+//         }
+//     };
+//
+//     /* function handling purchase adding - making sure every field is entered */
+//     const handleAddPurchase = () => {
+//         if (purchasedItem.trim() && purchaseAmount.trim() && selectedCategory) {
+//             const newPurchase = {
+//                 item: purchasedItem,
+//                 amount: purchaseAmount,
+//                 category: selectedCategory,
+//                 selected: true,
+//             };
+//             setPurchases([...purchases, newPurchase]);
+//             setPurchasedItem('');
+//             setPurchaseAmount('');
+//             setSelectedCategory('');
+//
+//             setAddPurchaseError('');
+//             setEditIndex(null);
+//             setIsEditing(false);
+//         } else {
+//             setAddPurchaseError('Please fill in all fields.');
+//         }
+//     };
+//
+//     /* function handling the submit button for finalizing user purchases and displaying them in reverse order */
+//     const handleSubmit = async () => {
+//         if (purchases.length === 0) {
+//             setMessage(message);
+//         } else {
+//             setMessage("");
+//             setIsSubmitted(true);
+//         }
+//         setShowPurchaseFields(false);
+//         setPurchases(purchases);
+//         // setPurchases(purchases.slice().reverse());
+//         setIsAddMode(false);
+//
+//         localStorage.setItem(`purchases_${userEmail}`, JSON.stringify(purchases));
+//
+//         // send json obj
+//         const userPurchaseInfo = {
+//             email: userEmail,
+//             numPurchases: purchases.length,
+//             purchases: purchases.map((purchase) => ({
+//                 purchaseName: purchase.item,
+//                 purchaseAmount: purchase.amount,
+//                 purchaseCategory: purchase.category,
+//             }))
+//         }
+//         // console.log("userPurchaseInfo", userPurchaseInfo)
+//         // const createInputDailyResponse = await post('/createPurchase', userPurchaseInfo);
+//         // setInputDailyUpdated(true);
+//         // console.log("createInputDailyResponse", createInputDailyResponse)
+//         // window.alert("Added purchase(s)!");
+//
+//     };
+//
+//     /* function handling purchase removal and associated default message */
+//     const handleRemovePurchase = async (index) => {
+//         const updatedPurchases = [...purchases];
+//         updatedPurchases.splice(index, 1);
+//         setPurchases(updatedPurchases);
+//         if (updatedPurchases.length === 0) {
+//             setMessage('You did not spend anything today.');
+//         }
+//
+//         const purchaseToRemove = {
+//             email: userEmail,
+//             purchase: purchases[index]
+//         }
+//         // console.log("purchaseToRemove", purchaseToRemove)
+//         // const delPurchaseResponse = await del(`/deletePurchase/${userEmail}/${index}`, purchaseToRemove);
+//         // setInputDailyUpdated(true);
+//         // console.log("delPurchaseResponse", delPurchaseResponse)
+//     };
+//
+//     /* function to edit input spending */
+//     const handleEditPurchase = (index) => {
+//         const purchaseToEdit = purchases[index];
+//         setPurchasedItem(purchaseToEdit.item);
+//         setPurchaseAmount(purchaseToEdit.amount);
+//         setSelectedCategory(purchaseToEdit.category);
+//         setEditIndex(index);
+//         setIsEditing(true);
+//         setEditPurchaseError('');
+//     };
+//
+//
+//     const handleSaveEdit1 = async () => {
+//         if (editIndex !== null) {
+//             if (purchasedItem.trim() && purchaseAmount.trim() && selectedCategory) {
+//                 const updatedPurchases = [...purchases];
+//                 updatedPurchases[editIndex] = {
+//                     item: purchasedItem,
+//                     amount: purchaseAmount,
+//                     category: selectedCategory,
+//                 };
+//                 setPurchases(updatedPurchases);
+//                 setEditIndex(null);
+//                 setIsEditing(false);
+//                 setEditPurchaseError('');
+//
+//                 // // creates a full list of category names (whether they have been modified or not)
+//                 // const purchasesAfterEdit = purchases.reduce((list, purchase) => {
+//                 //     list.push(categoryNames[purchase] || category);
+//                 //     return list;
+//                 // }, []);
+//
+//                 // send json obj
+//                 const updatedPurchaseInfo = {
+//                     email: userEmail,
+//                     numPurchases: purchases.length,
+//                     purchases: purchases.map((purchase) => ({
+//                         purchaseName: purchase.item,
+//                         purchaseAmount: purchase.amount,
+//                         purchaseCategory: purchase.category,
+//                     totalDailySpending: 500
+//                     }))
+//                 }
+//                 // console.log("updatedPurchaseInfo", updatedPurchaseInfo)
+//                 // const updatedInputDailyResponse = await put('/updatePurchase', updatedPurchaseInfo);
+//                 // setInputDailyUpdated(true);
+//                 // console.log("updatedInputDailyResponse", updatedInputDailyResponse)
+//
+//             } else {
+//                 setEditPurchaseError('Please fill in all fields.');
+//             }
+//         } else {
+//             setEditPurchaseError('No purchase selected for editing.');
+//         }
+//     };
+//
+//     let purchaseMockInfo = {totalDailySpending: 600};
+//     // instead of mock, the value will be called from inputDailyObj.totalDailySpending
+//
+//     return (
+//         <div>
+//             {((inputDailyObj.isEmpty) || (inputDailyObj?.numPurchases === 0)) ? (
+//                 <h2>{message}</h2>
+//             ) : <h2>{"Total Spending for Today: $" + purchaseMockInfo.totalDailySpending}</h2>}
+//             <div className="add-user-input">
+//                 <h4>Input Purchase:</h4>
+//                 <button
+//                     className={'plus-button'}
+//                     onClick={() => {
+//                         setShowPurchaseFields(!showPurchaseFields);
+//                         setIsAddMode(true);
+//                         setPurchasedItem(''); // Clear previous values when switching to Add mode
+//                         setPurchaseAmount('');
+//                         setSelectedCategory('');
+//                     }}
+//                 >
+//                     +
+//                 </button>
+//             </div>
+//
+//             <div className="add-field">
+//                 {showPurchaseFields && (
+//                     <div className={'input-purchase'}>
+//                         <h5>Purchase:</h5>
+//                         <input
+//                             className={'purchase-item'}
+//                             type="text"
+//                             value={purchasedItem}
+//                             onChange={(e) => setPurchasedItem(e.target.value)}
+//                             placeholder="Enter your purchased item"
+//                         />
+//                         <div>
+//                             <h6>Amount:</h6>
+//                             <input
+//                                 className={'amount-input'}
+//                                 type="text"
+//                                 value={purchaseAmount}
+//                                 onChange={handlePurchaseAmountChange}
+//                                 placeholder="Item Amount"
+//                             />
+//                         </div>
+//                         <div className="category-container">
+//                             <h7>Select Category:</h7>
+//                             <select
+//                                 className='category-dropdown'
+//                                 value={selectedCategory}
+//                                 onChange={(e) => setSelectedCategory(e.target.value)}
+//                             >
+//                                 <option value="">Select a category</option>
+//                                 {selectedCategories.map((category) => (
+//                                     <option key={category} value={category}>
+//                                         {category}
+//                                     </option>
+//                                 ))}
+//                             </select>
+//                         </div>
+//                         {amountError && <p className="error-message2">{amountError}</p>}
+//                         {addPurchaseError && <p className="error-message3">{addPurchaseError}</p>}
+//                         <button
+//                             className="add-button2"
+//                             onClick={isAddMode ? handleAddPurchase : handleSaveEdit1}
+//                             disabled={amountError !== ''}
+//                         >
+//                             {isAddMode ? "Add Purchase" : "Save Edit"}
+//                         </button>
+//                     </div>
+//                 )}
+//             </div>
+//
+//             <div>
+//                 {/*<h2>You did not spend anything today pt2</h2>*/}
+//                 {isAddMode ? (
+//                     // <div>
+//                     // <h2>You did not spend anything today pt2</h2>
+//                         purchases.map((purchase, index) => (
+//                         <div key={index}>
+//                             {/*{(!arePurchasesStored) && (*/}
+//                                 <div>
+//                                     <button className="purchase-info-button">
+//                                         <div className={'span'}>
+//                                             {'Purchase: ' + purchase.item}<br />
+//                                             {'Amount: ' + purchase.amount}<br />
+//                                             {'Category: ' + purchase.category}
+//                                         </div>
+//                                     </button>
+//                                     <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>
+//                                 </div>
+//                             {(isSubmitted && !isAddMode) ? ( // render edit button only when user submits
+//                                 <button className="remove-purchase-button"
+//                                         onClick={() => handleEditPurchase(index)}>Edit</button>
+//                             ) : null}
+//                             {isEditing && editIndex === index && (
+//                                 <div className="edit-purchase"> {/* prepopulate input fields when editing */}
+//                                     <h5>Purchase:</h5>
+//                                     <input
+//                                         className={'purchase-item'}
+//                                         type="text"
+//                                         value={purchasedItem}
+//                                         onChange={(e) => setPurchasedItem(e.target.value)}
+//                                         placeholder="Enter your purchased item"
+//                                     />
+//                                     <div>
+//                                         <h6>Amount:</h6>
+//                                         <input
+//                                             className={'amount-input'}
+//                                             type="text"
+//                                             value={purchaseAmount}
+//                                             onChange={handlePurchaseAmountChange}
+//                                             placeholder="Item Amount"
+//                                         />
+//                                     </div>
+//                                     <div className="category-container">
+//                                         <h7>Select Category:</h7>
+//                                         <select
+//                                             className='category-dropdown'
+//                                             value={selectedCategory}
+//                                             onChange={(e) => setSelectedCategory(e.target.value)}
+//                                         >
+//                                             <option value="">Select a category</option>
+//                                             {selectedCategories.map((category) => (
+//                                                 <option key={category} value={category}>
+//                                                     {category}
+//                                                 </option>
+//                                             ))}
+//                                         </select>
+//                                     </div>
+//                                     {amountError && <p className="error-message7">{amountError}</p>}
+//                                     {editPurchaseError && <p className="error-message8">{editPurchaseError}</p>}
+//                                     <button
+//                                         className="add-button2"
+//                                         onClick={handleSaveEdit1}
+//                                         disabled={amountError !== ''}
+//                                     >
+//                                         Save Edit
+//                                     </button>
+//                                 </div>
+//                             )}
+//                         </div>
+//                     ))
+//                 // </div>
+//                 ) : null}
+//             </div>
+//
+//             <button className="submit-button" onClick={handleSubmit}>
+//                 Submit
+//             </button>
+//
+//             {((purchases.length > 0 && !isAddMode) || (arePurchasesStored)) &&
+//                 <DisplayDailySpending
+//                     purchases={purchases}
+//                     purchasedItem={purchasedItem}
+//                     setPurchasedItem={setPurchasedItem}
+//                     purchaseAmount={purchaseAmount}
+//                     handlePurchaseAmountChange={handlePurchaseAmountChange}
+//                     selectedCategory={selectedCategory}
+//                     setSelectedCategory={setSelectedCategory}
+//                     selectedCategories={selectedCategories}
+//                     amountError={amountError}
+//                     editPurchaseError={editPurchaseError}
+//                     handleRemovePurchase={handleRemovePurchase}
+//                     isSubmitted={isSubmitted}
+//                     setPurchaseAmount={setPurchaseAmount}
+//                     isAddMode={false}
+//                     arePurchasesStored={arePurchasesStored}
+//                     setPurchases={setPurchases}
+//                     showPurchaseFields={showPurchaseFields}
+//                     userEmail={userEmail}
+//                     setInputDailyUpdated={setInputDailyUpdated}
+//                     inputDailyObj={inputDailyObj}
+//                     // handleSaveEdit={handleSaveEdit}
+//                 />
+//             }
+//         </div>
+//     );
+//     // }
+// }
+// most recent aj_ra_input_daily (displayDailySpending function)
+// function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purchaseAmount,
+//                                   handlePurchaseAmountChange, setPurchaseAmount, selectedCategory, setSelectedCategory, selectedCategories,
+//                                   amountError, editPurchaseError, handleRemovePurchase, isSubmitted, mockInputDailyInfo, isAddMode, arePurchasesStored, setPurchases, showPurchaseFields, userEmail, setInputDailyUpdated, inputDailyObj}) {
+//     const [isEditing, setIsEditing] = useState(false);
+//     const [editIndex, setEditIndex] = useState(null);
+//     const storedPurchases = inputDailyObj.purchases;
+//
+//     const handleEditPurchase = (index) => {
+//         setEditIndex(index);
+//         setIsEditing(true);
+//
+//         const selectedPurchase = purchases[index];
+//         setPurchasedItem(selectedPurchase.item);
+//         setPurchaseAmount(selectedPurchase.amount);
+//         setSelectedCategory(selectedPurchase.category);
+//     };
+//
+//     const handleSaveUpdate = async (index) => {
+//         if (index !== null) {
+//             if (purchasedItem.trim() && purchaseAmount.trim() && selectedCategory) {
+//                 setIsEditing(false);
+//                 setEditIndex(null);
+//
+//                 const updatedPurchases = [...purchases];
+//                 updatedPurchases[index] = {
+//                     item: purchasedItem,
+//                     amount: purchaseAmount,
+//                     category: selectedCategory,
+//                 };
+//                 console.log("updatedPurchases", updatedPurchases);
+//                 setPurchases(updatedPurchases);
+//
+//                 const updatedPurchaseInfo = {
+//                     email: userEmail,
+//                     numPurchases: purchases.length,
+//                     purchases: updatedPurchases.map((purchase) => ({
+//                         purchaseName: purchase.item,
+//                         purchaseAmount: purchase.amount,
+//                         purchaseCategory: purchase.category,
+//                     }))
+//                 }
+//                 // console.log("updatedPurchaseInfo", updatedPurchaseInfo)
+//                 // const updatedInputDailyResponse = await put('/updatePurchase', updatedPurchaseInfo);
+//                 // setInputDailyUpdated(true);
+//                 // console.log("updatedInputDailyResponse", updatedInputDailyResponse)
+//
+//             } else {
+//                 console.log("please fill in all fields")
+//             }
+//         } else {
+//             console.log("index doesn't exist")
+//         }
+//         console.log("handle save is rendering")
+//     };
+//
+//     return (
+//         <div>
+//             {(!showPurchaseFields && isSubmitted && (inputDailyObj ? inputDailyObj.purchases : purchases)?.length > 0) && (
+//                 <h2>Today's Purchases</h2>
+//             )}
+//             {(inputDailyObj ? inputDailyObj.purchases : purchases)?.map((purchase, index) => (
+//                 <div key={index}>
+//                     <button className="purchase-info-button">
+//                         <div className={'span'}>
+//                             {'Purchase: ' + purchase.purchaseName}<br />
+//                             {'Amount: ' + purchase.purchaseAmount}<br />
+//                             {'Category: ' + purchase.purchaseCategory}
+//                         </div>
+//                     </button>
+//                     <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>
+//                     {(isSubmitted && !isAddMode) ? ( // render edit button only when user submits
+//                         <button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>
+//                     ) : null}
+//                     {isEditing && editIndex === index && (
+//                         <div className="edit-purchase"> {/* prepopulate input fields when editing */}
+//                             <h5>Purchase:</h5>
+//                             <input
+//                                 className={'purchase-item'}
+//                                 type="text"
+//                                 value={purchasedItem}
+//                                 onChange={(e) => setPurchasedItem(e.target.value)}
+//                                 placeholder="Enter your purchased item"
+//                             />
+//                             <div>
+//                                 <h6>Amount:</h6>
+//                                 <input
+//                                     className={'amount-input'}
+//                                     type="text"
+//                                     value={purchaseAmount}
+//                                     onChange={handlePurchaseAmountChange}
+//                                     placeholder="Item Amount"
+//                                 />
+//                             </div>
+//                             <div className="category-container">
+//                                 <h7>Select Category:</h7>
+//                                 <select
+//                                     className='category-dropdown'
+//                                     value={selectedCategory}
+//                                     onChange={(e) => setSelectedCategory(e.target.value)}
+//                                 >
+//                                     <option value="">Select a category</option>
+//                                     {selectedCategories.map((category) => (
+//                                         <option key={category} value={category}>
+//                                             {category}
+//                                         </option>
+//                                     ))}
+//                                 </select>
+//                             </div>
+//                             {amountError && <p className="error-message7">{amountError}</p>}
+//                             {editPurchaseError && <p className="error-message8">{editPurchaseError}</p>}
+//                             <button
+//                                 className="add-button2"
+//                                 onClick={() => handleSaveUpdate(index)}
+//                                 disabled={amountError !== ''}
+//                             >
+//                                 Save Edit
+//                             </button>
+//                         </div>
+//                     )}
+//                 </div>
+//             ))}
+//         </div>
+//     )
+// }
+//
+// export default InputDailySpending;
+
+// S3_PREV_US2 code (with time resetting implemented)
 import React, { useState, useEffect } from 'react';
 import { auth } from "../firebase";
 
 function InputDailySpending() {
     const user = auth.currentUser;
     const userEmail = user ? user.email : "";
+    const [isSubmitted, setIsSubmitted] = useState(false);
     useEffect(() => {
         const storedPurchases = JSON.parse(localStorage.getItem(`purchases_${userEmail}`));
         if (storedPurchases && storedPurchases.length > 0) {
             setPurchases(storedPurchases);
-            setIsSubmitted(true);
+            // setIsSubmitted(true);
             // Other necessary state updates
         }
-    }, []);
+
+        // REAL IMPLEMENTATION OF MIDNIGHT RESET
+        // set up an interval to check and reset purchases at midnight
+    //     const midnightReset = () => {
+    //         const now = new Date();
+    //         const midnight = new Date(now);
+    //         midnight.setHours(24, 0, 0, 0); // Set to midnight of the current day
+    //
+    //         // calculate the time until midnight
+    //         const timeUntilMidnight = midnight - now;
+    //
+    //         // reset purchases at midnight
+    //         setTimeout(() => {
+    //             setPurchases([]);
+    //             setMessage("You did not spend anything today.");
+    //             //set inputDailyObj to nothing as well?
+    //         }, timeUntilMidnight);
+    //     };
+    //
+    //     // check and reset purchases at midnight every day
+    //     const intervalId = setInterval(midnightReset, 1000 * 60 * 60);
+    //
+    //     // cleanup interval when the component is unmounted
+    //     return () => clearInterval(intervalId);
+    // }, [userEmail]); // dependency array ensures the effect runs when the userEmail changes
+
+
+        //TESTING IMPLEMENTATION OF RESETTING 30 SEC AFTER SUBMISSION
+        // set up a timeout to reset purchases after 2 minutes
+        const resetTimeout = setTimeout(() => {
+            setPurchases([]);
+            setMessage("You did not spend anything today.");
+        }, 0.5 * 60 * 1000); // 30 sec
+
+        // Cleanup timeout when the component is unmounted or purchases are submitted
+        return () => clearTimeout(resetTimeout);
+    }, [userEmail, isSubmitted]);
+
 
     const [showPurchaseFields, setShowPurchaseFields] = useState(false);
     const [purchasedItem, setPurchasedItem] = useState('');
@@ -23,7 +573,6 @@ function InputDailySpending() {
     const [purchases, setPurchases] = useState([]); // State to store added purchases
     const [message, setMessage] = useState("You did not spend anything today.");
     const [isEditing, setIsEditing] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
     const [editIndex, setEditIndex] = useState(null);
     const [isAddMode, setIsAddMode] = useState(true);
     const arePurchasesStored = purchases.length > 0;
@@ -408,3 +957,208 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
 }
 
 export default InputDailySpending;
+
+
+
+
+
+
+//OLD MAIN
+// import React, { useState } from 'react';
+//
+// function InputDailySpending() {
+//     const [showPurchaseFields, setShowPurchaseFields] = useState(false);
+//     const [purchasedItem, setPurchasedItem] = useState('');
+//     const [purchaseAmount, setPurchaseAmount] = useState('');
+//     const [amountError, setAmountError] = useState('');
+//     const [inputPurchaseError, setInputPurchaseError] = useState('');
+//     const [selectedCategory, setSelectedCategory] = useState('');
+//     const [purchases, setPurchases] = useState([]); // State to store added purchases
+//     const [message, setMessage] = useState("You did not spend anything today.");
+//     const [isEditing, setIsEditing] = useState(false);
+//     const [isSubmitted, setIsSubmitted] = useState(false);
+//     const [editIndex, setEditIndex] = useState(null);
+//
+//     /* dummy category data */
+//     const selectedCategories = Object.values({ category1: "Rent", category2: "Groceries", category3: "Gym"});
+//
+//     /* function handling non-numeric values in purchase amount field */
+//     const handlePurchaseAmountChange = (event) => {
+//         const inputAmount = event.target.value;
+//         const numericRegex = /^[0-9]*$/;
+//
+//         if (numericRegex.test(inputAmount)) {
+//             setPurchaseAmount(inputAmount);
+//             setAmountError('');
+//         } else {
+//             setPurchaseAmount(inputAmount);
+//             setAmountError('Invalid purchase amount. Please provide a numerical input.');
+//         }
+//     };
+//
+//     /* function handling purchase adding - making sure every field is entered */
+//     const handleAddPurchase = () => {
+//         if (purchasedItem.trim() && purchaseAmount.trim() && selectedCategory) {
+//             const newPurchase = {
+//                 item: purchasedItem,
+//                 amount: purchaseAmount,
+//                 category: selectedCategory,
+//                 selected: true,
+//             };
+//             setPurchases([...purchases, newPurchase]);
+//             setPurchasedItem('');
+//             setPurchaseAmount('');
+//             setSelectedCategory('');
+//             setInputPurchaseError('');
+//             setEditIndex(null); // Reset editIndex
+//             setIsEditing(false); // Exit "Edit" mode
+//         } else {
+//             setInputPurchaseError('Please fill in all fields.');
+//         }
+//     };
+//
+//     /* function handling the submit button for finalizing user purchases and displaying them in reverse order */
+//     const handleSubmit = () => {
+//         if (purchases.length === 0) {
+//             setMessage(message);
+//         } else {
+//             setMessage("Today's purchases:");
+//             setIsSubmitted(true);
+//         }
+//         setShowPurchaseFields(false);
+//         setPurchases(purchases.slice().reverse());
+//
+//         // send json object
+//         window.alert("Added purchase(s)!");
+//     };
+//
+//     /* function handling purchase removal and associated default message */
+//     const handleRemovePurchase = (index) => {
+//         const updatedPurchases = [...purchases];
+//         updatedPurchases.splice(index, 1);
+//         setPurchases(updatedPurchases);
+//         if (updatedPurchases.length === 0) {
+//             setMessage('You did not spend anything today.');
+//         }
+//     };
+//
+//     /* function to edit input spending */
+//     const handleEditPurchase = (index) => {
+//         const purchaseToEdit = purchases[index];
+//         setPurchasedItem(purchaseToEdit.item);
+//         setPurchaseAmount(purchaseToEdit.amount);
+//         setSelectedCategory(purchaseToEdit.category);
+//         setEditIndex(index);
+//         setIsEditing(true); // Exit "Edit" mode
+//     };
+//
+//     const handleSaveEdit = () => {
+//         if (editIndex !== null) {
+//             const updatedPurchases = [...purchases];
+//             updatedPurchases[editIndex] = {
+//                 item: purchasedItem,
+//                 amount: purchaseAmount,
+//                 category: selectedCategory,
+//             };
+//             setPurchases(updatedPurchases);
+//             setEditIndex(null); // Reset editIndex
+//             setIsEditing(false); // Exit "Edit" mode
+//             // Reset input fields and any error messages
+//             setPurchasedItem('');
+//             setPurchaseAmount('');
+//             setSelectedCategory('');
+//             setInputPurchaseError('');
+//         } else {
+//             setInputPurchaseError('No purchase selected for editing.');
+//         }
+//     };
+//
+//
+//     return (
+//         <div>
+//             <h2>{message}</h2>
+//             <div className="add-user-input">
+//                 <h4>Input Purchase:</h4>
+//                 <button className={'plus-button'} onClick={() => setShowPurchaseFields(!showPurchaseFields)}>+</button>
+//             </div>
+//
+//             <div className="add-field">
+//                 {showPurchaseFields && (
+//                     <div className={'input-purchase'}>
+//                         <h5>Purchase:</h5>
+//                         <input className={'purchase-item'}
+//                                type="text"
+//                                value={purchasedItem}
+//                                onChange={(e) => setPurchasedItem(e.target.value)}
+//                                placeholder="Enter your purchased item"
+//                         />
+//                         <div>
+//                             <h6>Amount:</h6>
+//                             <input className={'amount-input'}
+//                                    type="text"
+//                                    value={purchaseAmount}
+//                                    onChange={handlePurchaseAmountChange}
+//                                    placeholder="Item Amount"
+//                             />
+//                         </div>
+//                         <div className="category-container">
+//                             <h7>Select Category:</h7>
+//                             <select className='category-dropdown'
+//                                     value={selectedCategory}
+//                                     onChange={(e) => setSelectedCategory(e.target.value)}
+//                             >
+//                                 <option value="">Select a category</option>
+//                                 {selectedCategories.map((category) => (
+//                                     <option key={category} value={category}>
+//                                         {category}
+//                                     </option>
+//                                 ))}
+//                             </select>
+//                         </div>
+//                         {amountError && <p className="error-message2">{amountError}</p>}
+//                         {inputPurchaseError && <p className="error-message3">{inputPurchaseError}</p>}
+//                         <button
+//                             className="add-button2"
+//                             onClick={handleAddPurchase}
+//                             disabled={amountError !== ''}>
+//                             Add Purchase
+//                         </button>
+//                     </div>
+//                 )}
+//             </div>
+//
+//             <div>
+//                 {purchases.map((purchase, index) => (
+//                     <div key={index}>
+//                         <button className="purchase-info-button">
+//                             <div className={'span'}>
+//                                 {'Purchase: ' + purchase.item}<br />
+//                                 {'Amount: ' + purchase.amount}<br />
+//                                 {'Category: ' + purchase.category}
+//                             </div>
+//                         </button>
+//                         <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>
+//                         {isSubmitted ? null: (
+//                             <>
+//                                 <button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>
+//                                 {isEditing && (
+//                                     <button className="remove-purchase-button" onClick={handleSaveEdit}>Save Edit</button>
+//                                 )}
+//                             </>
+//                         )}
+//                     </div>
+//                 ))}
+//             </div>
+//
+//             {purchases.length > 0 && (
+//                 <button
+//                     className="submit-button"
+//                     onClick={handleSubmit}>
+//                     Submit
+//                 </button>
+//             )}
+//         </div>
+//     );
+// }
+//
+// export default InputDailySpending;
