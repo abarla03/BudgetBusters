@@ -128,6 +128,9 @@ function InputDailySpending() {
         setIsAddMode(false);
 
         localStorage.setItem(`purchases_${userEmail}`, JSON.stringify(purchases));
+        const totalDailySpending = purchases.reduce((total, purchase) => {
+            return total + parseInt(purchase.amount);
+        }, 0);
 
         // send json obj
         const userPurchaseInfo = {
@@ -137,7 +140,8 @@ function InputDailySpending() {
                 purchaseName: purchase.item,
                 purchaseAmount: purchase.amount,
                 purchaseCategory: purchase.category,
-            }))
+            })),
+            totalDailySpending: totalDailySpending
         }
         console.log("userPurchaseInfo", userPurchaseInfo)
         const createInputDailyResponse = await post('/createPurchase', userPurchaseInfo);
@@ -223,9 +227,9 @@ function InputDailySpending() {
 
     return (
         <div>
-            {purchases.length === 0 && (
+            {((inputDailyObj.isEmpty) || (inputDailyObj?.numPurchases === 0)) ? (
                 <h2>{message}</h2>
-            )}
+            ) : <h2>{"Total Spending for Today: $" + inputDailyObj.totalDailySpending}</h2>}
             <div className="add-user-input">
                 <h4>Input Purchase:</h4>
                 <button
