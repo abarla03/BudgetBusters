@@ -155,22 +155,23 @@ function InputDailySpending() {
     const handleRemovePurchase = async (index) => {
         const updatedPurchases = [...purchases];
 
-        // const totalDailySpending = updatedPurchases.reduce((total, purchase) => {
-        //     return total + parseInt(purchase.amount);
-        // }, 0);
-
         updatedPurchases.splice(index, 1);
         setPurchases(updatedPurchases);
         if (updatedPurchases.length === 0) {
             setMessage('You did not spend anything today.');
         }
+
+        const totalDailySpending = purchases.reduce((total, purchase) => {
+            return total + parseInt(purchase.amount);
+        }, 0);
+
         const purchaseToRemove = {
             email: userEmail,
-            purchase: purchases[index]
-
+            purchase: purchases[index],
+            totalDailySpending: totalDailySpending
         }
         console.log("purchaseToRemove", purchaseToRemove)
-        const delPurchaseResponse = await del(`/deletePurchase/${userEmail}/${index}`, purchaseToRemove);
+        const delPurchaseResponse = await del(`/deletePurchase/${userEmail}/${index}/${totalDailySpending}`, purchaseToRemove);
         setInputDailyUpdated(true);
         console.log("delPurchaseResponse", delPurchaseResponse)
     };
@@ -236,7 +237,7 @@ function InputDailySpending() {
 
     return (
         <div>
-            {((inputDailyObj.isEmpty) || (inputDailyObj?.numPurchases === 0)) ? (
+            {((!inputDailyObj) || (inputDailyObj?.numPurchases === 0)) ? (
                 <h2>{message}</h2>
             ) : <h2>{"Total Spending for Today: $" + inputDailyObj.totalDailySpending}</h2>}
             <div className="add-user-input">
@@ -308,7 +309,8 @@ function InputDailySpending() {
                 {isAddMode ? (
                     purchases.map((purchase, index) => (
                         <div key={index}>
-                            {(!arePurchasesStored) && (
+                            {/*{(!arePurchasesStored) && (*/}
+                            {(!inputDailyObj) && (
                                 <div>
                                     <button className="purchase-info-button">
                                         <div className={'span'}>
