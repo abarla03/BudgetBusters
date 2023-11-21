@@ -154,15 +154,20 @@ function InputDailySpending() {
     /* function handling purchase removal and associated default message */
     const handleRemovePurchase = async (index) => {
         const updatedPurchases = [...purchases];
+
+        // const totalDailySpending = updatedPurchases.reduce((total, purchase) => {
+        //     return total + parseInt(purchase.amount);
+        // }, 0);
+
         updatedPurchases.splice(index, 1);
         setPurchases(updatedPurchases);
         if (updatedPurchases.length === 0) {
             setMessage('You did not spend anything today.');
         }
-
         const purchaseToRemove = {
             email: userEmail,
             purchase: purchases[index]
+
         }
         console.log("purchaseToRemove", purchaseToRemove)
         const delPurchaseResponse = await del(`/deletePurchase/${userEmail}/${index}`, purchaseToRemove);
@@ -201,6 +206,9 @@ function InputDailySpending() {
                 //     list.push(categoryNames[purchase] || category);
                 //     return list;
                 // }, []);
+                const totalDailySpending = updatedPurchases.reduce((total, purchase) => {
+                    return total + parseInt(purchase.amount);
+                }, 0);
 
                 // send json obj
                 const updatedPurchaseInfo = {
@@ -210,7 +218,8 @@ function InputDailySpending() {
                         purchaseName: purchase.item,
                         purchaseAmount: purchase.amount,
                         purchaseCategory: purchase.category,
-                    }))
+                    })),
+                    totalDailySpending: totalDailySpending
                 }
                 console.log("updatedPurchaseInfo", updatedPurchaseInfo)
                 const updatedInputDailyResponse = await put('/updatePurchase', updatedPurchaseInfo);
@@ -432,6 +441,10 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                 console.log("updatedPurchases", updatedPurchases);
                 setPurchases(updatedPurchases);
 
+                const totalDailySpending = updatedPurchases.reduce((total, purchase) => {
+                    return total + parseInt(purchase.amount);
+                }, 0);
+
                 const updatedPurchaseInfo = {
                     email: userEmail,
                     numPurchases: purchases.length,
@@ -439,7 +452,8 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                         purchaseName: purchase.item,
                         purchaseAmount: purchase.amount,
                         purchaseCategory: purchase.category,
-                    }))
+                    })),
+                    totalDailySpending: totalDailySpending
                 }
                 console.log("updatedPurchaseInfo", updatedPurchaseInfo)
                 const updatedInputDailyResponse = await put('/updatePurchase', updatedPurchaseInfo);
