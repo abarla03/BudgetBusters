@@ -78,7 +78,11 @@ exports.monthlyNotification = functions.pubsub.schedule('every month 08:00').tim
 });
 
 
-// function to send budgetWarning
+/*
 
+function to send budgetWarning {
 
+}
+
+*/
 
