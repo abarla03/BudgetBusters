@@ -8,91 +8,38 @@ import { auth } from "../firebase";
 
 function CreateProfile() {
     const user = auth.currentUser;
-
-    let firebaseEmail = "";
-    let firebaseDisplayName = "";
-    if (user) {
-        console.log("there's a user signed in: ");
-        console.log(user.displayName);
-        console.log("here's their email: ");
-        console.log(user.email);
-        firebaseEmail = user.email;
-        //firebaseDisplayName = user.displayName;
-        firebaseDisplayName = (user.email).match(/([^@]+)/)[0];
-    }
+    const firebaseEmail = user ? user.email : "";
+    const firebaseDisplayName = firebaseEmail.match(/([^@]+)/)[0];
 
     const navigate = useNavigate();
-    console.log("Profile component is rendering.");
-    const [isEditMode, setIsEditMode] = useState(false);
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [age, setAge] = useState('');
     const [phone, setPhone] = useState('');
     const [phoneValidationMessage, setPhoneValidationMessage] = useState('');
-    // const [isProfileSubmitted, setIsProfileSubmitted] = useState(false);
     const [isProfileSubmitted, setIsProfileSubmitted] = useState(Boolean(localStorage.getItem(`profileInfo_${firebaseEmail}`)));
-
-    // checking for user input values
-    const [inputValue, setInputValue] = useState('');
     const [validationMessage, setValidationMessage] = useState('');
 
-    const [editFullName, setEditFullName] = useState('');
-    const [editEmail, setEditEmail] = useState('');
-    const [editAge, setEditAge] = useState('');
-    const [editPhone, setEditPhone] = useState('');
-
-    // const mockProfileData = {
-    //     fullName: "Dummy Data",
-    //     email: "dummydata@gmail.com",
-    //     age: 90,
-    //     phoneNumber: 1234567890
-    // }
-    /* populate name and email fields with already-inputted info */
-    const populateProfileData = () => {
-        //const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
-        setFullName(firebaseDisplayName);
-        setEmail(firebaseEmail);
-
-        // users will enter this info for the first time, so don't populate
-        // unless we extract phone from google account settings...
-
-        //setAge(dummyAge);
-        //setPhone(dummyPhone);
-        setEditFullName(firebaseDisplayName);
-        setEditEmail(firebaseEmail);
-        setEditAge(age);
-        setEditPhone(phone);
-
+    /* dummy data for testing */
+    const mockProfileData = {
+        mockFullName: "Dummy",
+        mockEmail: "dummy@gmail.com",
+        mockAge: 90,
+        mockPhone: 1234567890
     }
 
-    /* call the appropriate method to populate fields */
+    /* populate name and email fields from data inputted in login process */
     useEffect (() => {
-        populateProfileData();
+        setFullName(firebaseDisplayName);
+        setEmail(firebaseEmail);
     }, []);
 
-    /* function handling the edit mode */
-    const handleEditClick = () => {
-        populateProfileData();
-        setIsEditMode(true);
-
-        console.log("in handle edit click function");
-    };
-
-    /* function handling the saved information from edit */
-    const handleSaveClick = () => {
-        setIsEditMode(false);
-        setFullName(editFullName);
-        setEmail(editEmail);
-        setAge(editAge);
-        setPhone(editPhone);
-        window.alert("User Profile Information Modified.")
-    };
-
-    const handleInputChange = (event) => {
+    /* function handling a change in the age field */
+    const handleAgeInputChange = (event) => {
         const value = event.target.value;
         setAge(value);
 
-        // Use regular expression to check if the input is a valid integer
+        // use regular expression to check if the input is a valid integer
         const isValidInteger = /^[0-9]*$/.test(value);
 
         if (!isValidInteger) {
@@ -102,32 +49,23 @@ function CreateProfile() {
         }
     }
 
-    const isValidPhoneNumber = (phoneNumber) => {
-        // Example: Check if the phone number is exactly 10 digits long and consists of only numbers
-        const numericRegex = /^[0-9]*$/;
-        return phoneNumber.length === 10 && numericRegex.test(phoneNumber);
-    };
-
-    /* handle input change for phone */
+    /* function handling a change in the phone field */
     const handlePhoneInputChange = (event) => {
         const value = event.target.value;
         setPhone(value);
 
-        // You can add validation for the phone number here
-        // For example, you can check the length, format, or any other validation criteria you need.
-
-        if (!isValidPhoneNumber(value)) {
-            setPhoneValidationMessage('Please enter a valid phone number. A valid phone number has 10 digits');
+        /* check if inputted phone number contains all numbers and has a length of exactly 10 */
+        const numericRegex = /^[0-9]*$/;
+        if (!(value.length === 10 && numericRegex.test(value))) {
+            setPhoneValidationMessage('Please enter a valid phone number. A valid phone number has 10 digits.');
         } else {
             setPhoneValidationMessage('');
         }
     }
 
-
-    /* delete account */
+    /* function handling delete account functionality */
     const handleDeleteAccount = () => {
         if (window.confirm("Are you sure you want to delete your account?")) {
-
             deleteAccount()
                 .then(() => {
 
@@ -140,70 +78,54 @@ function CreateProfile() {
         }
     };
 
-    const handleCreateProfile = () => {
-        // Add logic to submit profile information
+    /* function handling profile information submission */
+    const handleSubmit = () => {
         setIsProfileSubmitted(true);
         localStorage.setItem(`profileInfo_${firebaseEmail}`, JSON.stringify(user));
     };
 
-    // return (
-    //     <div>
-    //
-    //         <h5> Name: <input value={fullName} onChange={(e) => setFullName(e.target.value)}type="name" id="name" placeholder="" name="name" /> </h5>
-    //         <h5> Email: <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" id="email" placeholder="" name="email" /> </h5>
-    //
-    //         <h5>Age:
-    //             <input
-    //                 value={age}
-    //                 onChange={handleInputChange}
-    //                 type="text" // Change type to "text" to accept string input
-    //                 id="age"
-    //                 placeholder="Enter your age"
-    //                 name="age"
-    //             />
-    //         </h5>
-    //         <p>{validationMessage}</p>
-    //
-    //         <h5> Phone number:
-    //             <input
-    //                 value={phone}
-    //                 onChange={handlePhoneInputChange}
-    //                 type="text"
-    //                 id="phone"
-    //                 placeholder="Enter your phone number"
-    //                 name="phone"
-    //             />
-    //         </h5>
-    //         <p>{phoneValidationMessage}</p>
-    //
-    //         <div>
-    //             {isEditMode ? (
-    //                 <button className='edit-button' onClick={handleSaveClick}>Save</button>
-    //             ) : (
-    //                 <button className='edit-button' onClick={handleEditClick}>Edit</button>
-    //             )}
-    //
-    //         </div>
-    //
-    //         <button className="submit-button" onClick={handleDeleteAccount}>Delete Account</button>
-    //     </div>
-    // );
-    const createProfile = () => {
-        return (
-            <div>
-                <h5> Name: <input value={fullName} onChange={(e) => setFullName(e.target.value)}type="name" id="name" placeholder="" name="name" /> </h5>
-                <h5> Email: <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" id="email" placeholder="" name="email" /> </h5>
+    return (
+        <div>
+            {isProfileSubmitted ?
+                <DisplayProfile
+                    firebaseDisplayName={firebaseDisplayName}
+                    firebaseEmail={firebaseEmail}
+                    fullName={fullName}
+                    setFullName={setFullName}
+                    email={email}
+                    setEmail={setEmail}
+                    age={age}
+                    setAge={setAge}
+                    validationMessage={validationMessage}
+                    phone={phone}
+                    setPhone={setPhone}
+                    phoneValidationMessage={phoneValidationMessage}
+                    mockProfileData={mockProfileData}
+                    handleDeleteAccount={handleDeleteAccount}
+                    handleAgeInputChange={handleAgeInputChange}
+                    handlePhoneInputChange={handlePhoneInputChange}
+                />
+            : (
+                <div>
+                <h5> Name:
+                    <input value={fullName} onChange={(e) => setFullName(e.target.value)}/>
+                </h5>
+
+                <h5> Email:
+                    <input value={email} onChange={(e) => setEmail(e.target.value)}/>
+                </h5>
+
                 <h5>Age:
                     <input
                         value={age}
-                        onChange={handleInputChange}
+                        onChange={handleAgeInputChange}
                         type="text"
                         id="age"
                         placeholder="Enter your age"
                         name="age"
                     />
                 </h5>
-                <p>{validationMessage}</p>
+                <p className="error-message9">{validationMessage}</p>
 
                 <h5>Phone number:
                     <input
@@ -215,144 +137,74 @@ function CreateProfile() {
                         name="phone"
                     />
                 </h5>
-                <p>{phoneValidationMessage}</p>
+                <p className="error-message10">{phoneValidationMessage}</p>
 
                 <button
                     className="edit-button"
-                    onClick={handleCreateProfile}>
+                    onClick={handleSubmit}>
                     Submit
                 </button>
-            </div>
-        );
-    };
-
-    // const displayProfile = () => {
-    //     return (
-    //         // <div>
-    //         //     <h5>Name: {fullName}</h5>
-    //         //     <h5>Email: {email}</h5>
-    //         //     <h5>Age: {age}</h5>
-    //         //     <h5>Phone number: {phone}</h5>
-    //         //
-    //         //     <div>
-    //         //         {isEditMode ? (
-    //         //             <button className='edit-button' onClick={handleSaveClick}>Save</button>
-    //         //         ) : (
-    //         //             <button className='edit-button' onClick={handleEditClick}>Edit</button>
-    //         //         )}
-    //         //     </div>
-    //         // </div>
-    //         <div>
-    //             <h5>Name: {isEditMode ? <input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} /> : fullName}</h5>
-    //             <h5>Email: {isEditMode ? <input value={editEmail} onChange={(e) => setEditEmail(e.target.value)} /> : email}</h5>
-    //
-    //             <h5>Age:
-    //                 {isEditMode ? (
-    //                     <input
-    //                         value={editAge}
-    //                         onChange={(e) => setEditAge(e.target.value)}
-    //                         type="text"
-    //                         id="age"
-    //                         placeholder="Enter your age"
-    //                         name="age"
-    //                     />
-    //                 ) : (
-    //                     <span>{age}</span>
-    //                 )}
-    //             </h5>
-    //             <p>{validationMessage}</p>
-    //
-    //             <h5>Phone number:
-    //                 {isEditMode ? (
-    //                     <input
-    //                         value={editPhone}
-    //                         onChange={(e) => setEditPhone(e.target.value)}
-    //                         type="text"
-    //                         id="phone"
-    //                         placeholder="Enter your phone number"
-    //                         name="phone"
-    //                     />
-    //                 ) : (
-    //                     <span>{phone}</span>
-    //                 )}
-    //             </h5>
-    //             <p>{phoneValidationMessage}</p>
-    //
-    //             <div>
-    //                 {isEditMode ? (
-    //                     <button className='edit-button' onClick={handleSaveClick}>Save</button>
-    //                 ) : (
-    //                     <button className='edit-button' onClick={handleEditClick}>Edit</button>
-    //                 )}
-    //             </div>
-    //
-    //             <button className="submit-button" onClick={handleDeleteAccount}>Delete Account</button>
-    //         </div>
-    //     );
-    // };
-
-    return (
-        <div>
-            {isProfileSubmitted ?
-                <DisplayProfile
-                    firebaseDisplayName={firebaseDisplayName}
-                    setEmail={firebaseDisplayName}
-                    firebaseEmail={firebaseEmail}
-                    fullName={fullName}
-                    email={email}
-                    age={age}
-                    validationMessage={validationMessage}
-                    phone={phone}
-                    phoneValidationMessage={phoneValidationMessage}
-                    handleSaveClick={handleSaveClick}
-                    handleEditClick={handleEditClick}
-                    handleDeleteAccount={handleDeleteAccount}
-                />
-
-                : createProfile()}
+                </div>
+            )}
 
             <button className="submit-button"
-                    onClick={handleDeleteAccount}>Delete Account</button>
+                    onClick={handleDeleteAccount}>
+                    Delete Account
+            </button>
         </div>
     );
 }
 
-function DisplayProfile(handleSaveClick, handleDeleteAccount, mockProfileData) {
+function DisplayProfile({firebaseDisplayName, firebaseEmail, setFullName, setEmail, setAge, setPhone, fullName, email,
+                         age, phone, phoneValidationMessage, mockProfileData, handleDeleteAccount}) {
 
-    const [email, setEmail] = useState('');
-    const [fullName, setFullName] = useState('');
     const [isEditMode, setIsEditMode] = useState(false);
     const [editFullName, setEditFullName] = useState('');
     const [editEmail, setEditEmail] = useState('');
-    const [editPhone, setEditPhone] = useState('');
+    const [editPhone, setEditPhone] = useState(mockProfileData?.mockPhone);
     const [editAge, setEditAge] = useState('');
-    const firebaseDisplayName = "haha"
-    const firebaseEmail = "haha@gmail.com"
-    const age = 20;
-    const validationMessage = "haha2"
-    const phone = 5677555645654
-    const phoneValidationMessage = "haha3"
+    const [invalidAgeError, setInvalidAgeError] = useState('');
+    const [invalidPhoneError, setInvalidPhoneError] = useState('');
 
-    // const handleEditClick = () => {
-    //     // setIsEditMode(true);
-    //
-    //     console.log("in handle edit click function");
-    // };
+    /* function handling a change in the age field */
+    const handleAgeInputChange = (event) => {
+        const value = event.target.value;
+        setEditAge(value);
+
+        // use regular expression to check if the input is a valid integer
+        const isValidInteger = /^[0-9]*$/.test(value);
+
+        if (!isValidInteger) {
+            setInvalidAgeError('Please enter a valid integer.');
+        } else {
+            setInvalidAgeError('');
+        }
+    }
+
+    /* function handling a change in the phone field */
+    const handlePhoneInputChange = (event) => {
+        const value = event.target.value;
+        setEditPhone(value);
+
+        /* check if inputted phone number contains all numbers and has a length of exactly 10 */
+        const numericRegex = /^[0-9]*$/;
+        if (!value) {
+            setInvalidPhoneError('');
+        } else if (!(value.length === 10 && numericRegex.test(value))) {
+            setInvalidPhoneError('Please enter a valid phone number. A valid phone number has 10 digits.');
+        } else {
+            setInvalidPhoneError('');
+        }
+    }
+
     const populateProfileData = () => {
-        //const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
         setFullName(firebaseDisplayName);
         setEmail(firebaseEmail);
 
-        // users will enter this info for the first time, so don't populate
-        // unless we extract phone from google account settings...
-
-        //setAge(dummyAge);
-        //setPhone(dummyPhone);
         setEditFullName(firebaseDisplayName);
         setEditEmail(firebaseEmail);
         setEditAge(age);
         setEditPhone(phone);
-
     }
 
     /* call the appropriate method to populate fields */
@@ -364,30 +216,19 @@ function DisplayProfile(handleSaveClick, handleDeleteAccount, mockProfileData) {
     const handleEditClick = () => {
         populateProfileData();
         setIsEditMode(true);
+    };
 
-        console.log("in handle edit click function");
+    const handleSaveClick = () => {
+        setIsEditMode(false);
+        setFullName(editFullName);
+        setEmail(editEmail);
+        setAge(editAge);
+        setPhone(editPhone);
+        window.alert("User Profile Information Modified.")
     };
 
     return (
-        // <div>
-        //     <h5>Name: {fullName}</h5>
-        //     <h5>Email: {email}</h5>
-        //     <h5>Age: {age}</h5>
-        //     <h5>Phone number: {phone}</h5>
-        //
-        //     <div>
-        //         {isEditMode ? (
-        //             <button className='edit-button' onClick={handleSaveClick}>Save</button>
-        //         ) : (
-        //             <button className='edit-button' onClick={handleEditClick}>Edit</button>
-        //         )}
-        //     </div>
-        // </div>
-
-
-
         <div>
-            <h2>display mode</h2>
             <h5>Name: {isEditMode ? <input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} /> : fullName}</h5>
             <h5>Email: {isEditMode ? <input value={editEmail} onChange={(e) => setEditEmail(e.target.value)} /> : email}</h5>
 
@@ -395,7 +236,7 @@ function DisplayProfile(handleSaveClick, handleDeleteAccount, mockProfileData) {
                 {isEditMode ? (
                     <input
                         value={editAge}
-                        onChange={(e) => setEditAge(e.target.value)}
+                        onChange={handleAgeInputChange}
                         type="text"
                         id="age"
                         placeholder="Enter your age"
@@ -405,13 +246,13 @@ function DisplayProfile(handleSaveClick, handleDeleteAccount, mockProfileData) {
                     <span>{age}</span>
                 )}
             </h5>
-            <p>{validationMessage}</p>
+            <p className="error-message9">{invalidAgeError}</p>
 
             <h5>Phone number:
                 {isEditMode ? (
                     <input
                         value={editPhone}
-                        onChange={(e) => setEditPhone(e.target.value)}
+                        onChange={handlePhoneInputChange}
                         type="text"
                         id="phone"
                         placeholder="Enter your phone number"
@@ -421,18 +262,16 @@ function DisplayProfile(handleSaveClick, handleDeleteAccount, mockProfileData) {
                     <span>{phone}</span>
                 )}
             </h5>
-            <p>{phoneValidationMessage}</p>
+            <p className="error-message10">{invalidPhoneError}</p>
 
             <div>
                 {isEditMode ? (
                     <div>
-                    <h2>in edit mode.</h2>
-                    <button className='edit-button' onClick={handleSaveClick}>Save</button>
+                        <button className='edit-button' onClick={handleSaveClick}>Save</button>
                     </div>
                 ) : (
                     <div>
-                        <h2>NOT in edit mode.</h2>
-                    <button className='edit-button' onClick={handleEditClick}>Edit</button>
+                        <button className='edit-button' onClick={handleEditClick}>Edit</button>
                     </div>
                 )}
             </div>
@@ -443,5 +282,3 @@ function DisplayProfile(handleSaveClick, handleDeleteAccount, mockProfileData) {
 }
 
 export default CreateProfile;
-
-// export default Profile;
