@@ -148,15 +148,15 @@ function InputDailySpending() {
         setInputDailyUpdated(true);
         console.log("createInputDailyResponse", createInputDailyResponse)
         window.alert("Added purchase(s)!");
-
     };
 
     /* function handling purchase removal and associated default message */
     const handleRemovePurchase = async (index) => {
-        const updatedPurchases = [...purchases];
-
-        updatedPurchases.splice(index, 1);
+        // const updatedPurchases = [...purchases];
+        // updatedPurchases.splice(index, 1);
+        const updatedPurchases = purchases.filter((_, i) => i !== index);
         setPurchases(updatedPurchases);
+        console.log("purchase after update: ", purchases);
         if (updatedPurchases.length === 0) {
             setMessage('You did not spend anything today.');
         }
@@ -173,7 +173,8 @@ function InputDailySpending() {
         console.log("purchaseToRemove", purchaseToRemove)
         const delPurchaseResponse = await del(`/deletePurchase/${userEmail}/${index}/${totalDailySpending}`, purchaseToRemove);
         setInputDailyUpdated(true);
-        console.log("delPurchaseResponse", delPurchaseResponse)
+        console.log("delPurchaseResponse", delPurchaseResponse);
+
     };
 
     /* function to edit input spending */
@@ -476,7 +477,7 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
             {(!showPurchaseFields && isSubmitted && (inputDailyObj ? inputDailyObj.purchases : purchases)?.length > 0) && (
                 <h2>Today's Purchases</h2>
             )}
-            {(inputDailyObj ? inputDailyObj.purchases : purchases)?.map((purchase, index) => (
+            {inputDailyObj && !isAddMode && inputDailyObj.purchases?.map((purchase, index) => (
                 <div key={index}>
                     <button className="purchase-info-button">
                         <div className={'span'}>
