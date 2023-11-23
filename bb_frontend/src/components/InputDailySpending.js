@@ -479,20 +479,8 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
             )}
             {/* if inputDailyObj, render the purchase buttons; else, render nothing */}
 
-            {/*{inputDailyObj && (*/}
-            {/*    inputDailyObj.purchases.map((purchase, index) => (*/}
-            {/*    <div key={index}>*/}
-            {/*        <button className="purchase-info-button">*/}
-            {/*            <div className={'span'}>*/}
-            {/*                {'Purchase: ' + purchase.purchaseName}<br />*/}
-            {/*                {'Amount: ' + purchase.purchaseAmount}<br />*/}
-            {/*                {'Category: ' + purchase.purchaseCategory}*/}
-            {/*            </div>*/}
-            {/*        </button>*/}
-            {/*        <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>*/}
-            {/*    </div>*/}
-            {/*)))}*/}
-            {(inputDailyObj ? inputDailyObj.purchases : purchases)?.map((purchase, index) => (
+            {/*{inputDailyObj && inputDailyObj.purchases.map((purchase, index) => (*/}
+            {inputDailyObj && !isAddMode && inputDailyObj.purchases.map((purchase, index) => (
                 <div key={index}>
                     <button className="purchase-info-button">
                         <div className={'span'}>
@@ -502,9 +490,19 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                         </div>
                     </button>
                     <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>
-                    {(isSubmitted && !isAddMode) ? ( // render edit button only when user submits
-                        <button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>
-                    ) : null}
+            {/*{(inputDailyObj ? inputDailyObj.purchases : purchases)?.map((purchase, index) => (*/}
+            {/*    <div key={index}>*/}
+            {/*        <button className="purchase-info-button">*/}
+            {/*            <div className={'span'}>*/}
+            {/*                {'Purchase: ' + purchase.purchaseName}<br />*/}
+            {/*                {'Amount: ' + purchase.purchaseAmount}<br />*/}
+            {/*                {'Category: ' + purchase.purchaseCategory}*/}
+            {/*            </div>*/}
+            {/*        </button>*/}
+            {/*        <button className="remove-purchase-button" onClick={() => handleRemovePurchase(index)}>X</button>*/}
+            {/*        {(isSubmitted && !isAddMode) ? ( // render edit button only when user submits*/}
+            {/*            <button className="remove-purchase-button" onClick={() => handleEditPurchase(index)}>Edit</button>*/}
+            {/*        ) : null}*/}
                     {isEditing && editIndex === index && (
                         <div className="edit-purchase"> {/* prepopulate input fields when editing */}
                             <h5>Purchase:</h5>
@@ -554,7 +552,7 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                 </div>
             ))}
         </div>
-    )
+    );
 }
 
 export default InputDailySpending;
