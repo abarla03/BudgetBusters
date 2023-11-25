@@ -1,4 +1,4 @@
-/* COPIED AND PASTED CSS FROM S1_DISPLAYING MONTHLY */
+/* COPIED AND PASTED CSS FROM S3_PREV_US_1 */
 .App {
     text-align: center;
     /* display: center; */
@@ -819,4 +819,26 @@ button_dropdown {
     padding: 20px;
     border-radius: 10px;
     cursor: pointer;
+}
+/* -------------------------------- PROFILE PAGE -------------------------------------*/
+/* error message for the age field when editing */
+.error-message9 {
+    color: red;
+    font-size: 14px;
+    font-weight: 100;
+    font-family: 'Archivo Narrow', sans-serif;
+    position: absolute;
+    bottom: 220px;
+    left: 520px;
+}
+
+/* error message for the phone field when editing */
+.error-message10 {
+    color: red;
+    font-size: 14px;
+    font-weight: 100;
+    font-family: 'Archivo Narrow', sans-serif;
+    position: absolute;
+    bottom: 135px;
+    left: 560px;
 }
