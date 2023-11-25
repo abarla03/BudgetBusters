@@ -1,0 +1,55 @@
+
+const {onRequest} = require("firebase-functions/v2/https");
+const logger = require("firebase-functions/logger");
+
+/**************TWILIO CREDENTIALS********************/
+/*
+     accountSid: ACca47d28d925dd91522c66a91292a6e0b
+     authToken: b93158b11684a1fbc8727089363a3062
+     phoneNum: +18447633905
+  */
+ /**************TWILIO CREDENTIALS********************/
+const functions = require('firebase-functions');
+const accountSid = 'ACca47d28d925dd91522c66a91292a6e0b';
+const authToken = 'b93158b11684a1fbc8727089363a3062';
+const client = require('twilio')(accountSid, authToken);
+
+//Function to send SMS
+exports.sendSMS = (phoneNumber, message) => {
+    return client.messages.create({
+        body: message,
+        from: '+18447633905',
+        to: phoneNumber
+    });
+};
+
+// * USE NOTIFICATIONS.JAVA for getting backend user info
+// * logic for users to enter verification code?? or just I add our team's numbers so it's already verified
+
+/*********************************************list of numbers to send daily notif**************************************/
+// based on if users chose text as a preferred notif method
+// Creating an array of strings
+let textUsers = ['+12247049742', '+12247049741', '+14256069675'];
+
+// Scheduled function to send daily notifications (hardcoded singular number)
+exports.dailyNotification = functions.pubsub.schedule('every day 12:10').timeZone('America/Chicago').onRun((context) => {
+
+    textUsers.forEach(item => {
+        console.log(item);
+        const phoneNumber = item;
+        const message = 'Reminder! Input your daily spending for today!';
+
+        return exports.sendSMS(phoneNumber, message)
+            .then(() => {
+                console.log('Daily notification sent!');
+                return null;
+            })
+            .catch((error) => {
+                console.error('Error sending daily notification:', error);
+                return null;
+            });
+    });
+
+});
+
+
