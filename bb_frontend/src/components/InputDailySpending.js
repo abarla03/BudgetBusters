@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 
+import {sendBudgetWarningNotif} from "../../functions";
+import {user} from "firebase-functions/v1/auth";
+import { auth } from "../firebase";
+
 function InputDailySpending() {
     const [showPurchaseFields, setShowPurchaseFields] = useState(false);
     const [purchasedItem, setPurchasedItem] = useState('');
@@ -12,6 +16,9 @@ function InputDailySpending() {
     const [isEditing, setIsEditing] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [editIndex, setEditIndex] = useState(null);
+
+    const user = auth.currentUser;
+    const userPhoneNum = user ? user.phoneNumber : "";
 
     /* dummy category data */
     const selectedCategories = Object.values({ category1: "Rent", category2: "Groceries", category3: "Gym"});
@@ -64,6 +71,8 @@ function InputDailySpending() {
 
         // send json object
         window.alert("Added purchase(s)!");
+
+        sendBudgetWarningNotif(userPhoneNum);
     };
 
     /* function handling purchase removal and associated default message */
@@ -102,9 +111,18 @@ function InputDailySpending() {
             setPurchaseAmount('');
             setSelectedCategory('');
             setInputPurchaseError('');
+
+            sendBudgetWarningNotif(userPhoneNum);
         } else {
             setInputPurchaseError('No purchase selected for editing.');
         }
+    };
+
+    const sendWarning = (currentSpending, dollarThreshold, userPhoneNum) => {
+        if (currentSpending >= dollarThreshold) {
+            sendBudgetWarningNotif(userPhoneNum);
+        }
+
     };
 
 
