@@ -53,7 +53,7 @@ class App extends React.Component {
     return (
         <div>
 
-          <div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <h1 className="text-heading">Monthly Spending by Category</h1>
             <PieChart width={730} height={300}>
               <Pie
@@ -79,7 +79,7 @@ class App extends React.Component {
             </PieChart>
           </div>
 
-          <div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <h1 className="text-heading">Cumulative Monthly Spending Chart</h1>
             <ResponsiveContainer width="100%" aspect={3}>
               <LineChart data={pdata} margin={{ right: 30 }}> {/* Adjusted margin */}
@@ -94,7 +94,7 @@ class App extends React.Component {
             </ResponsiveContainer>
           </div>
 
-          <div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <h1 className="text-heading"> Total Spending By Day</h1>
             <ScatterChart width={400} height={400} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
               <CartesianGrid strokeDasharray="3 3" />
