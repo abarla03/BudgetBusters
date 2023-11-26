@@ -15,7 +15,7 @@ function InputDailySpending() {
     }, []);
 
     const [inputDailyObj, setInputDailyObj] = useState({});
-    const [inputDailyUpdated, setInputDailyUpdated] = useState(false); // to re-fetch budget info whenever update happens
+    const [inputDailyUpdated, setInputDailyUpdated] = useState(false); // to re-fetch input daily info whenever update happens
 
     const [budgetGoalObj, setBudgetGoalObj] = useState({});
     const [budgetUpdated, setBudgetUpdated] = useState(false); // to re-fetch budget info whenever update happens
@@ -55,9 +55,8 @@ function InputDailySpending() {
         fetchBudgetData().then((response) => {
             setBudgetGoalObj(response.data);
         });
-        setBudgetUpdated(false)
+        setBudgetUpdated(false);
         // console.log("budgetGoalObj", budgetGoalObj)
-
     }, [userEmail, budgetUpdated]);
 
     const [showPurchaseFields, setShowPurchaseFields] = useState(false);
@@ -75,7 +74,7 @@ function InputDailySpending() {
     const [isAddMode, setIsAddMode] = useState(true);
     const arePurchasesStored = purchases.length > 0;
 
-    /* category data from setMonthlyGoal Page*/
+    /* category data from setMonthlyGoal page */
     const selectedCategories = budgetGoalObj.allCategories;
 
     /* function handling non-numeric values in purchase amount field */
@@ -123,6 +122,7 @@ function InputDailySpending() {
             setIsSubmitted(true);
         }
         setShowPurchaseFields(false);
+        console.log("submitted purchases: ", inputDailyObj.purchases)
         setPurchases(purchases);
         // setPurchases(purchases.slice().reverse());
         setIsAddMode(false);
@@ -155,7 +155,6 @@ function InputDailySpending() {
         // const updatedPurchases = [...purchases];
         // updatedPurchases.splice(index, 1);
         const updatedPurchases = purchases.filter((_, i) => i !== index);
-        setPurchases(updatedPurchases);
         console.log("purchase after update: ", purchases);
         if (updatedPurchases.length === 0) {
             setMessage('You did not spend anything today.');
@@ -173,8 +172,8 @@ function InputDailySpending() {
         console.log("purchaseToRemove", purchaseToRemove)
         const delPurchaseResponse = await del(`/deletePurchase/${userEmail}/${index}/${totalDailySpending}`, purchaseToRemove);
         setInputDailyUpdated(true);
+        setPurchases(updatedPurchases);
         console.log("delPurchaseResponse", delPurchaseResponse);
-
     };
 
     /* function to edit input spending */
