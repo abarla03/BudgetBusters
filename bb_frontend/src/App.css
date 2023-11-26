@@ -278,6 +278,18 @@ h4 {
     margin-left: 200px;
 }
 
+/* CHANGE 1: display for filling out the current month's goal */
+h10 {
+    color: #333;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 23px;
+    text-align: center;
+    margin-top: 100px;
+    margin-left: -10px;
+}
+
 /* monthly budget input field formatting */
 .user-input-field {
     width: 500px;
