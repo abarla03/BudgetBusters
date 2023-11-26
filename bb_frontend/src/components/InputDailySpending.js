@@ -20,6 +20,15 @@ function InputDailySpending() {
     const user = auth.currentUser;
     const userPhoneNum = user ? user.phoneNumber : "";
 
+    // @spushpa, hardcoded values for now, should get values from backend
+    const userCurrentSpending = "50";
+    const userDollarThreshold = "75";
+
+
+    /* @spushpa -- user object for budget warning notification */
+    const userBudgetThresholdData = [userCurrentSpending, userDollarThreshold, userPhoneNum];
+
+
     /* dummy category data */
     const selectedCategories = Object.values({ category1: "Rent", category2: "Groceries", category3: "Gym"});
 
@@ -72,7 +81,7 @@ function InputDailySpending() {
         // send json object
         window.alert("Added purchase(s)!");
 
-        sendBudgetWarningNotif(userPhoneNum);
+        sendWarning(userBudgetThresholdData.at(0), userBudgetThresholdData.at(1), userBudgetThresholdData.at(2)); //@spushpa
     };
 
     /* function handling purchase removal and associated default message */
@@ -112,7 +121,7 @@ function InputDailySpending() {
             setSelectedCategory('');
             setInputPurchaseError('');
 
-            sendBudgetWarningNotif(userPhoneNum);
+            sendWarning(userBudgetThresholdData.at(0), userBudgetThresholdData.at(1), userBudgetThresholdData.at(2)); //@spushpa
         } else {
             setInputPurchaseError('No purchase selected for editing.');
         }
@@ -122,7 +131,6 @@ function InputDailySpending() {
         if (currentSpending >= dollarThreshold) {
             sendBudgetWarningNotif(userPhoneNum);
         }
-
     };
 
 
