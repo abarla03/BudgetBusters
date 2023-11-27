@@ -6,18 +6,17 @@ import {post, put, get} from "./ApiClient";
 
 /* landing page of Set Monthly Goal: first page of the Set Monthly Goal form OR a display of the user's previously-inputted goal */
 function SetMonthlyGoal() {
-    console.log("SetMonthlyGoal component is rendering.")
     /* userEmail is used to as an identifier for if data already exists for a particular user */
     const user = auth.currentUser;
     const userEmail = user ? user.email : "";
-    const [isGoalStored, setIsGoalStored] = useState(Boolean(localStorage.getItem(`colorOptions_${userEmail}`)));
-    // CHANGE 1: add currentMonth useState to track what month it is
     const [currentMonth, setCurrentMonth] = useState('');
-    // CHANGE 11: set useState for monitoring whether month needs to reset (may not need this)
-    // const [shouldResetGoal, setShouldResetGoal] = useState(false);
+
+    /* vars needed for storing/updating budget goal data */
     const [budgetGoalObj, setBudgetGoalObj] = useState({});
     const [budgetUpdated, setBudgetUpdated] = useState(false); // to re-fetch budget info whenever update happens
+    const [isGoalStored, setIsGoalStored] = useState(Boolean(localStorage.getItem(`colorOptions_${userEmail}`)));
 
+    /* function handling the reset of budgetGoalObj after timer ends */
     const resetMonthlyGoal = async () => {
         const budgetReset = {
             email: userEmail
@@ -38,9 +37,10 @@ function SetMonthlyGoal() {
             return data;
         }
 
-        // CHANGE 13: FOR THE DEMO: reset after 2 min
+        // timer for completing the "month" (NOTE: 1 month = 20 min)
         const timer = setTimeout(() => {
-            // Reset the goal information after 30 seconds
+            // reset the goal information after 30 seconds
+            setIsGoalStored(false);
             setFormSubmitted(false);
             setBudget('');
             setSelectedCategories([]);
@@ -48,46 +48,40 @@ function SetMonthlyGoal() {
             setBudgetGoalObj({});
 
             resetMonthlyGoal();
-        },  2 * 60 * 1000);
-
-        if (!budgetGoalObj.monthlyBudget) {
-            setIsGoalStored(false);
-            localStorage.removeItem(`colorOptions_${userEmail}`);
-        }
+        },  0.5 * 60 * 1000);
 
         fetchBudgetData().then((response) => {
             setBudgetGoalObj(response.data);
 
             // CHANGE 12: REAL THING - check if user has submitted their goal previously, and if date exists
             // if yes, and it's the first day of the new month, reset budgetGoalObj to nothing
-            if (response.data && response.data.submissionDate) {
-                const currentDate = new Date();
-
-                // before resetting, should we try to save the past month's information?
-                if (currentDate.getDate() === 1) {
-                    // setShouldResetGoal(true);
-                    setIsGoalStored(false);
-                    setFormSubmitted(false);
-                    setBudget('');
-                    setSelectedCategories([]);
-                    setCreatedCategories([]);
-                    setBudgetGoalObj({});
-                    localStorage.removeItem(`colorOptions_${userEmail}`);
-
-                    resetMonthlyGoal();
-                }
-            }
+            // if (response.data && response.data.submissionDate) {
+            //     const currentDate = new Date();
+            //
+            //     // before resetting, should we try to save the past month's information?
+            //     if (currentDate.getDate() === 1) {
+            //         // setShouldResetGoal(true);
+            //         setIsGoalStored(false);
+            //         setFormSubmitted(false);
+            //         setBudget('');
+            //         setSelectedCategories([]);
+            //         setCreatedCategories([]);
+            //         setBudgetGoalObj({});
+            //         // localStorage.removeItem(`colorOptions_${userEmail}`);
+            //
+            //         resetMonthlyGoal();
+            //     }
+            // }
         });
         setBudgetUpdated(false)
-        console.log("budgetGoalObj", budgetGoalObj)
 
-        // CHANGE 2: fetch the current month from the Date library
+        // fetch the current month from the Date library
         const currentDate = new Date();
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         const currentMonthName = monthNames[currentDate.getMonth()];
         setCurrentMonth(currentMonthName);
 
-        // CHANGE 14: run timeout function at the end of specified time
+        // run the timer function
         return () => clearTimeout(timer);
 
     }, [userEmail, budgetUpdated]);
@@ -107,7 +101,7 @@ function SetMonthlyGoal() {
     /* colorOptions is used to remember the colors that the user selected for all their categories
      * passed as a parameter for ColorCodeCategories() and DisplayMonthlyGoal() functions          */
     const [colorOptions, setColorOptions] = useState(() => {
-        const storedColorOptions = budgetGoalObj.colors ? localStorage.getItem(`colorOptions_${userEmail}`) : null;
+        const storedColorOptions = localStorage.getItem(`colorOptions_${userEmail}`);
         return storedColorOptions ? JSON.parse(storedColorOptions) : {};
     });
 
@@ -179,7 +173,7 @@ function SetMonthlyGoal() {
     };
 
     /* return statement depending on whether user inputted their goal beforehand */
-    if (isGoalStored) {
+    if (budgetGoalObj.colors) {
         return (
             <DisplayMonthlyGoal
                 budgetGoalObj={budgetGoalObj}
@@ -200,7 +194,6 @@ function SetMonthlyGoal() {
                     />
                 ) :
                 <div>
-                    {/* CHANGE 3: added current month message */}
                     <h10>{`Fill out the form below to set your goal for ${currentMonth}!`}</h10>
                     <h3>Set Monthly Budget:</h3>
                     <div className="input-container">
@@ -321,7 +314,6 @@ function ColorCodeCategories({ budgetGoalObj, userEmail, setBudgetUpdated, color
                 submissionDate: submittedDate
             }
 
-
             const updateBudgetResponse = await put('/updateBudgetColors', colorInfo);
             setBudgetUpdated(true);
 
@@ -439,10 +431,8 @@ function DisplayMonthlyGoal({ budgetGoalObj, userEmail, setBudgetUpdated }) {
             allCategories: categoriesAfterEdit
         }
 
-        console.log(modifiedCategoryInfo);
         const updateBudgetResponse = await put('/updateBudgetCategories', modifiedCategoryInfo);
         setBudgetUpdated(true);
-        console.log(updateBudgetResponse);
     };
 
     const dateObj = new Date(budgetGoalObj.submissionDate);
@@ -502,9 +492,11 @@ function DisplayMonthlyGoal({ budgetGoalObj, userEmail, setBudgetUpdated }) {
 export default SetMonthlyGoal;
 
 
-// OLD Code 11/27/23
 
-// /* copy and paste from s1_displaying branch */
+
+// TRIAL 1 11/27/23
+
+/* copy and paste from s1_displaying branch */
 // import React, { useState, useEffect } from 'react';
 // import { categories } from '../predefinedCategories'
 // import { auth } from "../firebase";
@@ -520,6 +512,14 @@ export default SetMonthlyGoal;
 //     const [isGoalStored, setIsGoalStored] = useState(Boolean(localStorage.getItem(`colorOptions_${userEmail}`)));
 //     const [budgetGoalObj, setBudgetGoalObj] = useState({});
 //     const [budgetUpdated, setBudgetUpdated] = useState(false); // to re-fetch budget info whenever update happens
+//     const [shouldRenderSetMonthlyForm, setShouldRenderSetMonthlyForm] = useState(false);
+//
+//     const resetMonthlyGoal = async () => {
+//         const budgetReset = {
+//             email: userEmail
+//         }
+//         const resetBudgetResponse = await put('/resetBudget', budgetReset);
+//     }
 //
 //     /* obtaining budget goal object from user input */
 //     useEffect(() => {
@@ -534,11 +534,38 @@ export default SetMonthlyGoal;
 //             return data;
 //         }
 //
+//         // CHANGE 13: FOR THE DEMO: reset after 2 min
+//         // const timer = setTimeout(() => {
+//         //     // Reset the goal information after 30 seconds
+//         //     setIsGoalStored(false);
+//         //     setShouldRenderSetMonthlyForm(true);
+//         //     setFormSubmitted(false);
+//         //     setBudget('');
+//         //     setSelectedCategories([]);
+//         //     setCreatedCategories([]);
+//         //     setBudgetGoalObj({});
+//         //
+//         //     resetMonthlyGoal();
+//         //     remountComponent();
+//         //     // setMonthlyForm();
+//         // },  .5 * 60 * 1000);
+//
+//         // if (budgetGoalObj && !budgetGoalObj.monthlyBudget) {
+//         //     setShouldRenderSetMonthlyForm(true);
+//         //     // setIsGoalStored(false);
+//         //     // localStorage.removeItem(`colorOptions_${userEmail}`);
+//         // }
+//
+//         //BUG: when timer runs out, display page still renders but with NO info within ti
+//         //GOAL: when the timer runs out, render the set monthly page
+//
 //         fetchBudgetData().then((response) => {
 //             setBudgetGoalObj(response.data);
 //         });
 //         setBudgetUpdated(false)
 //         console.log("budgetGoalObj", budgetGoalObj)
+//
+//         // return () => clearTimeout(timer);
 //
 //     }, [userEmail, budgetUpdated]);
 //
@@ -627,16 +654,94 @@ export default SetMonthlyGoal;
 //         setBudgetUpdated(true)
 //     };
 //
+//     const setMonthlyForm = () => {
+//         return (
+//             <div>
+//                 <h3>Set Monthly Budget:</h3>
+//                 <div className="input-container">
+//                     <input className='user-input-field'
+//                            type="text"
+//                            placeholder="Enter your budget"
+//                            value={budget}
+//                            onChange={handleBudgetChange}
+//                     />
+//                     {invalidBudgetError && <p className="error-message">{invalidBudgetError}</p>}
+//                 </div>
+//
+//                 <h4>Select Categories:</h4>
+//                 <div className="category-buttons">
+//                     {categories.map((category) => (
+//                         <button
+//                             key={category}
+//                             className={`category-button${selectedCategories.includes(category) ? ' selected' : ''}`}
+//                             onClick={() => handleCategoryClick(category)}
+//                         >
+//                             {category}
+//                         </button>
+//                     ))}
+//                 </div>
+//
+//                 <div className="add-user-input">
+//                     <h4>Create Categories:</h4>
+//                     <button className="plus-button"
+//                             onClick={() => setDisplayCreatedCategories(!displayCreatedCategories)}>+
+//                     </button>
+//                 </div>
+//
+//                 <div className="add-field">
+//                     {displayCreatedCategories && (
+//                         <div>
+//                             <input className='category-field'
+//                                    type="text"
+//                                    placeholder="Enter a new category"
+//                                    value={newCategory}
+//                                    onChange={(e) => setNewCategory(e.target.value)}
+//                             />
+//                             <button className='add-button' onClick={handleCreateCategory}>Add</button>
+//                         </div>
+//                     )}
+//                 </div>
+//
+//                 <div className="category-buttons">
+//                     {createdCategories.map((category) => (
+//                         <button
+//                             key={category}
+//                             className={`created-category ${category}`}
+//                             onClick={() => handleRemoveCategory(category)}>
+//                             {category}
+//                         </button>
+//                     ))}
+//                 </div>
+//
+//                 <button
+//                     className="submit-button"
+//                     type="submit"
+//                     onClick={handleNext}
+//                     disabled={invalidBudgetError !== ''}>
+//                     Next
+//                 </button>
+//             </div>
+//         )
+//     }
+//
 //     /* return statement depending on whether user inputted their goal beforehand */
-//     if (isGoalStored) {
+//     // if (isGoalStored) {
+//     if (isGoalStored && !shouldRenderSetMonthlyForm) {
 //         return (
 //             <DisplayMonthlyGoal
 //                 budgetGoalObj={budgetGoalObj}
 //                 userEmail={userEmail}
 //                 setBudgetUpdated={setBudgetUpdated}
+//                 setMonthlyGoalForm={setMonthlyForm}
+//                 shouldRenderSetMonthlyForm={shouldRenderSetMonthlyForm}
 //             />
 //         );
-//     } else {
+//     } if (shouldRenderSetMonthlyForm) {
+//         return (
+//             <p> render set monthly form here </p>
+//         )
+//     }
+//     else {
 //         return (
 //             formSubmitted ? (
 //                     <ColorCodeCategories
@@ -648,71 +753,75 @@ export default SetMonthlyGoal;
 //                     />
 //                 ) :
 //                 <div>
-//                     <h3>Set Monthly Budget:</h3>
-//                     <div className="input-container">
-//                         <input className='user-input-field'
-//                                type="text"
-//                                placeholder="Enter your budget"
-//                                value={budget}
-//                                onChange={handleBudgetChange}
-//                         />
-//                         {invalidBudgetError && <p className="error-message">{invalidBudgetError}</p>}
-//                     </div>
+//                     {setMonthlyForm()}
+//                 </div>)
 //
-//                     <h4>Select Categories:</h4>
-//                     <div className="category-buttons">
-//                         {categories.map((category) => (
-//                             <button
-//                                 key={category}
-//                                 className={`category-button${selectedCategories.includes(category) ? ' selected' : ''}`}
-//                                 onClick={() => handleCategoryClick(category)}
-//                             >
-//                                 {category}
-//                             </button>
-//                         ))}
-//                     </div>
-//
-//                     <div className="add-user-input">
-//                         <h4>Create Categories:</h4>
-//                         <button className="plus-button"
-//                                 onClick={() => setDisplayCreatedCategories(!displayCreatedCategories)}>+
-//                         </button>
-//                     </div>
-//
-//                     <div className="add-field">
-//                         {displayCreatedCategories && (
-//                             <div>
-//                                 <input className='category-field'
-//                                        type="text"
-//                                        placeholder="Enter a new category"
-//                                        value={newCategory}
-//                                        onChange={(e) => setNewCategory(e.target.value)}
-//                                 />
-//                                 <button className='add-button' onClick={handleCreateCategory}>Add</button>
-//                             </div>
-//                         )}
-//                     </div>
-//
-//                     <div className="category-buttons">
-//                         {createdCategories.map((category) => (
-//                             <button
-//                                 key={category}
-//                                 className={`created-category ${category}`}
-//                                 onClick={() => handleRemoveCategory(category)}>
-//                                 {category}
-//                             </button>
-//                         ))}
-//                     </div>
-//
-//                     <button
-//                         className="submit-button"
-//                         type="submit"
-//                         onClick={handleNext}
-//                         disabled={invalidBudgetError !== ''}>
-//                         Next
-//                     </button>
-//                 </div>
-//         )
+//         //         <div>
+//         //             <h3>Set Monthly Budget:</h3>
+//         //             <div className="input-container">
+//         //                 <input className='user-input-field'
+//         //                        type="text"
+//         //                        placeholder="Enter your budget"
+//         //                        value={budget}
+//         //                        onChange={handleBudgetChange}
+//         //                 />
+//         //                 {invalidBudgetError && <p className="error-message">{invalidBudgetError}</p>}
+//         //             </div>
+//         //
+//         //             <h4>Select Categories:</h4>
+//         //             <div className="category-buttons">
+//         //                 {categories.map((category) => (
+//         //                     <button
+//         //                         key={category}
+//         //                         className={`category-button${selectedCategories.includes(category) ? ' selected' : ''}`}
+//         //                         onClick={() => handleCategoryClick(category)}
+//         //                     >
+//         //                         {category}
+//         //                     </button>
+//         //                 ))}
+//         //             </div>
+//         //
+//         //             <div className="add-user-input">
+//         //                 <h4>Create Categories:</h4>
+//         //                 <button className="plus-button"
+//         //                         onClick={() => setDisplayCreatedCategories(!displayCreatedCategories)}>+
+//         //                 </button>
+//         //             </div>
+//         //
+//         //             <div className="add-field">
+//         //                 {displayCreatedCategories && (
+//         //                     <div>
+//         //                         <input className='category-field'
+//         //                                type="text"
+//         //                                placeholder="Enter a new category"
+//         //                                value={newCategory}
+//         //                                onChange={(e) => setNewCategory(e.target.value)}
+//         //                         />
+//         //                         <button className='add-button' onClick={handleCreateCategory}>Add</button>
+//         //                     </div>
+//         //                 )}
+//         //             </div>
+//         //
+//         //             <div className="category-buttons">
+//         //                 {createdCategories.map((category) => (
+//         //                     <button
+//         //                         key={category}
+//         //                         className={`created-category ${category}`}
+//         //                         onClick={() => handleRemoveCategory(category)}>
+//         //                         {category}
+//         //                     </button>
+//         //                 ))}
+//         //             </div>
+//         //
+//         //             <button
+//         //                 className="submit-button"
+//         //                 type="submit"
+//         //                 onClick={handleNext}
+//         //                 disabled={invalidBudgetError !== ''}>
+//         //                 Next
+//         //             </button>
+//         //         </div>
+//         // )
 //     }
 // }
 //
@@ -783,6 +892,7 @@ export default SetMonthlyGoal;
 //                     budgetGoalObj={budgetGoalObj}
 //                     userEmail={userEmail}
 //                     setBudgetUpdated={setBudgetUpdated}
+//                     shouldRenderSetMonthlyForm={false}
 //                 />
 //             ) : (
 //                 <>
@@ -823,10 +933,11 @@ export default SetMonthlyGoal;
 // }
 //
 // /* Display page: rendered after user completes the form AND as a landing page after the user previously inputted their goal */
-// function DisplayMonthlyGoal({ budgetGoalObj, userEmail, setBudgetUpdated }) {
+// function DisplayMonthlyGoal({ budgetGoalObj, userEmail, setBudgetUpdated, setMonthlyGoalForm, shouldRenderSetMonthlyForm }) {
 //     const [editableCategories, setEditableCategories] = useState([]);
 //     const [duplicateCategoryError2, setDuplicateCategoryError2] = useState('');
 //     const allCategories = budgetGoalObj?.allCategories || [];
+//     const [shouldRenderMonthly, setShouldRenderMonthly] = useState(shouldRenderSetMonthlyForm);
 //
 //     /* obtains the list of modified categories from local storage if it exists and sets equal to categoryNames */
 //     const storedModifiedCategories = localStorage.getItem(`modifiedCategories_${userEmail}`);
@@ -888,8 +999,39 @@ export default SetMonthlyGoal;
 //         console.log(updateBudgetResponse);
 //     };
 //
+//     const resetMonthlyGoal = async () => {
+//         const budgetReset = {
+//             email: userEmail
+//         }
+//         const resetBudgetResponse = await put('/resetBudget', budgetReset);
+//     }
+//
+//     // USE EFFECT DISPLAY FUNCTION
+//     useEffect(() => {
+//         const timer = setTimeout(() => {
+//             // Reset the goal information after 30 seconds
+//             setShouldRenderMonthly(true);
+//             resetMonthlyGoal();
+//
+//             // setMonthlyForm();
+//         },  .5 * 60 * 1000);
+//         // const timer = setTimeout(() => {
+//         //     // Timer logic to execute after a certain duration
+//         //     setShouldRenderMonthly(true); // Assuming setMonthlyGoalForm is a function that should be called after the timer
+//         // }, 0.5 * 60 * 1000); // Set the duration in milliseconds
+//
+//         return () => clearTimeout(timer); // Cleanup function to clear the timer on component unmount
+//     }, []);
+//
 //     return (
+//         shouldRenderMonthly ? (
+//             // <SetMonthlyGoal></SetMonthlyGoal>
+//             <p>hihihihi 222222</p>
+//         ) : (
 //         <div>
+//             {/*{shouldRenderMonthly ? (*/}
+//             {/*    setMonthlyGoalForm*/}
+//             {/*) : (<p>hihihihihihi</p>)}*/}
 //             <h8>Your Budget for this Month is  ${budgetGoalObj.monthlyBudget}</h8>
 //             <h9>Your Spending Categories are: </h9>
 //             <ul>
@@ -930,7 +1072,7 @@ export default SetMonthlyGoal;
 //                 ))}
 //             </ul>
 //         </div>
-//     );
+//     ));
 // }
 //
 // export default SetMonthlyGoal;
