@@ -125,6 +125,7 @@ public class UserService {
     public String updateMonthlyBudgetColors(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException, BudgetBustersException {
         MonthlyBudget budget = getBudget(monthlyBudget.getEmail());
         budget.setColors(monthlyBudget.getColors());
+        budget.setSubmissionDate(monthlyBudget.getSubmissionDate());
         updateMonthlyBudget(budget);
         return "Colors updated for " + budget.getEmail();
     }
@@ -134,6 +135,16 @@ public class UserService {
         budget.setAllCategories(monthlyBudget.getAllCategories());
         updateMonthlyBudget(budget);
         return "Categories updated for " + budget.getEmail();
+    }
+
+    public String resetBudget(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException, BudgetBustersException {
+        MonthlyBudget budget = getBudget(monthlyBudget.getEmail());
+        budget.setMonthlyBudget(null);
+        budget.setColors(null);
+        budget.setSubmissionDate(null);
+        budget.setAllCategories(null);
+        updateMonthlyBudget(budget);
+        return "Monthly budget for " + budget.getEmail() + " has been reset.";
     }
 
     public String updateNotifications(Notifications notifications) throws ExecutionException, InterruptedException, BudgetBustersException {
