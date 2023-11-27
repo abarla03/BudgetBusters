@@ -154,7 +154,7 @@ public class UserService {
         ApiFuture<DocumentSnapshot> future = documentReference.get();
         DocumentSnapshot document = future.get();
         if (document == null) {
-            throw new BudgetBustersException("No textNotif exists for user: " + textNotifs.getPhoneNumber());
+            throw new BudgetBustersException("No textNotifs exists for user: " + textNotifs.getPhoneNumber());
         }
 
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("textNotifs").document(textNotifs.getPhoneNumber()).set(textNotifs);
