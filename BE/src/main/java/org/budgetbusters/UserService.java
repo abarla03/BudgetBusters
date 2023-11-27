@@ -6,6 +6,8 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Text;
+
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -16,7 +18,11 @@ public class UserService {
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("monthlyBudget").document(monthlyBudget.getEmail()).set(monthlyBudget);
         return "Monthly Budget created for " + monthlyBudget.getEmail() + " at " + collectionsApiFuture.get().getUpdateTime();
     }
-
+    public String createTextNotif(TextNotifs textNotifs) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("textNotifs").document(textNotifs.getPhoneNumber()).set(textNotifs);
+        return "Text Notif created for " + textNotifs.getPhoneNumber() + " at " + collectionsApiFuture.get().getUpdateTime();
+    }
     public String createNotification(Notifications notifications) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("Notifications").document(notifications.getEmail()).set(notifications);
@@ -35,6 +41,12 @@ public class UserService {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("BudgetBusterUser").document(user.getEmail()).set(user);
         return "Account for " + user.getEmail() + "has been created at " + collectionsApiFuture.get().getUpdateTime();
+    }
+
+    public String deleteTextNotif(String phoneNumber) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> writeResult = dbFirestore.collection("textNotifs").document(phoneNumber).delete();
+        return "Text Notifications for " + phoneNumber + " is deleted.";
     }
 
     public String deleteUser(String email) throws ExecutionException, InterruptedException {
@@ -65,6 +77,19 @@ public class UserService {
         if (document.exists()) {
             monthlyBudget = document.toObject(MonthlyBudget.class);
             return monthlyBudget;
+        }
+        return null;
+    }
+
+    public TextNotifs getTextNotifs(String phoneNumber) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        DocumentReference documentReference = dbFirestore.collection("textNotifs").document(phoneNumber);
+        ApiFuture<DocumentSnapshot> future = documentReference.get();
+        DocumentSnapshot document = future.get();
+        TextNotifs textNotifs;
+        if (document.exists()) {
+            textNotifs = document.toObject(TextNotifs.class);
+            return textNotifs;
         }
         return null;
     }
@@ -120,6 +145,20 @@ public class UserService {
 
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("monthlyBudget").document(monthlyBudget.getEmail()).set(monthlyBudget);
         return "Monthly Budget updated: " + collectionsApiFuture.get().getUpdateTime();
+    }
+
+    public String updateTextNotifs(TextNotifs textNotifs) throws ExecutionException, InterruptedException, BudgetBustersException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        // check if already exists
+        DocumentReference documentReference = dbFirestore.collection("textNotifs").document(textNotifs.getPhoneNumber());
+        ApiFuture<DocumentSnapshot> future = documentReference.get();
+        DocumentSnapshot document = future.get();
+        if (document == null) {
+            throw new BudgetBustersException("No textNotif exists for user: " + textNotifs.getPhoneNumber());
+        }
+
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("textNotifs").document(textNotifs.getPhoneNumber()).set(textNotifs);
+        return "TextNotifs updated for " + textNotifs.getPhoneNumber() + " at " + collectionsApiFuture.get().getUpdateTime();
     }
 
     public String updateMonthlyBudgetColors(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException, BudgetBustersException {

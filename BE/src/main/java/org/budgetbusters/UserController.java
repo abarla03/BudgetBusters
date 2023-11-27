@@ -18,6 +18,11 @@ public class UserController {
         return userService.createMonthlyBudget(monthlyBudget);
     }
 
+    @PostMapping("/createTextNotif")
+    public String createTextNotif(@RequestBody TextNotifs textNotifs) throws InterruptedException, ExecutionException {
+        return userService.createTextNotif(textNotifs);
+    }
+
     @PostMapping("/createNotification")
     public String createNotification(@RequestBody Notifications notifications) throws InterruptedException, ExecutionException {
         return userService.createNotification(notifications);
@@ -36,6 +41,11 @@ public class UserController {
         return userService.deleteUser(email);
     }
 
+    @DeleteMapping("/deleteTextNotif/{phoneNumber}")
+    public String deleteTextNotif(@PathVariable String phoneNumber) throws InterruptedException, ExecutionException {
+        return userService.deleteTextNotif(phoneNumber);
+    }
+
     @DeleteMapping("/deletePurchase/{email}/{index}/{totalDailySpending}")
     public String deletePurchase(@PathVariable String email, @PathVariable Integer index, @PathVariable Double totalDailySpending) throws InterruptedException, ExecutionException, BudgetBustersException {
         return userService.deletePurchase(email, index, totalDailySpending);
@@ -45,6 +55,12 @@ public class UserController {
     public MonthlyBudget getBudget(@PathVariable String email) throws InterruptedException, ExecutionException {
         MonthlyBudget monthlyBudget = userService.getBudget(email);
         return monthlyBudget;
+    }
+
+    @GetMapping("/getTextNotifs/{phoneNumber}")
+    public TextNotifs getTextNotifs(@PathVariable String phoneNumber) throws InterruptedException, ExecutionException {
+        TextNotifs textNotifs = userService.getTextNotifs(phoneNumber);
+        return textNotifs;
     }
 
     @GetMapping("/getNotifications/{email}")
@@ -68,6 +84,13 @@ public class UserController {
     public String updateBudget(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException, BudgetBustersException {
         return userService.updateMonthlyBudget(monthlyBudget);
     }
+
+    @PutMapping("/updateTextNotifs")
+    public String updateTextNotifs(@RequestBody TextNotifs textNotifs) throws InterruptedException, ExecutionException, BudgetBustersException {
+        return userService.updateTextNotifs(textNotifs);
+    }
+
+
     @PutMapping("/updateBudgetColors")
     public String updateBudgetColors(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException, BudgetBustersException {
         return userService.updateMonthlyBudgetColors(monthlyBudget);

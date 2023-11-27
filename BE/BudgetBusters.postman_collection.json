@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "5cef0916-3560-4299-bc76-1474be89d87e",
+		"_postman_id": "3e6cdf0d-6475-46dd-8a1a-2089a6d1788b",
 		"name": "BudgetBusters",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "30849096",
-		"_collection_link": "https://lively-star-705095.postman.co/workspace/My-Workspace~dbe10769-935a-48ec-8353-80f21ddfb9cc/collection/30256980-5cef0916-3560-4299-bc76-1474be89d87e?action=share&source=collection_link&creator=30849096"
+		"_exporter_id": "30602963"
 	},
 	"item": [
 		{
@@ -116,6 +115,33 @@
 			"response": []
 		},
 		{
+			"name": "createTextNotif",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"phoneNumber\" : 2240001111,\r\n    \"dailyNotif\" : \"12:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/createTextNotif",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"createTextNotif"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "deleteUser",
 			"request": {
 				"method": "DELETE",
@@ -141,18 +167,42 @@
 			"response": []
 		},
 		{
-			"name": "deletePurchase",
+			"name": "deleteTextNotif",
 			"request": {
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080//deletePurchase/:email/:index",
+					"raw": "localhost:8080/deleteTextNotif/:phoneNumber",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"",
+						"deleteTextNotif",
+						":phoneNumber"
+					],
+					"variable": [
+						{
+							"key": "phoneNumber",
+							"value": "2240001111"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deletePurchase",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/deletePurchase/:email/:index",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
 						"deletePurchase",
 						":email",
 						":index"
@@ -272,6 +322,85 @@
 			"response": []
 		},
 		{
+			"name": "getTextNotifs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getTextNotifs/:phoneNumber",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getTextNotifs",
+						":phoneNumber"
+					],
+					"variable": [
+						{
+							"key": "phoneNumber",
+							"value": "122111111"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateNotifications",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"test@purdue.edu\",\n    \"preferredMethod\" : \"text\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/updateNotifications",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"updateNotifications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateTextNotifs",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"phoneNumber\": \"2240001111\",\n    \"dailyNotif\": \"11:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/updateTextNotifs",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"updateTextNotifs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "updateBudget",
 			"request": {
 				"method": "PUT",
@@ -320,33 +449,6 @@
 					"port": "8080",
 					"path": [
 						"updatePurchase"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "updateNotifications",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"email\" : \"test@purdue.edu\",\n    \"preferredMethod\" : \"text\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/updateNotifications",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"updateNotifications"
 					]
 				}
 			},
