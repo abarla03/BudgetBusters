@@ -15,4 +15,5 @@ public class InputDailySpending {
     private String email;
     private Integer numPurchases;
     private List<Purchase> purchases;
+    private Double totalDailySpending;
 }
