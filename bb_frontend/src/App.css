@@ -1,4 +1,4 @@
-/* COPIED AND PASTED CSS FROM S3_PREV_US_1 */
+/* COPIED AND PASTED CSS FROM S1_DISPLAYING MONTHLY */
 .App {
     text-align: center;
     /* display: center; */
@@ -638,6 +638,18 @@ h7 {
     align-items: center;
 }
 
+/* edit purchase items alignment */
+.edit-purchase {
+    /* indentation */
+    margin-left: 262px;
+
+    /* styling for vertical alignment of fields */
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 /* formatting inside the purchase info buttons */
 .span {
     display: block;
@@ -673,6 +685,28 @@ h7 {
     position: absolute;
     bottom: -57px;
     left: 756px;
+}
+
+/* error message for amount field when editing */
+.error-message7 {
+    color: red;
+    font-size: 14px;
+    font-weight: 100;
+    font-family: 'Archivo Narrow', sans-serif;
+    position: absolute;
+    bottom: -38px;
+    left: 682px;
+}
+
+/* error message for filling in all fields when editing */
+.error-message8 {
+    color: red;
+    font-size: 14px;
+    font-weight: 100;
+    font-family: 'Archivo Narrow', sans-serif;
+    position: absolute;
+    bottom: -210px;
+    left: 890px;
 }
 
 /* --------------------Manage Notifications--------------- */
