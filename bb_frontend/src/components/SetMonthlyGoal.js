@@ -18,6 +18,13 @@ function SetMonthlyGoal() {
     const [budgetGoalObj, setBudgetGoalObj] = useState({});
     const [budgetUpdated, setBudgetUpdated] = useState(false); // to re-fetch budget info whenever update happens
 
+    const resetMonthlyGoal = async () => {
+        const budgetReset = {
+            email: userEmail
+        }
+        const resetBudgetResponse = await put('/resetBudget', budgetReset);
+    }
+
     /* obtaining budget goal object from user input */
     useEffect(() => {
         function fetchBudgetData() {
@@ -34,13 +41,19 @@ function SetMonthlyGoal() {
         // CHANGE 13: FOR THE DEMO: reset after 2 min
         const timer = setTimeout(() => {
             // Reset the goal information after 30 seconds
-            setIsGoalStored(false);
             setFormSubmitted(false);
             setBudget('');
             setSelectedCategories([]);
             setCreatedCategories([]);
             setBudgetGoalObj({});
-        }, 2 * 60 * 1000);
+
+            resetMonthlyGoal();
+        },  2 * 60 * 1000);
+
+        if (!budgetGoalObj.monthlyBudget) {
+            setIsGoalStored(false);
+            localStorage.removeItem(`colorOptions_${userEmail}`);
+        }
 
         fetchBudgetData().then((response) => {
             setBudgetGoalObj(response.data);
@@ -59,6 +72,9 @@ function SetMonthlyGoal() {
                     setSelectedCategories([]);
                     setCreatedCategories([]);
                     setBudgetGoalObj({});
+                    localStorage.removeItem(`colorOptions_${userEmail}`);
+
+                    resetMonthlyGoal();
                 }
             }
         });
@@ -91,7 +107,7 @@ function SetMonthlyGoal() {
     /* colorOptions is used to remember the colors that the user selected for all their categories
      * passed as a parameter for ColorCodeCategories() and DisplayMonthlyGoal() functions          */
     const [colorOptions, setColorOptions] = useState(() => {
-        const storedColorOptions = localStorage.getItem(`colorOptions_${userEmail}`);
+        const storedColorOptions = budgetGoalObj.colors ? localStorage.getItem(`colorOptions_${userEmail}`) : null;
         return storedColorOptions ? JSON.parse(storedColorOptions) : {};
     });
 

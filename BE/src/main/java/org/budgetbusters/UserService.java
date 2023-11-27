@@ -137,6 +137,16 @@ public class UserService {
         return "Categories updated for " + budget.getEmail();
     }
 
+    public String resetBudget(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException, BudgetBustersException {
+        MonthlyBudget budget = getBudget(monthlyBudget.getEmail());
+        budget.setMonthlyBudget(null);
+        budget.setColors(null);
+        budget.setSubmissionDate(null);
+        budget.setAllCategories(null);
+        updateMonthlyBudget(budget);
+        return "Monthly budget for " + budget.getEmail() + " has been reset.";
+    }
+
     public String updateNotifications(Notifications notifications) throws ExecutionException, InterruptedException, BudgetBustersException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         // check if already exists
