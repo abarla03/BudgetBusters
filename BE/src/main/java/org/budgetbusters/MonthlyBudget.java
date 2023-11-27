@@ -1,10 +1,8 @@
 package org.budgetbusters;
 
-import lombok.AllArgsConstructor; // takes care of all the setters and getters
-import lombok.Getter;
-import lombok.NoArgsConstructor; // takes care of all the setters and getters
-import lombok.Setter;
+import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -16,4 +14,5 @@ public class MonthlyBudget {
     private Integer monthlyBudget;
     private List<String> allCategories;
     private List<String> colors;
+    private Date submissionDate;
 }

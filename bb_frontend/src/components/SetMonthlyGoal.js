@@ -3,17 +3,26 @@ import React, { useState, useEffect } from 'react';
 import { categories } from '../predefinedCategories'
 import { auth } from "../firebase";
 import {post, put, get} from "./ApiClient";
-import {all} from "axios";
 
 /* landing page of Set Monthly Goal: first page of the Set Monthly Goal form OR a display of the user's previously-inputted goal */
 function SetMonthlyGoal() {
-    console.log("SetMonthlyGoal component is rendering.")
     /* userEmail is used to as an identifier for if data already exists for a particular user */
     const user = auth.currentUser;
     const userEmail = user ? user.email : "";
-    const [isGoalStored, setIsGoalStored] = useState(Boolean(localStorage.getItem(`colorOptions_${userEmail}`)));
+    const [currentMonth, setCurrentMonth] = useState('');
+
+    /* vars needed for storing/updating budget goal data */
     const [budgetGoalObj, setBudgetGoalObj] = useState({});
     const [budgetUpdated, setBudgetUpdated] = useState(false); // to re-fetch budget info whenever update happens
+    const [isGoalStored, setIsGoalStored] = useState(Boolean(localStorage.getItem(`colorOptions_${userEmail}`)));
+
+    /* function handling the reset of budgetGoalObj after timer ends */
+    const resetMonthlyGoal = async () => {
+        const budgetReset = {
+            email: userEmail
+        }
+        const resetBudgetResponse = await put('/resetBudget', budgetReset);
+    }
 
     /* obtaining budget goal object from user input */
     useEffect(() => {
@@ -28,11 +37,52 @@ function SetMonthlyGoal() {
             return data;
         }
 
+        // timer for completing the "month" (NOTE: 1 month = 20 min)
+        const timer = setTimeout(() => {
+            // reset the goal information after 30 seconds
+            setIsGoalStored(false);
+            setFormSubmitted(false);
+            setBudget('');
+            setSelectedCategories([]);
+            setCreatedCategories([]);
+            setBudgetGoalObj({});
+
+            resetMonthlyGoal();
+        },  20 * 60 * 1000);
+
         fetchBudgetData().then((response) => {
             setBudgetGoalObj(response.data);
+
+            // CHANGE 12: REAL THING - check if user has submitted their goal previously, and if date exists
+            // if yes, and it's the first day of the new month, reset budgetGoalObj to nothing
+            // if (response.data && response.data.submissionDate) {
+            //     const currentDate = new Date();
+            //
+            //     // before resetting, should we try to save the past month's information?
+            //     if (currentDate.getDate() === 1) {
+            //         // setShouldResetGoal(true);
+            //         setIsGoalStored(false);
+            //         setFormSubmitted(false);
+            //         setBudget('');
+            //         setSelectedCategories([]);
+            //         setCreatedCategories([]);
+            //         setBudgetGoalObj({});
+            //         // localStorage.removeItem(`colorOptions_${userEmail}`);
+            //
+            //         resetMonthlyGoal();
+            //     }
+            // }
         });
         setBudgetUpdated(false)
-        console.log("budgetGoalObj", budgetGoalObj)
+
+        // fetch the current month from the Date library
+        const currentDate = new Date();
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const currentMonthName = monthNames[currentDate.getMonth()];
+        setCurrentMonth(currentMonthName);
+
+        // run the timer function
+        return () => clearTimeout(timer);
 
     }, [userEmail, budgetUpdated]);
 
@@ -115,19 +165,21 @@ function SetMonthlyGoal() {
             email: userEmail,
             monthlyBudget: budget,
             allCategories: allCategories,
-            colors: null
+            colors: null,
+            submissionDate: null
         }
         const createBudgetResponse = await post('/createBudget', goalInfo);
         setBudgetUpdated(true)
     };
 
     /* return statement depending on whether user inputted their goal beforehand */
-    if (isGoalStored) {
+    if (budgetGoalObj.colors) {
         return (
             <DisplayMonthlyGoal
                 budgetGoalObj={budgetGoalObj}
                 userEmail={userEmail}
                 setBudgetUpdated={setBudgetUpdated}
+                submissionDate={budgetGoalObj.submissionDate}
             />
         );
     } else {
@@ -142,6 +194,7 @@ function SetMonthlyGoal() {
                     />
                 ) :
                 <div>
+                    <h10>{`Fill out the form below to set your goal for ${currentMonth}!`}</h10>
                     <h3>Set Monthly Budget:</h3>
                     <div className="input-container">
                         <input className='user-input-field'
@@ -250,17 +303,19 @@ function ColorCodeCategories({ budgetGoalObj, userEmail, setBudgetUpdated, color
             // collect colors in the order of selectedCategories
             const selectedColors = allCategories?.map((category) => colorOptions[category]);
 
+            // create a const representing the current date/time
+            const submittedDate = new Date();
+
             // abstracted json object to send data to backend (Submit button)
             const colorInfo = {
                 email: userEmail,
                 selectedCategories: allCategories,
-                colors: selectedColors
+                colors: selectedColors,
+                submissionDate: submittedDate
             }
 
-            console.log(colorInfo);
             const updateBudgetResponse = await put('/updateBudgetColors', colorInfo);
             setBudgetUpdated(true);
-            console.log(updateBudgetResponse);
 
             localStorage.setItem(`colorOptions_${userEmail}`, JSON.stringify(colorOptions));
         } else {
@@ -376,22 +431,26 @@ function DisplayMonthlyGoal({ budgetGoalObj, userEmail, setBudgetUpdated }) {
             allCategories: categoriesAfterEdit
         }
 
-        console.log(modifiedCategoryInfo);
         const updateBudgetResponse = await put('/updateBudgetCategories', modifiedCategoryInfo);
         setBudgetUpdated(true);
-        console.log(updateBudgetResponse);
     };
 
+    const dateObj = new Date(budgetGoalObj.submissionDate);
+    const formattedDate = dateObj.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    });
     return (
         <div>
-            <h8>Your Budget for this Month is  ${budgetGoalObj.monthlyBudget}</h8>
+            <h8>Your budget for this month is  ${budgetGoalObj.monthlyBudget}</h8>
             <h9>Your Spending Categories are: </h9>
             <ul>
                 {allCategories?.map((category) => (
                     <li key={category}>
                         <div>
                             <button className="category-button" id={`button-${category}`}
-                                style={{backgroundColor: (budgetGoalObj.colors && (budgetGoalObj.colors)[categoryIndexMap[category]]) || '#ccc'}}>
+                                    style={{backgroundColor: (budgetGoalObj.colors && (budgetGoalObj.colors)[categoryIndexMap[category]]) || '#ccc'}}>
 
                                 {editableCategories.includes(category) ? (
                                     <input
@@ -423,6 +482,9 @@ function DisplayMonthlyGoal({ budgetGoalObj, userEmail, setBudgetUpdated }) {
                     </li>
                 ))}
             </ul>
+            {(budgetGoalObj.submissionDate) && (
+                <h11>Goal submitted on: {formattedDate}</h11>
+            )}
         </div>
     );
 }

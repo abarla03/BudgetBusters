@@ -278,6 +278,30 @@ h4 {
     margin-left: 200px;
 }
 
+/* message for filling out goal for the month */
+h10 {
+    color: #333;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 23px;
+    text-align: center;
+    margin-top: 100px;
+    margin-left: -10px;
+}
+
+h11 {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    color: #333;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-style: normal;
+    font-weight: 200;
+    font-size: 19px;
+    margin-top: 2000px;
+}
+
 /* monthly budget input field formatting */
 .user-input-field {
     width: 500px;
@@ -496,7 +520,7 @@ h8 {
     font-family: 'Archivo Narrow', sans-serif;
     font-weight: 600;
     font-size: 23px;
-    margin-left: 675px;
+    margin-left: 582px;
     display: flex;
     margin-top: 30px;
 }
@@ -506,7 +530,7 @@ h9 {
     font-family: 'Archivo Narrow', sans-serif;
     font-weight: 600;
     font-size: 23px;
-    margin-left: 690px;
+    margin-left: 585px;
     display: flex;
     margin-top: 40px;
 }

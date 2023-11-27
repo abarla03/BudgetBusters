@@ -100,6 +100,10 @@ public class UserController {
     public String updateBudgetCategories(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException, BudgetBustersException {
         return userService.updateMonthlyBudgetCategories(monthlyBudget);
     }
+    @PutMapping("/resetBudget")
+    public String resetBudget(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException, BudgetBustersException {
+        return userService.resetBudget(monthlyBudget);
+    }
 
     @PutMapping("/updateNotifications")
     public String updateNotifications(@RequestBody Notifications notifications) throws InterruptedException, ExecutionException, BudgetBustersException {
