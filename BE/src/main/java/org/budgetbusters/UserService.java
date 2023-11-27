@@ -125,6 +125,7 @@ public class UserService {
     public String updateMonthlyBudgetColors(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException, BudgetBustersException {
         MonthlyBudget budget = getBudget(monthlyBudget.getEmail());
         budget.setColors(monthlyBudget.getColors());
+        budget.setSubmissionDate(monthlyBudget.getSubmissionDate());
         updateMonthlyBudget(budget);
         return "Colors updated for " + budget.getEmail();
     }
