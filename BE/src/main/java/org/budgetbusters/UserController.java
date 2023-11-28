@@ -36,9 +36,9 @@ public class UserController {
         return userService.deleteUser(email);
     }
 
-    @DeleteMapping("/deletePurchase/{email}/{index}/{totalDailySpending}")
-    public String deletePurchase(@PathVariable String email, @PathVariable Integer index, @PathVariable Double totalDailySpending) throws InterruptedException, ExecutionException, BudgetBustersException {
-        return userService.deletePurchase(email, index, totalDailySpending);
+    @DeleteMapping("/deletePurchase/{email}/{index}/{currentDayTotal}")
+    public String deletePurchase(@PathVariable String email, @PathVariable Integer index, @PathVariable Double currentDayTotal) throws InterruptedException, ExecutionException, BudgetBustersException {
+        return userService.deletePurchase(email, index, currentDayTotal);
     }
 
     @GetMapping("/getBudget/{email}")
@@ -80,6 +80,11 @@ public class UserController {
     @PutMapping("/resetBudget")
     public String resetBudget(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException, BudgetBustersException {
         return userService.resetBudget(monthlyBudget);
+    }
+
+    @PutMapping("/resetPurchases")
+    public String resetPurchases(@RequestBody InputDailySpending inputDailySpending) throws InterruptedException, ExecutionException, BudgetBustersException {
+        return userService.resetPurchases(inputDailySpending);
     }
 
     @PutMapping("/updateNotifications")
