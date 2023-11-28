@@ -43,7 +43,7 @@ public class UserService {
         return "Successfully deleted account of " + email;
     }
 
-    public String deletePurchase(String email, int index, double totalDailySpending) throws ExecutionException, InterruptedException, BudgetBustersException {
+    public String deletePurchase(String email, int index, double currentMonthlySpending) throws ExecutionException, InterruptedException, BudgetBustersException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         InputDailySpending inputDailySpending = getPurchase(email);
         if (index < 0 || index >= inputDailySpending.getNumPurchases()) {
@@ -51,7 +51,7 @@ public class UserService {
         }
         inputDailySpending.getPurchases().remove(index);
         inputDailySpending.setNumPurchases(inputDailySpending.getNumPurchases() - 1);
-        inputDailySpending.setTotalDailySpending(totalDailySpending);
+        inputDailySpending.setCurrentMonthlySpending(currentMonthlySpending);
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("DailyPurchases").document(inputDailySpending.getEmail()).set(inputDailySpending);
         return "Purchase at " + index + " deleted. "+ collectionsApiFuture.get().getUpdateTime();
     }

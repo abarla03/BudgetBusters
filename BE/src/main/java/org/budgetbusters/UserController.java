@@ -36,9 +36,9 @@ public class UserController {
         return userService.deleteUser(email);
     }
 
-    @DeleteMapping("/deletePurchase/{email}/{index}/{totalDailySpending}")
-    public String deletePurchase(@PathVariable String email, @PathVariable Integer index, @PathVariable Double totalDailySpending) throws InterruptedException, ExecutionException, BudgetBustersException {
-        return userService.deletePurchase(email, index, totalDailySpending);
+    @DeleteMapping("/deletePurchase/{email}/{index}/{currentMonthlySpending}")
+    public String deletePurchase(@PathVariable String email, @PathVariable Integer index, @PathVariable Double currentMonthlySpending) throws InterruptedException, ExecutionException, BudgetBustersException {
+        return userService.deletePurchase(email, index, currentMonthlySpending);
     }
 
     @GetMapping("/getBudget/{email}")
