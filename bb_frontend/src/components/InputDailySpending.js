@@ -320,7 +320,11 @@ function InputDailySpending() {
                 {isAddMode && (
                     purchases.map((purchase, index) => (
                         <div key={index}>
-                            {(!arePurchasesStored || ((!inputDailyObj.purchases) && (!inputDailyObj.numPurchases))) && (
+                            {(!arePurchasesStored) && (
+                            //     <div>
+                            //         <p>TEST TEST</p>
+                            //     </div>
+                            // )}
                             <div>
                                 <button className="purchase-info-button">
                                     <div className={'span'}>
@@ -496,8 +500,13 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                 <h2>Today's Purchases</h2>
             )}
             {/* when inputDailyObj exists and user is not in add mode, display all purchases from the obj */}
-            {!isAddMode && inputDailyObj && inputDailyObj.purchases?.map((purchase, index) => (
+            {/*{!isAddMode && inputDailyObj && inputDailyObj.purchases?.map((purchase, index) => (*/}
+            {(isSubmitted && !showPurchaseFields && inputDailyObj.purchases?.map((purchase, index) => (
+                // <div>
+                // <p>INSIDE DISPLAY </p>
+                // </div>
                 <div key={index}>
+                    <p>INSIDE DISPLAY </p>
                     <button className="purchase-info-button">
                         <div className={'span'}>
                             {'Purchase: ' + purchase.purchaseName}<br />
@@ -556,7 +565,7 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                         </div>
                     )}
                 </div>
-            ))}
+            )))}
         </div>
     )
 }
