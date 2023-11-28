@@ -6,7 +6,9 @@ import logo from "../../BBLogo.png";
 import { useNavigate } from "react-router-dom";
 import GoogleSignInButton from '../GoogleSignInButton';
 import GoogleSignUpButton from "../GoogleSignUpButton";
+import Home from "../Home";
 import * as currentUser from "firebase/auth";
+
 const Register = (props) => {
     const navigate = useNavigate();
     const [name, setName ] = useState('');
@@ -21,6 +23,8 @@ const Register = (props) => {
         email: '',
         phoneNumber: ''
     })
+
+    const [isUserRegistered, setIsUserRegistered] = useState(false);
 
     const signInWithGoogleHandler = () => {
         signInWithGoogle()
@@ -119,6 +123,8 @@ const Register = (props) => {
                 const successMessage = "You have successfully created an account!";
                 console.log(successMessage);
                 window.alert("You have successfully created an account!");
+                // localStorage.setItem('justRegistered', 'true');
+                setIsUserRegistered(true);
                 navigate('/login')
                 //showMessage(successMessage);
                 //showMessage("You have successfully created an account!");
@@ -158,4 +164,4 @@ const Register = (props) => {
     )
 }
 
-export default Register
+export default Register;
