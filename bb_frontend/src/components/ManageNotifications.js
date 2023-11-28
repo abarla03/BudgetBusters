@@ -2,7 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { auth } from "../firebase";
 import {post, put, get} from "./ApiClient";
 
-
+// commit changes (HAVE TO INCL HERE OR ELSE IT CAN'T PUSH)
+/*
+ * env setup for firebase functions/twilio
+ * created array based on firestore db
+ * iterate through array and send notifs to each user at their mapped time
+ * modify monthly notif function to be used in timer
+ */
 function SetNotifications() {
     const user = auth.currentUser;
     const userEmail = user ? user.email : "";
