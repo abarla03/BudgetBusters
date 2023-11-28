@@ -3,9 +3,13 @@ import { auth } from "../firebase";
 import {post, put, get} from "./ApiClient";
 
 
+
 function SetNotifications() {
     const user = auth.currentUser;
     const userEmail = user ? user.email : "";
+    const userPhone = user ? user.phone: "";
+    let isUserPhone = false;
+    let isNotifTime = false;
     const [formSubmitted, setFormSubmitted] = useState(false);
 
     const [notifObj, setNotifObj] = useState({});
@@ -59,6 +63,26 @@ function SetNotifications() {
 
     /* function handling user's ability to select multiple notification methods */
     const handleMethodClick = (method) => {
+        // if user chooses text, verifies that they inputted a phone number in profile
+        if (method === 'Text') {
+            console.log("user chose text as a preferred notification method");
+            // Check if phoneNumber is stored in the User object
+                function fetchPhoneNum() {
+                    let data;
+                    try {
+                        // Make the GET request to retrieve the budget
+                        data = get(`/getUser/${userPhone}`)
+                    } catch (error) {
+                        console.error("Error fetching phoneNumber:", error);
+                        // error message: go to profile
+                        window.alert("To receive text notification, please enter your phone number in your profile page.");
+                    }
+                    return data;
+                }
+                fetchPhoneNum().then((response) => {
+                    isUserPhone = true;
+                });
+        }
         // adds or removes the selected method from the selectedMethods array
         // based on whether it was included before or not
         if (selectedMethods?.includes(method)) {
@@ -70,6 +94,19 @@ function SetNotifications() {
         }
     };
 
+    /* error handling for notification time */
+    const handleNotifTime = () => {
+        console.log("handleNotifTime Method")
+        console.log(`selected hour: ${selectedHour} `);
+        console.log(`selected period: ${selectedPeriod} `);
+        if (selectedHour || selectedPeriod === undefined) {
+            console.log("selected hour or selected period is undefined!");
+            //window.alert("Please enter a time to receive your daily notification!");
+            isNotifTime = true;
+        }
+        return isNotifTime;
+    };
+
     /* yes/no dropdown for user's budget limit warning notification choice */
     const handleWarningNotificationChange = (e) => {
         setWarningNotificationChoice(e.target.value);
@@ -79,10 +116,15 @@ function SetNotifications() {
 
     /* function handling when user submits all of their notification choices, also stores notifObj on FB */
     const handleSubmit = async () => {
+        console.log("test 1");
+        handleNotifTime();
+        console.log("test 2");
         setFormSubmitted(true);
+        console.log("test 3");
         setHasSubmittedOnce(true);
-
+        console.log("test 4");
         // save notification data to FB
+
         const notificationData = {
             email: userEmail,
             preferredMethod: selectedMethods,
@@ -97,17 +139,22 @@ function SetNotifications() {
 
     /* function handling when user wants to save their edits to their notification choices, also updates notifObj on FB */
     const handleSave = async () => {
+        handleNotifTime();
         setIsEditMode(false);
         setFormSubmitted(true);
 
-        // save notification data in FB
-        const updatedNotificationData = {
-            email: userEmail,
-            preferredMethod: selectedMethods,
-            notifTime: selectedHour.toString().concat(" " + selectedPeriod.toUpperCase()),
-            warningNotificationChoice: warningNotificationChoice,
-            budgetWarning: percentageThreshold
-        };
+        if (isNotifTime) {
+            // save notification data in FB
+            const updatedNotificationData = {
+                email: userEmail,
+                preferredMethod: selectedMethods,
+                notifTime: selectedHour.toString().concat(" " + selectedPeriod.toUpperCase()),
+                warningNotificationChoice: warningNotificationChoice,
+                budgetWarning: percentageThreshold
+            };
+        } else {
+            window.alert("Please enter a time to receive your daily notification!");
+        }
         
         const updateBudgetResponse = await put('/updateNotifications', updatedNotificationData);
         setNotifUpdated(true);
@@ -207,6 +254,7 @@ function SetNotifications() {
                                         // value={(notifObj.notifTime.split(" ")[1] === selectedPeriod) ? (notifObj?.notifTime.split(" ")[1]) : (selectedPeriod)}
                                         value={selectedPeriod}
                                         onChange={(e) => setSelectedPeriod(e.target.value)}
+                                        //onChange={handleNotifTime}
                                     >
                                         <option value="">Select AM/PM</option>
                                         <option value="AM">AM</option>
