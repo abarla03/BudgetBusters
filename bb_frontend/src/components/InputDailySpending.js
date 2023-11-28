@@ -19,6 +19,17 @@ function InputDailySpending() {
     const [budgetGoalObj, setBudgetGoalObj] = useState({});
     const [budgetUpdated, setBudgetUpdated] = useState(false); // to re-fetch budget info whenever update happens
 
+    // const [isSubmitted, setIsSubmitted] = useState(false);
+    // const [purchases, setPurchases] = useState([]);
+
+    /* function handling the reset of inputDailyObj after timer ends */
+    // const resetPurchases = async () => {
+    //     const inputDailyReset = {
+    //         email: userEmail
+    //     }
+    //     const resetPurchases = await put('/resetPurchases', inputDailyReset);
+    // }
+
     /* obtaining input daily spending object from user input */
     useEffect(() => {
         function fetchInputDailyData() {
@@ -31,11 +42,23 @@ function InputDailySpending() {
             }
             return data;
         }
+
+        // // timer for completing the "day" (NOTE: 1 day = 3 min)
+        // const timer = setTimeout(() => {
+        //     resetPurchases();
+        //
+        // },  0.5 * 60 * 1000);
+
         fetchInputDailyData().then((response) => {
             setInputDailyObj(response.data);
         });
         setInputDailyUpdated(false);
+
+        // run the timer function
+        // return () => clearTimeout(timer);
     }, [userEmail, inputDailyUpdated]);
+
+
 
     /* obtaining budget goal object from user input */
     useEffect(() => {
@@ -74,6 +97,30 @@ function InputDailySpending() {
 
     /* category data from setMonthlyGoal Page*/
     const selectedCategories = budgetGoalObj.allCategories;
+
+
+    //USE EFFECT --------------------------------------------------------------
+    const resetPurchases = async () => {
+        const inputDailyReset = {
+            email: userEmail,
+            currentDayTotal: inputDailyObj.currentDayTotal
+        }
+        const resetPurchases = await put('/resetPurchases', inputDailyReset);
+    }
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            resetPurchases();
+            setNoSpendingMessage("You did not spend anything today.")
+            setIsSubmitted(false);
+            localStorage.removeItem(`purchases_${userEmail}`)
+
+        }, 0.5 * 60 * 1000);
+
+        // clear the timer when the component unmounts or when purchases are cleared manually
+        return () => clearTimeout(timer);
+    }, [userEmail, purchases]);
+    //USE EFFECT --------------------------------------------------------------
 
     /* function handling non-numeric values in purchase amount field */
     const handlePurchaseAmountChange = (event) => {
@@ -124,7 +171,7 @@ function InputDailySpending() {
         setIsAddMode(false);
 
         localStorage.setItem(`purchases_${userEmail}`, JSON.stringify(purchases));
-        const currentMonthlySpending = purchases.reduce((total, purchase) => {
+        const currentDayTotal = purchases.reduce((total, purchase) => {
             return total + parseInt(purchase.amount);
         }, 0);
 
@@ -149,7 +196,7 @@ function InputDailySpending() {
                 purchaseAmount: purchase.amount,
                 purchaseCategory: purchase.category,
             })),
-            currentMonthlySpending: currentMonthlySpending,
+            currentDayTotal: currentDayTotal,
             totalDailySpending: [],
             cumulativeDailySpending: [],
             categoryCount: categoryCount
@@ -168,17 +215,17 @@ function InputDailySpending() {
             setNoSpendingMessage('You did not spend anything today.');
         }
 
-        const currentMonthlySpending = purchases.reduce((total, purchase) => {
+        const currentDayTotal = purchases.reduce((total, purchase) => {
             return total + parseInt(purchase.amount);
         }, 0);
 
         const purchaseToRemove = {
             email: userEmail,
             purchase: purchases[index],
-            currentMonthlySpending: currentMonthlySpending
+            currentDayTotal: currentDayTotal
         }
 
-        const delPurchaseResponse = await del(`/deletePurchase/${userEmail}/${index}/${currentMonthlySpending}`, purchaseToRemove);
+        const delPurchaseResponse = await del(`/deletePurchase/${userEmail}/${index}/${currentDayTotal}`, purchaseToRemove);
         setInputDailyUpdated(true);
         window.alert("Click Submit to confirm your deleted purchase!");
     };
@@ -198,9 +245,9 @@ function InputDailySpending() {
         <div>
             {/* if inputDailyObj doesn't exist OR contains no purchases, display no spending message.
                 else, display total spending amount */}
-            {((!inputDailyObj) || (inputDailyObj?.numPurchases === 0)) ? (
+            {((!inputDailyObj) || (inputDailyObj?.numPurchases === null)) ? (
                 <h2>{noSpendingMessage}</h2>
-            ) : <h2>{"Total Spending for Today: $" + inputDailyObj.currentMonthlySpending}</h2>}
+            ) : <h2>{"Total Spending for Today: $" + inputDailyObj.currentDayTotal}</h2>}
 
             {/* displays empty purchase fields when plus button is clicked (removes fields when clicked again) */}
             <div className="add-user-input">
@@ -273,7 +320,7 @@ function InputDailySpending() {
                 {isAddMode && (
                     purchases.map((purchase, index) => (
                         <div key={index}>
-                            {!arePurchasesStored && (
+                            {(!arePurchasesStored || ((!inputDailyObj.purchases) && (!inputDailyObj.numPurchases))) && (
                             <div>
                                 <button className="purchase-info-button">
                                     <div className={'span'}>
@@ -402,7 +449,7 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                 };
                 setPurchases(updatedPurchases);
 
-                const currentMonthlySpending = updatedPurchases.reduce((total, purchase) => {
+                const currentDayTotal = updatedPurchases.reduce((total, purchase) => {
                     return total + parseInt(purchase.amount);
                 }, 0);
 
@@ -426,7 +473,7 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                         purchaseAmount: purchase.amount,
                         purchaseCategory: purchase.category,
                     })),
-                    currentMonthlySpending: currentMonthlySpending,
+                    currentDayTotal: currentDayTotal,
                     totalDailySpending: [900],
                     cumulativeDailySpending: [1000],
                     categoryCount: categoryCount
