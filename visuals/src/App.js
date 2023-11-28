@@ -11,6 +11,8 @@ const data = [
   { x: 6, y: 75 },
 ];
 
+// cool graphs
+
 // hard coded - cumulative line graph data
 const pdata = [
   { name: "Day 1", currentTotal: 11, budgetLimit: 500 },
