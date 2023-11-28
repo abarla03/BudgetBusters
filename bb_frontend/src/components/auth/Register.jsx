@@ -99,7 +99,6 @@ const Register = (props) => {
 
     /* send confirmation email */
     const registerSubmit = (e) => {
-        // todo: sign in
 
         e.preventDefault();
 
