@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import React, { useEffect, useState } from 'react';
 import { auth } from "../../firebase";
 import { signInWithGoogle } from "../../firebase";
@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import GoogleSignInButton from '../GoogleSignInButton';
 import GoogleSignUpButton from "../GoogleSignUpButton";
 import * as currentUser from "firebase/auth";
-
 const Register = (props) => {
     const navigate = useNavigate();
     const [name, setName ] = useState('');
@@ -16,30 +15,19 @@ const Register = (props) => {
     const [age, setAge] = useState(' ');
     const [phoneNumber, setPhoneNumber] = useState(' ');
     const [displayMessage, setDisplayMessage] = useState('');
-    const [user, setUser] = useState(null);
+    //const [nameError, setNameError] = useState(null);
     const [googleUserData, setGoogleUserData] = useState({
         name: '',
         email: '',
         phoneNumber: ''
-    });
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUser(user);
-            } else {
-                setUser(null);
-            }
-        });
-
-        return () => unsubscribe();
-    }, []);
+    })
 
     const signInWithGoogleHandler = () => {
         signInWithGoogle()
             .then(() => {
                 // After successful sign-in with Google, navigate to the '/home' route
                 //navigate('/home');
+
             })
             .catch((error) => {
                 // implement UI message logic here too!
@@ -48,8 +36,13 @@ const Register = (props) => {
     };
 
     const showMessage = (error) => {
+
+
         if (error && error.message) {
+            // handle firebase errors
+            //setDisplayMessage(true);
             const match = error.message.match(/\(([^)]+)\)/);
+            //const errorCode = match ? match[1] : null;
 
             switch (error.message.match(/\(([^)]+)\)/)[1]) {
                 // diff firebase errors:
@@ -89,7 +82,25 @@ const Register = (props) => {
         }
     };
 
+    /* DON'T NEED THIS ANYMORE - populate register input fields with applicable Google account info */
+    // const populateGoogleUserData = () => {
+    //     // fix current population bug
+    //     const googleUserData = JSON.parse(localStorage.getItem("googleUserData")) || {};
+    //     setName(googleUserData.name);
+    //     setEmail(googleUserData.email);
+    //     setPhoneNumber(googleUserData.phoneNumber);
+    //     /* add in other relevant fields */
+    // }
+
+    // /* call the appropriate method to populate fields */
+    // useEffect (() => {
+    //     populateGoogleUserData();
+    // }, []);
+
+    /* send confirmation email */
     const registerSubmit = (e) => {
+        // todo: sign in
+
         e.preventDefault();
 
         if (name.length < 1) {
@@ -99,47 +110,52 @@ const Register = (props) => {
             return;
         }
 
+        // e.preventDefault();
         createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
 
-                user.updateProfile({
-                    displayName: name,
-                })
-                    .then(() => {
-                        setUser(user);
-                        const successMessage = "You have successfully created an account!";
-                        console.log(successMessage);
-                        window.alert("You have successfully created an account!");
-                        navigate('/login');
-                    })
-                    .catch((error) => {
-                        console.log(`Error updating display name: ${error}`);
-                    });
+            .then((userCredential) => {
+                console.log(userCredential);
+                //console.log('no actual error'); // THIS IS WHERE SUCCESSFUL LOGIN MESSAGE GOES
+                const successMessage = "You have successfully created an account!";
+                console.log(successMessage);
+                window.alert("You have successfully created an account!");
+                navigate('/login')
+                //showMessage(successMessage);
+                //showMessage("You have successfully created an account!");
             })
             .catch((error) => {
                 console.log(`showing the firebase error ${error}`);
                 showMessage(error);
-            });
-    };
+            })
+    }
+
 
     return (
         <div className="auth-form-container">
+
             <form className="register-form" onSubmit={registerSubmit}>
                 <h2>Register</h2>
                 <label htmlFor="name">Full Name </label>
+
                 <input value={googleUserData.name !== '' ? googleUserData.name : name} onChange={(e) => setName(e.target.value)}type="text" id="name" placeholder="Full Name" name="Full Name" />
+
                 <label htmlFor="email">Email</label>
                 <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" placeholder="email@emailprovider.com" id="email" name="email" />
+
                 <label htmlFor="password">Password</label>
                 <input value={password} onChange={(e) => setPassword(e.target.value)}type="password" placeholder="enter password" id="password" name="password" />
-                <button type="submit" onClick={registerSubmit}>Register</button>
+
+                {/* incorporate logic for success/error messages in handle click/ showMessage method?*/}
+                <button type="submit" onClick = { registerSubmit }>Register</button>
+
                 {<p>{displayMessage}</p>}
+
             </form>
             <button className="link-btn" onClick={() => navigate('/login')}>Already have an account? Login here.</button>
             <GoogleSignUpButton/>
+
         </div>
-    );
+    )
 }
 
-export default Register;
+export default Register
