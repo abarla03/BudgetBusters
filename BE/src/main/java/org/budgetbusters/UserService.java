@@ -7,6 +7,7 @@ import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -154,29 +155,14 @@ public class UserService {
         inputDailySpending1.setNumPurchases(null);
 
         // update the totalDailySpending list and cumulativeDailySpending list HERE
-
-
-//        List<Double> totalTempDailySpending = inputDailySpending1.getTotalDailySpending();
-//        if (inputDailySpending1.getTotalDailySpending().isEmpty()) {
-////            List<Double> totalTempDailySpending = new ArrayList<Double>();
-////            inputDailySpending1.setTotalDailySpending(totalTempDailySpending);
-////            totalTempDailySpending.add(inputDailySpending.getCurrentDayTotal());
-////            inputDailySpending1.setTotalDailySpending(totalTempDailySpending);
-//            inputDailySpending1.getTotalDailySpending().add(inputDailySpending.getCurrentDayTotal());
-//            inputDailySpending1.setTotalDailySpending(totalTempDailySpending);
-//
-////            inputDailySpending1.getTotalDailySpending().add(inputDailySpending.getCurrentDayTotal());
-//
-//        }
-//        inputDailySpending1.getTotalDailySpending().add(inputDailySpending.getCurrentDayTotal());
-//        inputDailySpending1.getTotalDailySpending().add(inputDailySpending.getCurrentDayTotal());
-
-//        // get last index
-//        int lastIndex = inputDailySpending1.getCumulativeDailySpending().size() - 1;
-//        if (inputDailySpending.getCumulativeDailySpending() != null) {
-//            (inputDailySpending1.getCumulativeDailySpending()).get(lastIndex);
-//        }
-//        inputDailySpending1.getCumulativeDailySpending().add(inputDailySpending.getCurrentDayTotal() + );
+        inputDailySpending1.getTotalDailySpending().add(inputDailySpending1.getCurrentDayTotal());
+        double currentCumTotal = 0;
+        if (!inputDailySpending1.getCumulativeDailySpending().isEmpty()) {
+            currentCumTotal = inputDailySpending1.getCumulativeDailySpending().get(inputDailySpending1.getCumulativeDailySpending().size() - 1);
+            inputDailySpending1.getCumulativeDailySpending().add(inputDailySpending1.getCurrentDayTotal() + currentCumTotal);
+        } else {
+            inputDailySpending1.setCumulativeDailySpending(List.of(inputDailySpending1.getCurrentDayTotal()));
+        }
 
         inputDailySpending1.setCurrentDayTotal(null);
         updatePurchase(inputDailySpending1);

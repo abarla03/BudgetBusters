@@ -186,6 +186,8 @@ function InputDailySpending() {
             categoryCountDict[purchase.category] += parseInt(purchase.amount, 10) || 0;
         }
         const categoryCount = Object.values(categoryCountDict);
+        const totalDailySpending = inputDailyObj.totalDailySpending || [];
+        const cumulativeDailySpending = inputDailyObj.cumulativeDailySpending || [];
 
         // send json obj
         const userPurchaseInfo = {
@@ -197,8 +199,8 @@ function InputDailySpending() {
                 purchaseCategory: purchase.category,
             })),
             currentDayTotal: currentDayTotal,
-            totalDailySpending: [],
-            cumulativeDailySpending: [],
+            totalDailySpending: totalDailySpending,
+            cumulativeDailySpending: cumulativeDailySpending,
             categoryCount: categoryCount
         }
 
