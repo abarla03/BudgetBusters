@@ -23,6 +23,9 @@ const Register = (props) => {
         email: '',
         phoneNumber: ''
     })
+    const user = auth.currentUser;
+    const userName = user ? (user.email).match(/([^@]+)/)[0] : "";
+
 
     const [isUserRegistered, setIsUserRegistered] = useState(false);
 
@@ -103,6 +106,7 @@ const Register = (props) => {
 
     /* send confirmation email */
     const registerSubmit = (e) => {
+
         // todo: sign in
 
         e.preventDefault();
@@ -116,14 +120,14 @@ const Register = (props) => {
 
         // e.preventDefault();
         createUserWithEmailAndPassword(auth, email, password)
-
             .then((userCredential) => {
                 console.log(userCredential);
                 //console.log('no actual error'); // THIS IS WHERE SUCCESSFUL LOGIN MESSAGE GOES
                 const successMessage = "You have successfully created an account!";
                 console.log(successMessage);
                 window.alert("You have successfully created an account!");
-                // localStorage.setItem('justRegistered', 'true');
+                localStorage.setItem(`hasVisitedHome_${userName}`, 'false');
+
                 setIsUserRegistered(true);
                 navigate('/login')
                 //showMessage(successMessage);

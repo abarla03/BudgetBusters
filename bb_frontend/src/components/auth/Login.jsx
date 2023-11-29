@@ -16,6 +16,8 @@ const Login = (props) => {
     const [password, setPassword] = useState('');
     const [displayMessage, setDisplayMessage ] = useState('');
     const [isSent, setIsSent] = useState(false);
+    const user = auth.currentUser;
+    const userName = user ? (user.email).match(/([^@]+)/)[0] : "";
 
     const loginSubmit = (e) => {
         // todo: sign in
@@ -26,6 +28,7 @@ const Login = (props) => {
                 //const successMessage = "You have successfully logged in!";
                 //showMessage(successMessage);
                 // maybe show a success message on home, like 'successfully logged in as ''
+                localStorage.setItem(`hasVisitedHome_${userName}`, 'true');
 
                 // successful login
                 // direct user to home page

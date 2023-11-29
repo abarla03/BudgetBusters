@@ -1,4 +1,3 @@
-/****************** modified to match App.js ***************************** */
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { onAuthStateChanged } from "firebase/auth";
@@ -6,6 +5,7 @@ import { auth } from "../firebase";
 import '../App.css';
 import logo from '../BBLogo.png';
 import { PieChart, Pie, Cell, Tooltip, Legend, Scatter, ScatterChart, LineChart, ResponsiveContainer, Line, XAxis, YAxis, CartesianGrid } from "recharts";
+import {get} from "./ApiClient";
 
 // Hard coded - scatter plot daily total spending data
 const totalDailySpending = [11, 39, 25, 140, 130, 75];
@@ -16,39 +16,105 @@ totalDailySpending.forEach((value, day) => {
 
 // Hard coded - cumulative line graph data
 let budgetLimit = 500;
-const cummulativeDaySpending = [11, 50, 75, 215, 345, 420]
+const cumulativeDaySpending = [11, 50, 75, 215, 345, 420]
 const line_data = [];
-cummulativeDaySpending.map((value, day) => {
+cumulativeDaySpending.map((value, day) => {
     line_data.push({name: "Day " + (day + 1), currentTotal: value, budgetLimit: budgetLimit})
 });
 
-
-
 const Home = () => {
-
     const location = useLocation();
+    // const [user, setUser] = useState(null);
     const user = auth.currentUser;
     const userName = user ? (user.email).match(/([^@]+)/)[0] : "";
+    const userEmail = user.email;
     const [firstTimeVisit, setFirstTimeVisit] = useState(true);
+    const [hasVisitedBefore, setHasVisitedBefore] = useState(localStorage.getItem(`hasVisitedHome_${userName}`));
+
+    const [inputDailyObj, setInputDailyObj] = useState({});
+    const [inputDailyUpdated, setInputDailyUpdated] = useState(false); // to re-fetch input info whenever update happens
+
+    const [budgetGoalObj, setBudgetGoalObj] = useState({});
+    const [budgetUpdated, setBudgetUpdated] = useState(false); // to re-fetch budget info whenever update happens
+
+    /* obtaining budget goal object from user input */
+    // handle case when budget goal object doesn't exist
+    useEffect(() => {
+        function fetchBudgetData() {
+            let data;
+            try {
+                // Make the GET request to retrieve the budget
+                data = get(`/getBudget/${userEmail}`)
+            } catch (error) {
+                console.error("Error creating or fetching budget:", error);
+            }
+            return data;
+        }
+
+        fetchBudgetData().then((response) => {
+            setBudgetGoalObj(response.data);
+        });
+        setBudgetUpdated(false)
+        console.log("budgetGoalObj", budgetGoalObj)
+
+    }, [userEmail, budgetUpdated]);
+
+    /* obtaining input daily spending object from user input */
+    // handle case when input daily object doesn't exist
+    useEffect(() => {
+        function fetchInputDailyData() {
+            let data;
+            try {
+                // Make the GET request to retrieve the budget
+                data = get(`/getPurchase/${userEmail}`)
+            } catch (error) {
+                console.error("Error creating or fetching purchase(s):", error);
+            }
+            return data;
+        }
+        fetchInputDailyData().then((response) => {
+            setInputDailyObj(response.data);
+        });
+        setInputDailyUpdated(false);
+    }, [userEmail, inputDailyUpdated]);
 
     useEffect(() => {
-
-        // Check if the user has visited the home page before
-        const hasVisitedBefore = Boolean(localStorage.getItem(`hasVisitedHome_${userName}`));
+        // hasVisitedBefore = Boolean(localStorage.getItem(`hasVisitedHome_${userName}`));
+        if (hasVisitedBefore === 'false') {
+            console.log('new visit');
+        } else {
+            console.log('old visit');
+        }
         console.log('hasVisitedBefore:', hasVisitedBefore);
 
         if (hasVisitedBefore === false) {
             // If it's the first time, set the flag and show the welcome message
             console.log('Setting localStorage item');
-            localStorage.setItem(`hasVisitedHome_${userName}`, 'true');
+            // localStorage.setItem(`hasVisitedHome_${userName}`, 'true');
             setFirstTimeVisit(true);
         } else {
             console.log('Not the first time');
             setFirstTimeVisit(false);
         }
-
         // return () => unsubscribe();
-    }, []);
+    }, [userName, hasVisitedBefore]);
+
+    /*
+    // Check if the user has visited the home page before
+    const hasVisitedBefore = Boolean(localStorage.getItem(`hasVisitedHome_${userName}`));
+    console.log('hasVisitedBefore:', hasVisitedBefore);
+
+    if (hasVisitedBefore === false) {
+        // If it's the first time, set the flag and show the welcome message
+        console.log('Setting localStorage item');
+        // localStorage.setItem(`hasVisitedHome_${userName}`, 'true');
+        setFirstTimeVisit(true);
+    } else {
+        console.log('Not the first time');
+        setFirstTimeVisit(false);
+    }
+    */
+
 
 
     // hardcoded colors
@@ -161,9 +227,20 @@ const Home = () => {
                 <h1>Hi {user ? userName : 'Guest'}</h1>
             )}
 
-            <MyScatterChart />
-            <MyPieChart />
-            <MyLineChart />
+            {budgetGoalObj && (!inputDailyObj || inputDailyObj.numPurchases === 0) && (
+                <h3> Spending pie chart unavailable until purchases are made. </h3>
+            )
+
+            }
+
+            {budgetGoalObj && inputDailyObj.numPurchases > 0 && (
+                <>
+                <MyScatterChart />
+                <MyPieChart />
+                <MyLineChart />
+                </>
+            )}
+
         </div>
     );
 }
