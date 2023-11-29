@@ -15,5 +15,9 @@ public class InputDailySpending {
     private String email;
     private Integer numPurchases;
     private List<Purchase> purchases;
-    private Double totalDailySpending;
+    private Double currentDayTotal;
+    private List<Double> totalDailySpending; // array with each day’s individual spending
+    private List<Double> cumulativeDailySpending; // array with each day’s cumulative spending
+    private List<Double> categoryCount; // array with individual category total spending per month
+
 }

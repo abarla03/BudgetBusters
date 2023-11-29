@@ -6,6 +6,8 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -43,7 +45,7 @@ public class UserService {
         return "Successfully deleted account of " + email;
     }
 
-    public String deletePurchase(String email, int index, double totalDailySpending) throws ExecutionException, InterruptedException, BudgetBustersException {
+    public String deletePurchase(String email, int index, double currentDayTotal) throws ExecutionException, InterruptedException, BudgetBustersException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         InputDailySpending inputDailySpending = getPurchase(email);
         if (index < 0 || index >= inputDailySpending.getNumPurchases()) {
@@ -51,7 +53,7 @@ public class UserService {
         }
         inputDailySpending.getPurchases().remove(index);
         inputDailySpending.setNumPurchases(inputDailySpending.getNumPurchases() - 1);
-        inputDailySpending.setTotalDailySpending(totalDailySpending);
+        inputDailySpending.setCurrentDayTotal(currentDayTotal);
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("DailyPurchases").document(inputDailySpending.getEmail()).set(inputDailySpending);
         return "Purchase at " + index + " deleted. "+ collectionsApiFuture.get().getUpdateTime();
     }
@@ -139,12 +141,44 @@ public class UserService {
 
     public String resetBudget(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException, BudgetBustersException {
         MonthlyBudget budget = getBudget(monthlyBudget.getEmail());
-        budget.setMonthlyBudget(null);
-        budget.setColors(null);
-        budget.setSubmissionDate(null);
-        budget.setAllCategories(null);
-        updateMonthlyBudget(budget);
-        return "Monthly budget for " + budget.getEmail() + " has been reset.";
+        if (budget.getMonthlyBudget() != null) {
+            budget.setMonthlyBudget(null);
+            budget.setColors(null);
+            budget.setSubmissionDate(null);
+            budget.setAllCategories(null);
+            InputDailySpending inputDailySpending = getPurchase(monthlyBudget.getEmail());
+            inputDailySpending.setCategoryCount(null);
+            inputDailySpending.setTotalDailySpending(null);
+            inputDailySpending.setCumulativeDailySpending(null);
+            updateMonthlyBudget(budget);
+            return "Monthly budget for " + budget.getEmail() + " has been reset.";
+        } else {
+            return "Nothing has been reset for " + budget.getEmail();
+        }
+    }
+
+    public String resetPurchases(InputDailySpending inputDailySpending) throws ExecutionException, InterruptedException, BudgetBustersException {
+        InputDailySpending inputDailySpending1 = getPurchase(inputDailySpending.getEmail());
+        if (inputDailySpending1.getPurchases() != null) {
+            inputDailySpending1.setPurchases(null);
+            inputDailySpending1.setNumPurchases(null);
+
+            // update the totalDailySpending list and cumulativeDailySpending list HERE
+            inputDailySpending1.getTotalDailySpending().add(inputDailySpending1.getCurrentDayTotal());
+            double currentCumTotal = 0;
+            if (!inputDailySpending1.getCumulativeDailySpending().isEmpty()) {
+                currentCumTotal = inputDailySpending1.getCumulativeDailySpending().get(inputDailySpending1.getCumulativeDailySpending().size() - 1);
+                inputDailySpending1.getCumulativeDailySpending().add(inputDailySpending1.getCurrentDayTotal() + currentCumTotal);
+            } else {
+                inputDailySpending1.setCumulativeDailySpending(List.of(inputDailySpending1.getCurrentDayTotal()));
+            }
+            inputDailySpending1.setCurrentDayTotal(null);
+            updatePurchase(inputDailySpending1);
+
+            return "Input Daily Purchase for " + inputDailySpending1.getEmail() + " has been reset.";
+        } else {
+            return "Nothing has been reset for " + inputDailySpending1.getEmail();
+        }
     }
 
     public String updateNotifications(Notifications notifications) throws ExecutionException, InterruptedException, BudgetBustersException {
