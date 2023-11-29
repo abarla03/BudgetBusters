@@ -22,34 +22,32 @@ cummulativeDaySpending.map((value, day) => {
     line_data.push({name: "Day " + (day + 1), currentTotal: value, budgetLimit: budgetLimit})
 });
 
+
+
 const Home = () => {
+
     const location = useLocation();
-    const [user, setUser] = useState(null);
+    const user = auth.currentUser;
+    const userName = user ? (user.email).match(/([^@]+)/)[0] : "";
     const [firstTimeVisit, setFirstTimeVisit] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUser(user);
-            } else {
-                setUser(null);
-            }
-        });
 
         // Check if the user has visited the home page before
-        const hasVisitedBefore = localStorage.getItem('hasVisitedHome');
+        const hasVisitedBefore = Boolean(localStorage.getItem(`hasVisitedHome_${userName}`));
         console.log('hasVisitedBefore:', hasVisitedBefore);
 
-        if (hasVisitedBefore === null) {
+        if (hasVisitedBefore === false) {
             // If it's the first time, set the flag and show the welcome message
             console.log('Setting localStorage item');
-            localStorage.setItem('hasVisitedHome', 'true');
+            localStorage.setItem(`hasVisitedHome_${userName}`, 'true');
+            setFirstTimeVisit(true);
         } else {
             console.log('Not the first time');
             setFirstTimeVisit(false);
         }
 
-        return () => unsubscribe();
+        // return () => unsubscribe();
     }, []);
 
 
@@ -158,9 +156,9 @@ const Home = () => {
     return (
         <div className="App">
             {firstTimeVisit ? (
-                <h1>Welcome to the home page, {user ? user.displayName : 'Guest'}!</h1>
+                <h1>Welcome to the home page, {user ? userName : 'Guest'}!</h1>
             ) : (
-                <h1>Hi {user ? user.displayName : 'Guest'}</h1>
+                <h1>Hi {user ? userName : 'Guest'}</h1>
             )}
 
             <MyScatterChart />

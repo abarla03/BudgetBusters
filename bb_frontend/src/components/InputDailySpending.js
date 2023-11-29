@@ -10,6 +10,7 @@ function InputDailySpending() {
         if (storedPurchases && storedPurchases.length > 0) {
             setPurchases(storedPurchases);
             setIsSubmitted(true);
+
         }
     }, []);
 
