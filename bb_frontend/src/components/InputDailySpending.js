@@ -93,6 +93,7 @@ function InputDailySpending() {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [editIndex, setEditIndex] = useState(null);
     const [isAddMode, setIsAddMode] = useState(true);
+    const [messageFlag, setMessageFlag] = useState(false);
     const arePurchasesStored = inputDailyObj?.numPurchases > 0;
 
     /* category data from setMonthlyGoal Page*/
@@ -113,9 +114,10 @@ function InputDailySpending() {
             resetPurchases();
             setNoSpendingMessage("You did not spend anything today.")
             setIsSubmitted(false);
+            setMessageFlag(true);
             localStorage.removeItem(`purchases_${userEmail}`)
 
-        }, 0.5 * 60 * 1000);
+        }, 1 * 60 * 1000);
 
         // clear the timer when the component unmounts or when purchases are cleared manually
         return () => clearTimeout(timer);
@@ -176,8 +178,8 @@ function InputDailySpending() {
         }, 0);
 
         // create dictionary mapping each category to its respective spending amount
-        const categoryCountDict = selectedCategories.reduce((dict, category) => {
-            dict[category] = 0;
+        const categoryCountDict = selectedCategories.reduce((dict, category, currentIndex) => {
+            dict[category] = inputDailyObj.categoryCount ? inputDailyObj.categoryCount[currentIndex] : 0;
             return dict;
         }, {});
 
@@ -247,9 +249,18 @@ function InputDailySpending() {
         <div>
             {/* if inputDailyObj doesn't exist OR contains no purchases, display no spending message.
                 else, display total spending amount */}
-            {((!inputDailyObj) || (inputDailyObj?.numPurchases === null)) ? (
+            {/*{((!inputDailyObj) || (inputDailyObj?.numPurchases === null)) ? (*/}
+            {/*    <h2>{noSpendingMessage}</h2>*/}
+            {/*) : <h2>{"Total Spending for Today: $" + inputDailyObj.currentDayTotal}</h2>}*/}
+            {!inputDailyObj ? (
                 <h2>{noSpendingMessage}</h2>
-            ) : <h2>{"Total Spending for Today: $" + inputDailyObj.currentDayTotal}</h2>}
+                ) : (inputDailyObj?.purchases === null && inputDailyObj?.numPurchases === null) ? (
+                    <h2>{noSpendingMessage}</h2>
+                ) : (messageFlag) ? (
+                    <h2>{noSpendingMessage}</h2>
+                ) :
+                    <h2>{"Total Spending for Today: $" + inputDailyObj?.currentDayTotal}</h2>
+            }
 
             {/* displays empty purchase fields when plus button is clicked (removes fields when clicked again) */}
             <div className="add-user-input">
@@ -471,6 +482,8 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                 }
                 const categoryCount = Object.values(categoryCountDict);
 
+                const totalDailySpending = inputDailyObj.totalDailySpending;
+                const cumulativeDailySpending = inputDailyObj.cumulativeDailySpending;
                 const updatedPurchaseInfo = {
                     email: userEmail,
                     numPurchases: purchases.length,
@@ -480,8 +493,8 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                         purchaseCategory: purchase.category,
                     })),
                     currentDayTotal: currentDayTotal,
-                    totalDailySpending: [900],
-                    cumulativeDailySpending: [1000],
+                    totalDailySpending: totalDailySpending,
+                    cumulativeDailySpending: cumulativeDailySpending,
                     categoryCount: categoryCount
                 }
                 const updatedInputDailyResponse = await put('/updatePurchase', updatedPurchaseInfo);

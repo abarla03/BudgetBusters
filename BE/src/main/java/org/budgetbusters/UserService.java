@@ -141,32 +141,44 @@ public class UserService {
 
     public String resetBudget(MonthlyBudget monthlyBudget) throws ExecutionException, InterruptedException, BudgetBustersException {
         MonthlyBudget budget = getBudget(monthlyBudget.getEmail());
-        budget.setMonthlyBudget(null);
-        budget.setColors(null);
-        budget.setSubmissionDate(null);
-        budget.setAllCategories(null);
-        updateMonthlyBudget(budget);
-        return "Monthly budget for " + budget.getEmail() + " has been reset.";
+        if (budget.getMonthlyBudget() != null) {
+            budget.setMonthlyBudget(null);
+            budget.setColors(null);
+            budget.setSubmissionDate(null);
+            budget.setAllCategories(null);
+            InputDailySpending inputDailySpending = getPurchase(monthlyBudget.getEmail());
+            inputDailySpending.setCategoryCount(null);
+            inputDailySpending.setTotalDailySpending(null);
+            inputDailySpending.setCumulativeDailySpending(null);
+            updateMonthlyBudget(budget);
+            return "Monthly budget for " + budget.getEmail() + " has been reset.";
+        } else {
+            return "Nothing has been reset for " + budget.getEmail();
+        }
     }
 
     public String resetPurchases(InputDailySpending inputDailySpending) throws ExecutionException, InterruptedException, BudgetBustersException {
         InputDailySpending inputDailySpending1 = getPurchase(inputDailySpending.getEmail());
-        inputDailySpending1.setPurchases(null);
-        inputDailySpending1.setNumPurchases(null);
+        if (inputDailySpending1.getPurchases() != null) {
+            inputDailySpending1.setPurchases(null);
+            inputDailySpending1.setNumPurchases(null);
 
-        // update the totalDailySpending list and cumulativeDailySpending list HERE
-        inputDailySpending1.getTotalDailySpending().add(inputDailySpending1.getCurrentDayTotal());
-        double currentCumTotal = 0;
-        if (!inputDailySpending1.getCumulativeDailySpending().isEmpty()) {
-            currentCumTotal = inputDailySpending1.getCumulativeDailySpending().get(inputDailySpending1.getCumulativeDailySpending().size() - 1);
-            inputDailySpending1.getCumulativeDailySpending().add(inputDailySpending1.getCurrentDayTotal() + currentCumTotal);
+            // update the totalDailySpending list and cumulativeDailySpending list HERE
+            inputDailySpending1.getTotalDailySpending().add(inputDailySpending1.getCurrentDayTotal());
+            double currentCumTotal = 0;
+            if (!inputDailySpending1.getCumulativeDailySpending().isEmpty()) {
+                currentCumTotal = inputDailySpending1.getCumulativeDailySpending().get(inputDailySpending1.getCumulativeDailySpending().size() - 1);
+                inputDailySpending1.getCumulativeDailySpending().add(inputDailySpending1.getCurrentDayTotal() + currentCumTotal);
+            } else {
+                inputDailySpending1.setCumulativeDailySpending(List.of(inputDailySpending1.getCurrentDayTotal()));
+            }
+            inputDailySpending1.setCurrentDayTotal(null);
+            updatePurchase(inputDailySpending1);
+
+            return "Input Daily Purchase for " + inputDailySpending1.getEmail() + " has been reset.";
         } else {
-            inputDailySpending1.setCumulativeDailySpending(List.of(inputDailySpending1.getCurrentDayTotal()));
+            return "Nothing has been reset for " + inputDailySpending1.getEmail();
         }
-
-        inputDailySpending1.setCurrentDayTotal(null);
-        updatePurchase(inputDailySpending1);
-        return "Input Daily Purchase for " + inputDailySpending1.getEmail() + " has been reset.";
     }
 
     public String updateNotifications(Notifications notifications) throws ExecutionException, InterruptedException, BudgetBustersException {
