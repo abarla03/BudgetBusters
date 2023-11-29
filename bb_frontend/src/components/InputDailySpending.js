@@ -97,7 +97,7 @@ function InputDailySpending() {
             setMessageFlag(true);
             localStorage.removeItem(`purchases_${userEmail}`)
 
-        }, 3 * 60 * 1000);
+        }, 0.5 * 60 * 1000);
 
         // clear the timer when the component unmounts or when purchases are cleared manually
         return () => clearTimeout(timer);
