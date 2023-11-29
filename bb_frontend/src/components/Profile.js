@@ -12,26 +12,51 @@ function CreateProfile() {
     const firebaseEmail = user ? user.email : "";
     const firebaseDisplayName = firebaseEmail.match(/([^@]+)/)[0];
 
+
     const [userObj, setUserObj] = useState({});
     const [userUpdated, setUserUpdated] = useState(false); // to re-fetch budget info whenever update happens
 
-    /* obtaining user object from user profile input */
-    useEffect(() => {
-        function fetchUserData() {
-            let data;
-            try {
-                // Make the GET request to retrieve the user
-                data = get(`/getUser/${firebaseEmail}`)
-            } catch (error) {
-                console.error("Error creating or fetching user:", error);
-            }
-            return data;
-        }
-        fetchUserData().then((response) => {
-            setUserObj(response.data);
-        });
-        setUserUpdated(false)
-    }, [firebaseEmail, userUpdated]);
+    // /* obtaining user object from user profile input */
+    // useEffect(() => {
+    //     function fetchUserData() {
+    //         let data;
+    //         try {
+    //             // Make the GET request to retrieve the user
+    //             data = get(`/getUser/${firebaseEmail}`);
+    //         } catch (error) {
+    //             console.error("Error creating or fetching user:", error);
+    //         }
+    //         return data;
+    //     }
+    //     fetchUserData().then((response) => {
+    //         setUserObj(response.data);
+    //     });
+    //     setUserUpdated(false)
+    // }, [firebaseEmail, userUpdated]);
+
+    // useEffect(() => {
+    //     async function fetchUserData() {
+    //         try {
+    //             const response = await get(`/getUser/${firebaseEmail}`);
+    //             return response.data;
+    //         } catch (error) {
+    //             console.error("Error creating or fetching user:", error);
+    //             // You can throw the error to propagate it up or handle it here
+    //             throw error;
+    //         }
+    //     }
+    //
+    //     fetchUserData()
+    //         .then((data) => {
+    //             setUserObj(data);
+    //         })
+    //         .catch((error) => {
+    //             // Handle the error here if needed
+    //             // setUserObj(null); // or set an error state
+    //         });
+    //
+    //     setUserUpdated(false);
+    // }, [firebaseEmail, userUpdated]);
     
     const navigate = useNavigate();
     const [fullName, setFullName] = useState('');
@@ -75,6 +100,7 @@ function CreateProfile() {
         } else {
             setPhoneValidationMessage('');
         }
+
     }
 
     /* function handling delete account functionality */
@@ -102,7 +128,9 @@ function CreateProfile() {
             age: age,
             phoneNumber: phone
         }
-        const createUserResponse = await post('/createUser', userInfo);
+        const createUserResponse = await post('/createUser', userInfo)
+
+
         setUserUpdated(true)
     };
 

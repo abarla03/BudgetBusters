@@ -2,20 +2,45 @@ import React, { useState, useEffect } from 'react';
 import { auth } from "../firebase";
 import {post, put, get} from "./ApiClient";
 
-
-
 function SetNotifications() {
     const user = auth.currentUser;
     const userEmail = user ? user.email : "";
-    const userPhone = user ? user.phone: "";
+    let userPhone = "";
     let isUserPhone = false;
     let isNotifTime = false;
     console.log(`isNotifTime value: ${isNotifTime}`);
     const [formSubmitted, setFormSubmitted] = useState(false);
 
+    const [userObj, setUserObj] = useState({});
+    const [userUpdated, setUserUpdated] = useState(false); // to re-fetch notifications info whenever update happens
+
+    /* getting the user's phone number */
+    useEffect(() => {
+        function fetchUserData() {
+            let data;
+            try {
+                // Make the GET request to retrieve the budget
+                data = get(`/getUser/${userEmail}`);
+            } catch (error) {
+                console.error("Error creating or fetching budget:", error);
+            }
+            return data;
+        }
+
+        fetchUserData().then((response) => {
+            setUserObj(response.data);
+        });
+        setUserUpdated(false)
+        console.log("userObj", userObj)
+        userPhone = userObj.phoneNumber;
+
+    }, [userEmail, userUpdated]);
+    userPhone = userObj.phoneNumber;
+
+
     const [notifObj, setNotifObj] = useState({});
     const [notifUpdated, setNotifUpdated] = useState(false); // to re-fetch notifications info whenever update happens
-    
+
     /* obtaining notification object from user input */
     useEffect(() => {
         function fetchNotifData() {
@@ -68,21 +93,14 @@ function SetNotifications() {
         if (method === 'Text') {
             console.log("user chose text as a preferred notification method");
             // Check if phoneNumber is stored in the User object
-                function fetchPhoneNum() {
-                    let data;
-                    try {
-                        // Make the GET request to retrieve the budget
-                        data = get(`/getUser/${userPhone}`)
-                    } catch (error) {
-                        console.error("Error fetching phoneNumber:", error);
-                        // error message: go to profile
-                        window.alert("To receive text notification, please enter your phone number in your profile page.");
-                    }
-                    return data;
-                }
-                fetchPhoneNum().then((response) => {
-                    isUserPhone = true;
-                });
+            console.log(`userPhone value: ${userPhone}`);
+            if (userPhone) {
+                isUserPhone = true;
+            } else {
+                // no phone number! error message: go to profile
+                window.alert("To receive text notification, please enter your phone number in your profile page.");
+            }
+
         }
         // adds or removes the selected method from the selectedMethods array
         // based on whether it was included before or not
@@ -123,29 +141,14 @@ function SetNotifications() {
 
     /* function handling when user submits all of their notification choices, also stores notifObj on FB */
     const handleSubmit = async () => {
-        console.log(`handleSubmit isNotifTime value b4: ${isNotifTime}`);
         handleNotifTime();
-        console.log(`handleSubmit isNotifTime value after: ${isNotifTime}`);
-        console.log("test 1");
-        handleNotifTime();
-        console.log("test 2");
-        // setFormSubmitted(true);
-        //
-        // setHasSubmittedOnce(true);
-        console.log("test 4");
-        // save notification data to FB
-
-
 
         if (!isNotifTime) {
-            console.log("test 7");
             window.alert("Please enter a time to receive your daily notification!");
             handleNotifTime();
-            //return;
-            console.log("test 8");
-        } else {
 
-            console.log(`handleSubmit isNotifTime value in if: ${isNotifTime}`);
+        } else {
+            // save notification data to FB
             const notificationData = {
                 email: userEmail,
                 preferredMethod: selectedMethods,
@@ -153,39 +156,51 @@ function SetNotifications() {
                 warningNotificationChoice: warningNotificationChoice,
                 budgetWarning: percentageThreshold
             };
-            console.log("test 5");
+
             const createBudgetResponse = await post('/createNotification', notificationData);
+
+            // verify post was successful
+            if (createBudgetResponse.status === 200) {
+                console.log('Text notification entry created successfully!');
+
+            } else {
+                console.log('Text notification entry creation failed.');
+
+            }
+
+
+            // store into textNotifs collection -- time + number
+            const textNotifTime = {
+                phoneNumber: userPhone,
+                dailyNotif: notifObj.notifTime
+            };
+            const createTextNotifEntry = await post('/createTextNotif', textNotifTime);
+
+            // verify post was successful
+            if (createTextNotifEntry.status === 200) {
+                console.log('Text notification entry created successfully!');
+
+            } else {
+                console.log('Text notification entry creation failed.');
+
+            }
+
             setFormSubmitted(true);
-
             setHasSubmittedOnce(true);
-            console.log("test 6");
         }
-        console.log("test 9");
-
-
-
-
-        
-        //const createBudgetResponse = await post('/createNotification', notificationData);
         setNotifUpdated(true);
         console.log("test 10");
     };
 
     /* function handling when user wants to save their edits to their notification choices, also updates notifObj on FB */
     const handleSave = async () => {
-        console.log(`handleSave isNotifTime value b4: ${isNotifTime}`);
         handleNotifTime();
-        console.log(`handleSave isNotifTime value after: ${isNotifTime}`);
-        setIsEditMode(false);
-        setFormSubmitted(true);
-
+        // setIsEditMode(false);
+        // setFormSubmitted(true);
         if (!isNotifTime) {
-
             window.alert("Please enter a time to receive your daily notification!");
             handleNotifTime()
-
         } else {
-            console.log(`handleSave isNotifTime value in if: ${isNotifTime}`);
             // save notification data in FB
             const updatedNotificationData = {
                 email: userEmail,
@@ -195,6 +210,15 @@ function SetNotifications() {
                 budgetWarning: percentageThreshold
             };
             const updateBudgetResponse = await put('/updateNotifications', updatedNotificationData);
+
+            // store into textNotifs collection -- time + number
+            const updatedTextNotifTime = {
+                //phoneNumber: notifObj.phoneNumber,??
+                phoneNumber: userPhone,
+                dailyNotif: notifObj.notifTime
+            };
+            const updateTextNotifEntry = await put('/updateTextNotifs', updatedTextNotifTime);
+
             setIsEditMode(false);
             setFormSubmitted(true);
         }
