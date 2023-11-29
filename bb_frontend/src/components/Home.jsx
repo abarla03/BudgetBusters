@@ -187,6 +187,7 @@ import CategoryBreakdown from './CategoryBreakdown'; // Import your components
 import InputDailySpending from './InputDailySpending'; // Import your components
 import { auth } from "../firebase";
 import {post, put, get, del} from "./ApiClient";
+import { PieChart, Pie, Cell, Tooltip, Legend, Scatter, ScatterChart, LineChart, ResponsiveContainer, Line, XAxis, YAxis, CartesianGrid } from "recharts";
 
 function Home() {
     console.log("Home component is rendering.");
@@ -247,7 +248,8 @@ function Home() {
             let data;
             try {
                 // Make the GET request to retrieve the budget
-                data = get(`/getPurchase/${userEmail}`)
+                data = get(`/getPurchase/${userEmail}`);
+                console.log("inside use effect input daily obj: ", data)
             } catch (error) {
                 console.error("Error creating or fetching purchase(s):", error);
             }
@@ -261,6 +263,179 @@ function Home() {
 
     }, [userEmail, inputDailyUpdated]);
 
+    // graph data
+
+    // // Hard coded - scatter plot daily total spending data
+    let totalDailySpending;
+    let scatter_data;
+    if(inputDailyObj) {
+        // console.log("inputDailyObj: ", inputDailyObj.data)
+        // totalDailySpending = [11,50,12,40,130,75];
+        totalDailySpending = inputDailyObj?.totalDailySpending;
+        scatter_data = [];
+        totalDailySpending?.forEach((value, day) => {
+            scatter_data.push({x: (day + 1), y: value});
+        });
+    }
+
+    // // hardcoded colors
+    let colors;
+    let categories;
+    let categoryCount;
+    let budgetLimit;
+    let pie_data = [];
+
+    if (inputDailyObj ) {
+        // colors = budgetGoalObj?.colors;
+        // categories = budgetGoalObj?.allCategories;
+        // categoryCount = inputDailyObj?.categoryCount;
+        // budgetLimit = budgetGoalObj?.monthlyBudget;
+        colors = budgetGoalObj.colors ? [...budgetGoalObj.colors] : [];
+        categories = budgetGoalObj.allCategories ? [...budgetGoalObj.allCategories] : [];
+        categoryCount = inputDailyObj.categoryCount ? [...inputDailyObj.categoryCount] : [];
+        budgetLimit = budgetGoalObj.monthlyBudget;
+
+        let sum = 0;
+        if ((inputDailyObj?.cumulativeDailySpending)?.length > 0) {
+            sum = inputDailyObj?.cumulativeDailySpending[(inputDailyObj?.cumulativeDailySpending)?.length - 1];
+        }
+
+        const totalRemainingCount = parseInt(budgetLimit) - sum;
+        categories.push("Total Remaining");
+        categoryCount.push(totalRemainingCount);
+        colors.push("#808080");
+
+
+        // console.log("with totalRemaining", categoryCount);
+        // console.log("with totalRemaining", colors);
+
+        // create pie_data for display
+        categories?.map((category, count) => {
+            pie_data?.push({name: category, value: (categoryCount[count] / budgetLimit) * 100});
+        });
+        console.log("pie_data", pie_data)
+    }
+
+    // const colors = ["#8884d8", "#82ca9d", "#FFBB28", "#808080"];
+    //
+    // // Hardcoded - pie graph data
+    // const categories = ["Rent", "Groceries", "Gym"]
+    // const categoryCount = [150, 100, 50];
+    // let budgetLimit = 500;
+    // const sum = categoryCount.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    // categories.push("Total Remaining");
+    // const totalRemainingCount = budgetLimit - sum;
+    // categoryCount.push(totalRemainingCount);
+    // colors.push("#808080");
+    //
+    // // create pie_data for display
+    // const pie_data = [];
+    //
+    // categories.map((category, count) => {
+    //     pie_data.push({name: category, value: (categoryCount[count] / budgetLimit) * 100});
+    // });
+
+    const CustomTooltip = ({ active, payload, label }) => {
+        if (active) {
+            return (
+                <div
+                    className="custom-tooltip"
+                    style={{
+                        backgroundColor: "#ffffff",
+                        padding: "5px",
+                        border: "1px solid #cccc",
+                    }}
+                >
+                    <label>{`${payload[0].name} : ${payload[0].value}%`}</label>
+                </div>
+            );
+        }
+        return null;
+    };
+
+    const MyPieChart = () => {
+        return (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <h1 className="text-heading">Monthly Spending by Category</h1>
+                <PieChart width={730} height={300}>
+                    <Pie
+                        data={pie_data}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={120}
+                        fill="#8884d8"
+                        labelLine={false} // removing label lines for better visibility
+                        label={(entry) => entry.name} // displaying category names as labels
+                    >
+                        {pie_data?.map((entry, index) => (
+                            <Cell
+                                key={`cell-${index}`}
+                                fill={colors[index % colors.length]}
+                            />
+                        ))}
+                    </Pie>
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend /> {/* should we include the legend? */}
+                </PieChart>
+            </div>
+        );
+    }
+
+    const MyScatterChart = () => {
+        return (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <h1 className="text-heading"> Total Spending By Day</h1>
+                <ScatterChart width={400} height={400} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" dataKey="x" name="Day" />
+                    <YAxis yAxisId="left" type="number" dataKey="y" name="Amount" />
+                    <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(value, name, props) => [name === 'Amount' ? `$${value}` : value, name]} />
+                    <Scatter yAxisId="left" name="Amount" data={scatter_data} fill="#8884d8" />
+                </ScatterChart>
+            </div>
+        );
+    }
+
+    // Hard coded - cumulative line graph data
+    // budgetLimit = 500;
+    // // const cumulativeDaySpending = [11, 50, 75, 215, 345, 420]
+    // // const line_data = [];
+    // cumulativeDaySpending.map((value, day) => {
+    //     line_data.push({name: "Day " + (day + 1), currentTotal: value, budgetLimit: budgetLimit})
+    // });
+
+    let cumulativeDaySpending;
+    let line_data;
+    if(inputDailyObj) {
+        // console.log("inputDailyObj: ", inputDailyObj.data)
+        // totalDailySpending = [11,50,12,40,130,75];
+        cumulativeDaySpending = inputDailyObj?.cumulativeDailySpending;
+        line_data = [];
+        cumulativeDaySpending?.forEach((value, day) => {
+            line_data.push({name: "Day " + (day + 1), currentTotal: value, budgetLimit: budgetGoalObj?.monthlyBudget})
+        });
+    }
+
+    const MyLineChart = () => {
+        return (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <h1 className="text-heading">Cumulative Monthly Spending Chart</h1>
+                <ResponsiveContainer width="100%" aspect={3}>
+                    <LineChart data={line_data} margin={{ right: 30 }}> {/* Adjusted margin */}
+                        <CartesianGrid strokeDasharray="3 3" /> {/* dashed grid lines */}
+                        <XAxis dataKey="name" interval={"preserveStartEnd"} />
+                        <YAxis />
+                        <Tooltip /> {/* Tooltip for better data visibility */}
+                        <Legend />
+                        <Line type="monotone" dataKey="currentTotal" name="Current Total" stroke="black" activeDot={{ r: 8 }} />
+                        <Line type="monotone" dataKey="budgetLimit" name="Budget Limit" stroke="red" activeDot={{ r: 8 }} />
+                    </LineChart>
+                </ResponsiveContainer>
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -269,31 +444,43 @@ function Home() {
                     <h3>Hi {userObj?.fullName}! </h3>
                     <h3>Your monthly budget is: ${budgetGoalObj?.monthlyBudget} </h3>
 
-                    {inputDailyObj?.cumulativeDailySpending ? (
+                    {(inputDailyObj?.cumulativeDailySpending)?.length > 0 ? (
                         <div>
                             <h3>Your total spending for the month is: $
-                                {inputDailyObj?.cumulativeDailySpending[inputDailyObj?.cumulativeDailySpending.length - 1]} </h3>
+                                {inputDailyObj?.cumulativeDailySpending[(inputDailyObj?.cumulativeDailySpending)?.length - 1]} </h3>
                             <h3>Here’s a visual breakdown of your spending habits so far this month:</h3>
+                            <h3>display graphs</h3>
+                            <MyScatterChart />
+                            <MyPieChart />
+                            <MyLineChart/>
+
                         </div>
                     ) : (
                         <div>
                             <h3> no purchases made. </h3>
+                            <h3>Daily Spending scatter plot unavailable until purchases are made.</h3>
+                            <h3>Spending pie chart unavailable until purchases are made.</h3>
+                            <h3>Spending cumulative line graph unavailable until purchases are made.</h3>
                         </div>
                     )}
 
-                    {inputDailyObj?.numPurchases > 0 ? (
-                        <h3></h3>
-                    ) : (
-                        <>
-                            <h3>Spending pie chart unavailable until purchases are made.</h3>
-                            <h3>Spending pie chart unavailable until purchases are made.</h3>
-                        </>
-                    )}
+                    {/*{inputDailyObj?.numPurchases > 0 ? (*/}
+                    {/*    */}
+                    {/*) : (*/}
+                    {/*    <>*/}
+                    {/*        */}
+                    {/*    </>*/}
+                    {/*)}*/}
                 </div>
             ) : (
                 <div>
                     <h3>Welcome {userObj?.fullName}!</h3>
-                    <p>Insert instructions</p>
+                    <p>Welcome to Budget Busters! We’re so happy to have you here. <br />
+                        1. You can get started on your account by clicking the settings icon and updating the profile page. <br />
+                        2. Then you can head to the notifications page to set the notifications to a specific time. <br />
+                        3. You can then head to Set Monthly Goal and set your monthly goals by completing the form. <br />
+                        4. Then with each day, you can head to Input Daily Spending and input your daily purchases. <br />
+                        5. To see a visual progress of your monthly goal and daily spending habits, you can access the homepage and Category Breakdown page.</p>
                     <h3>You have not set your budget goal for this month yet. Navigate to the Set Monthly Goal page to get started!</h3>
                 </div>
             )}
