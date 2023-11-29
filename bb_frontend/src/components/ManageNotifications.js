@@ -6,6 +6,7 @@ import {post, put, get} from "./ApiClient";
 function SetNotifications() {
     const user = auth.currentUser;
     const userEmail = user ? user.email : "";
+    let isNotifTime = false;
     const [formSubmitted, setFormSubmitted] = useState(false);
 
     const [notifObj, setNotifObj] = useState({});
@@ -70,6 +71,24 @@ function SetNotifications() {
         }
     };
 
+    const handleNotifTime = () => {
+        console.log("handleNotifTime Method")
+        console.log(`selected hour: ${selectedHour} `);
+        console.log(`selected period: ${selectedPeriod} `);
+        if ((!selectedHour) || (!selectedPeriod)) {
+            console.log(`within the if statement for it's undefined: selectedHour: ${selectedHour} and selectedPeriod: ${selectedPeriod}`);
+            console.log("selected hour or selected period is undefined!");
+            //window.alert("Please enter a time to receive your daily notification!");
+            isNotifTime = false;
+            console.log(`isNotifTime value: ${isNotifTime}`);
+        } else {
+            isNotifTime = true;
+            console.log("isNotifTime is NOT undefined");
+            console.log(`isNotifTime value: ${isNotifTime}`);
+        }
+        return isNotifTime;
+    }
+
     /* yes/no dropdown for user's budget limit warning notification choice */
     const handleWarningNotificationChange = (e) => {
         setWarningNotificationChoice(e.target.value);
@@ -79,37 +98,48 @@ function SetNotifications() {
 
     /* function handling when user submits all of their notification choices, also stores notifObj on FB */
     const handleSubmit = async () => {
-        setFormSubmitted(true);
-        setHasSubmittedOnce(true);
+        handleNotifTime();
+        if (!isNotifTime) {
+            window.alert("Please enter a time to receive your daily notification!");
+            handleNotifTime();
+        } else {
+            // save notification data to FB
+            const notificationData = {
+                email: userEmail,
+                preferredMethod: selectedMethods,
+                notifTime: selectedHour.toString().concat(" " + selectedPeriod.toUpperCase()),
+                warningNotificationChoice: warningNotificationChoice,
+                budgetWarning: percentageThreshold
+            };
 
-        // save notification data to FB
-        const notificationData = {
-            email: userEmail,
-            preferredMethod: selectedMethods,
-            notifTime: selectedHour.toString().concat(" " + selectedPeriod.toUpperCase()),
-            warningNotificationChoice: warningNotificationChoice,
-            budgetWarning: percentageThreshold
-        };
+            const createBudgetResponse = await post('/createNotification', notificationData);
+
+            setFormSubmitted(true);
+            setHasSubmittedOnce(true);
+        }
         
-        const createBudgetResponse = await post('/createNotification', notificationData);
         setNotifUpdated(true);
     };
 
     /* function handling when user wants to save their edits to their notification choices, also updates notifObj on FB */
     const handleSave = async () => {
-        setIsEditMode(false);
-        setFormSubmitted(true);
-
-        // save notification data in FB
-        const updatedNotificationData = {
-            email: userEmail,
-            preferredMethod: selectedMethods,
-            notifTime: selectedHour.toString().concat(" " + selectedPeriod.toUpperCase()),
-            warningNotificationChoice: warningNotificationChoice,
-            budgetWarning: percentageThreshold
-        };
-        
-        const updateBudgetResponse = await put('/updateNotifications', updatedNotificationData);
+        handleNotifTime();
+        if (!isNotifTime) {
+            window.alert("Please enter a time to receive your daily notification!");
+            handleNotifTime()
+        } else {
+            // save notification data in FB
+            const updatedNotificationData = {
+                email: userEmail,
+                preferredMethod: selectedMethods,
+                notifTime: selectedHour.toString().concat(" " + selectedPeriod.toUpperCase()),
+                warningNotificationChoice: warningNotificationChoice,
+                budgetWarning: percentageThreshold
+            };
+            const updateBudgetResponse = await put('/updateNotifications', updatedNotificationData);
+            setIsEditMode(false);
+            setFormSubmitted(true);
+        }
         setNotifUpdated(true);
     };
 
