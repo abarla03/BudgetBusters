@@ -264,47 +264,103 @@ function Home() {
 
     return (
         <div>
-            <div>
-            {!(budgetGoalObj?.colors) ? (
+            {budgetGoalObj?.colors ? (
+                <div>
+                    <h3>Hi {userObj?.fullName}! </h3>
+                    <h3>Your monthly budget is: ${budgetGoalObj?.monthlyBudget} </h3>
+
+                    {inputDailyObj?.cumulativeDailySpending ? (
+                        <div>
+                            <h3>Your total spending for the month is: $
+                                {inputDailyObj?.cumulativeDailySpending[inputDailyObj?.cumulativeDailySpending.length - 1]} </h3>
+                            <h3>Here’s a visual breakdown of your spending habits so far this month:</h3>
+                        </div>
+                    ) : (
+                        <div>
+                            <h3> no purchases made. </h3>
+                        </div>
+                    )}
+
+                    {inputDailyObj?.numPurchases > 0 ? (
+                        <h3></h3>
+                    ) : (
+                        <>
+                            <h3>Spending pie chart unavailable until purchases are made.</h3>
+                            <h3>Spending pie chart unavailable until purchases are made.</h3>
+                        </>
+                    )}
+                </div>
+            ) : (
                 <div>
                     <h3>Welcome {userObj?.fullName}!</h3>
                     <p>Insert instructions</p>
-                    <h4>You have not set your budget goal for this month yet.
-                        Navigate to the Set Monthly Goal page to get started!</h4>
-                </div>
-            ) : (
-                <div>
-                    <h3>Hi {userObj?.fullName}! </h3>
-                    <h4>Your monthly budget is: ${budgetGoalObj?.monthlyBudget} </h4>
+                    <h3>You have not set your budget goal for this month yet. Navigate to the Set Monthly Goal page to get started!</h3>
                 </div>
             )}
-                </div>
-            <div>
-            {!inputDailyObj?.cumulativeDailySpending ? (
-                <div>
-                    <h3> no purchases made. </h3>
-                </div>
-            ) : (
-                <div>
-                    <h3>Your total spending for the month is: $
-                        {inputDailyObj?.cumulativeDailySpending[inputDailyObj?.cumulativeDailySpending.length - 1]} </h3>
-                    <h3>Here’s a visual breakdown of your spending habits so far this month:</h3>
-                </div>
-            )}
-            </div>
         </div>
     );
 
-
-
-
-    //
-    //
     // return (
     //     <div>
-    //         <h3 className="App">
-    //             {userObj.firstTimeRegister ? (
-    //                 <h3>Welcome {userObj.fullName}!</h3>
+    //         {budgetGoalObj?.colors ? (
+    //             <div>
+    //                 <h3>Hi {userObj?.fullName}! </h3>
+    //                 <h3>Your monthly budget is: ${budgetGoalObj?.monthlyBudget} </h3>
+    //             </div>
+    //
+    //             {inputDailyObj?.cumulativeDailySpending ? (
+    //                 <div>
+    //                     <h3>Your total spending for the month is: $
+    //                         {inputDailyObj?.cumulativeDailySpending[inputDailyObj?.cumulativeDailySpending.length - 1]} </h3>
+    //                     <h3>Here’s a visual breakdown of your spending habits so far this month:</h3>
+    //                 </div>
+    //             ) : (
+    //                 <div>
+    //                     <h3> no purchases made. </h3>
+    //                 </div>
+    //             )}
+    //
+    //             {inputDailyObj?.numPurchases > 0 ? (
+    //                 <h3></h3>
+    //             ) : (
+    //                 <h3>Spending pie chart unavailable until purchases are made.</h3>
+    //                 <h3>Spending pie chart unavailable until purchases are made.</h3>
+    //             )}
+    //         ) : (
+    //             <div>
+    //                 <h3>Welcome {userObj?.fullName}!</h3>
+    //                 <p>Insert instructions</p>
+    //                 <h3>You have not set your budget goal for this month yet.
+    //                     Navigate to the Set Monthly Goal page to get started!</h3>
+    //             </div>
+    //         )}
+    //
+    //
+    //         {!inputDailyObj?.cumulativeDailySpending ? (
+    //         //     <div>
+    //         //         <h3> no purchases made. </h3>
+    //         //     </div>
+    //         // ) : (
+    //         //     <div>
+    //         //         <h3>Your total spending for the month is: $
+    //         //             {inputDailyObj?.cumulativeDailySpending[inputDailyObj?.cumulativeDailySpending.length - 1]} </h3>
+    //         //         <h3>Here’s a visual breakdown of your spending habits so far this month:</h3>
+    //         //     </div>
+    //         // )}
+    //
+    //     </div>
+    // );
+    //
+    //
+    //
+    //
+    // //
+    // //
+    // // return (
+    // //     <div>
+    // //         <h3 className="App">
+    // //             {userObj.firstTimeRegister ? (
+    // //                 <h3>Welcome {userObj.fullName}!</h3>
     //             ) : (
     //                 <h3>Hi {userObj.fullName}</h3>
     //             )}
