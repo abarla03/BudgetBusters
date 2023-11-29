@@ -10,6 +10,7 @@ function SetNotifications() {
     const userPhone = user ? user.phone: "";
     let isUserPhone = false;
     let isNotifTime = false;
+    console.log(`isNotifTime value: ${isNotifTime}`);
     const [formSubmitted, setFormSubmitted] = useState(false);
 
     const [notifObj, setNotifObj] = useState({});
@@ -99,10 +100,16 @@ function SetNotifications() {
         console.log("handleNotifTime Method")
         console.log(`selected hour: ${selectedHour} `);
         console.log(`selected period: ${selectedPeriod} `);
-        if (selectedHour || selectedPeriod === undefined) {
+        if ((!selectedHour) || (!selectedPeriod)) {
+            console.log(`within the if statement for it's undefined: selectedHour: ${selectedHour} and selectedPeriod: ${selectedPeriod}`);
             console.log("selected hour or selected period is undefined!");
             //window.alert("Please enter a time to receive your daily notification!");
+            isNotifTime = false;
+            console.log(`isNotifTime value: ${isNotifTime}`);
+        } else {
             isNotifTime = true;
+            console.log("isNotifTime is NOT undefined");
+            console.log(`isNotifTime value: ${isNotifTime}`);
         }
         return isNotifTime;
     };
@@ -116,34 +123,69 @@ function SetNotifications() {
 
     /* function handling when user submits all of their notification choices, also stores notifObj on FB */
     const handleSubmit = async () => {
+        console.log(`handleSubmit isNotifTime value b4: ${isNotifTime}`);
+        handleNotifTime();
+        console.log(`handleSubmit isNotifTime value after: ${isNotifTime}`);
         console.log("test 1");
         handleNotifTime();
         console.log("test 2");
-        setFormSubmitted(true);
-        console.log("test 3");
-        setHasSubmittedOnce(true);
+        // setFormSubmitted(true);
+        //
+        // setHasSubmittedOnce(true);
         console.log("test 4");
         // save notification data to FB
 
-        const notificationData = {
-            email: userEmail,
-            preferredMethod: selectedMethods,
-            notifTime: selectedHour.toString().concat(" " + selectedPeriod.toUpperCase()),
-            warningNotificationChoice: warningNotificationChoice,
-            budgetWarning: percentageThreshold
-        };
+
+
+        if (!isNotifTime) {
+            console.log("test 7");
+            window.alert("Please enter a time to receive your daily notification!");
+            handleNotifTime();
+            //return;
+            console.log("test 8");
+        } else {
+
+            console.log(`handleSubmit isNotifTime value in if: ${isNotifTime}`);
+            const notificationData = {
+                email: userEmail,
+                preferredMethod: selectedMethods,
+                notifTime: selectedHour.toString().concat(" " + selectedPeriod.toUpperCase()),
+                warningNotificationChoice: warningNotificationChoice,
+                budgetWarning: percentageThreshold
+            };
+            console.log("test 5");
+            const createBudgetResponse = await post('/createNotification', notificationData);
+            setFormSubmitted(true);
+
+            setHasSubmittedOnce(true);
+            console.log("test 6");
+        }
+        console.log("test 9");
+
+
+
+
         
-        const createBudgetResponse = await post('/createNotification', notificationData);
+        //const createBudgetResponse = await post('/createNotification', notificationData);
         setNotifUpdated(true);
+        console.log("test 10");
     };
 
     /* function handling when user wants to save their edits to their notification choices, also updates notifObj on FB */
     const handleSave = async () => {
+        console.log(`handleSave isNotifTime value b4: ${isNotifTime}`);
         handleNotifTime();
+        console.log(`handleSave isNotifTime value after: ${isNotifTime}`);
         setIsEditMode(false);
         setFormSubmitted(true);
 
-        if (isNotifTime) {
+        if (!isNotifTime) {
+
+            window.alert("Please enter a time to receive your daily notification!");
+            handleNotifTime()
+
+        } else {
+            console.log(`handleSave isNotifTime value in if: ${isNotifTime}`);
             // save notification data in FB
             const updatedNotificationData = {
                 email: userEmail,
@@ -152,11 +194,12 @@ function SetNotifications() {
                 warningNotificationChoice: warningNotificationChoice,
                 budgetWarning: percentageThreshold
             };
-        } else {
-            window.alert("Please enter a time to receive your daily notification!");
+            const updateBudgetResponse = await put('/updateNotifications', updatedNotificationData);
+            setIsEditMode(false);
+            setFormSubmitted(true);
         }
         
-        const updateBudgetResponse = await put('/updateNotifications', updatedNotificationData);
+        //const updateBudgetResponse = await put('/updateNotifications', updatedNotificationData);
         setNotifUpdated(true);
     };
 
