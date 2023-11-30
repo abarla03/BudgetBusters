@@ -165,7 +165,8 @@ function SetNotifications() {
             setFormSubmitted(true);
             setNotifUpdated(true);
 
-            // store into textNotifs collection -- time + number
+            if (selectedMethods.contains('Text')) {
+                // store into textNotifs collection -- time + number
                 const updatedTextNotifTime = {
                     phoneNumber: userObj?.phoneNumber,
                     dailyNotif: selectedHour.toString().concat(" " + selectedPeriod.toUpperCase())
@@ -174,6 +175,20 @@ function SetNotifications() {
 
                 const updateTextNotifResponse = await put('/updateTextNotifs', updatedTextNotifTime);
                 console.log("updateTextNotifResponse: ", updateTextNotifResponse);
+            }
+
+            // if (selectedMethods.contains('Email')) {
+            //     // store into textNotifs collection -- time + number
+            //     const updatedEmailNotifTime = {
+            //         phoneNumber: userObj?.phoneNumber,
+            //         dailyNotif: selectedHour.toString().concat(" " + selectedPeriod.toUpperCase())
+            //     };
+            //     console.log("updatedEmailNotifTime: ", updatedEmailNotifTime);
+            //
+            //     const updateEmailNotifResponse = await put('/updateEmailNotifs', updatedEmailNotifTime);
+            //     console.log("updateEmailNotifResponse: ", updateEmailNotifResponse);
+            // }
+
         } else {
             console.log(`selectedHour: ${selectedHour}`);
             console.log(`selectedPeriod: ${selectedPeriod}`);
