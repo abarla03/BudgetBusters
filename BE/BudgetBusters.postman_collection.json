@@ -14,7 +14,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"firstName\" : \"John\",\n    \"lastName\" : \"Purdue\",\n    \"age\" : 20,\n    \"email\" : \"john@purdue.edu\",\n    \"phoneNumber\" : 111111111\n}",
+					"raw": "{\n    \"fullName\" : \"John Purdue\",\n    \"age\" : 20,\n    \"email\" : \"john1@purdue.edu\",\n    \"phoneNumber\" : 111111111\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -116,6 +116,60 @@
 			"response": []
 		},
 		{
+			"name": "createTextNotif",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"phoneNumber\" : 222111111,\n    \"dailyNotif\": \"6:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/createTextNotif",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"createTextNotif"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createEmailNotif",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"test3@gmail.com\",\n    \"dailyNotif\": \"6:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/createEmailNotif",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"createEmailNotif"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "deleteUser",
 			"request": {
 				"method": "DELETE",
@@ -165,6 +219,58 @@
 						{
 							"key": "index",
 							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteTextNotif",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080//deleteTextNotif/:phoneNumber",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"",
+						"deleteTextNotif",
+						":phoneNumber"
+					],
+					"variable": [
+						{
+							"key": "phoneNumber",
+							"value": "222111111"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteEmailNotif",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080//deleteEmailNotif/:email",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"",
+						"deleteEmailNotif",
+						":email"
+					],
+					"variable": [
+						{
+							"key": "email",
+							"value": "test1@gmail.com"
 						}
 					]
 				}
@@ -239,7 +345,7 @@
 					"variable": [
 						{
 							"key": "email",
-							"value": "test@gmail.com"
+							"value": "dummy67@gmail.com"
 						}
 					]
 				}
@@ -272,13 +378,63 @@
 			"response": []
 		},
 		{
+			"name": "getTextNotifs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getTextNotifs/:phoneNumber",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getTextNotifs",
+						":phoneNumber"
+					],
+					"variable": [
+						{
+							"key": "phoneNumber",
+							"value": "222111111"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getEmailNotifs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getEmailNotifs/:email",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getEmailNotifs",
+						":email"
+					],
+					"variable": [
+						{
+							"key": "email",
+							"value": "test3@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "updateBudget",
 			"request": {
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\" : \"gigi@gmail.com\",\n    \"monthlyBudget\" : 550,\n    \"allCategories\" : [\"entertainment\", \"groceries\"]\n}",
+					"raw": "{\n    \"email\" : \"test31@gmail.com\",\n    \"monthlyBudget\" : 700,\n    \"allCategories\" : [\"entertainment\", \"groceries\"]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -305,7 +461,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\" : \"test@gmail.com\",\n    \"numPurchases\" : 2,\n    \"purchases\" : [{\"purchaseName\":\"coffee\", \"purchaseAmount\":5, \"purchaseCategory\" : \"drink\"}, \n    {\"purchaseName\":\"donut\", \"purchaseAmount\":4, \"purchaseCategory\" : \"food\"}]\n}",
+					"raw": "{\n    \"email\" : \"dummy69@gmail.com\",\n    \"numPurchases\" : 2,\n    \"purchases\" : [{\"purchaseName\":\"coffee\", \"purchaseAmount\":5, \"purchaseCategory\" : \"drink\"}, \n    {\"purchaseName\":\"donut\", \"purchaseAmount\":4, \"purchaseCategory\" : \"food\"}],\n    \"totalDailySpending\": [11, 40, 60, 50, 100, 75],\n    \"cumulativeDailySpending\": [11, 50, 75, 50, 150, 100],\n    \"categoryCount\": [150, 100, 50]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -428,6 +584,114 @@
 					"port": "8080",
 					"path": [
 						"updateUser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateTextNotifs",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"phoneNumber\" : 222111111,\n    \"dailyNotif\": \"7:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/updateTextNotifs",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"updateTextNotifs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateEmailNotifs",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"test3@gmail.com\",\n    \"dailyNotif\": \"7:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/updateEmailNotifs",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"updateEmailNotifs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "resetBudget",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"gigi@gmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/resetBudget",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"resetBudget"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "resetPurchases",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"dummy16@gmail.com\",\n    \"currentDayTotal\": 112\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/resetPurchases",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"resetPurchases"
 					]
 				}
 			},
