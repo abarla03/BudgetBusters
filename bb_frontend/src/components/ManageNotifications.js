@@ -129,12 +129,15 @@ function SetNotifications() {
             setHasSubmittedOnce(true);
             setNotifUpdated(true);
 
-            // // store into textNotifs collection -- time + number
-            // const textNotifTime = {
-            //     phoneNumber: userPhone,
-            //     dailyNotif: notifObj.notifTime
-            // };
-            // const createTextNotifEntry = await post('/createTextNotif', textNotifTime);
+            // store into textNotifs collection -- time + number
+            const textNotifTime = {
+                phoneNumber: userObj?.phoneNumber,
+                dailyNotif: selectedHour?.toString().concat(" " + selectedPeriod.toUpperCase())
+            };
+            console.log("textNotifTime: ", textNotifTime);
+
+            const createTextNotifResponse = await post('/createTextNotif', textNotifTime);
+            console.log("createTextNotifResponse: ", createTextNotifResponse);
         } else {
             console.log(`in submit else selectedHour: ${selectedHour}`);
             console.log(` in submit else selectedPeriod: ${selectedPeriod}`);
@@ -163,12 +166,14 @@ function SetNotifications() {
             setNotifUpdated(true);
 
             // store into textNotifs collection -- time + number
-            //     // const updatedTextNotifTime = {
-            //     //     //phoneNumber: notifObj.phoneNumber,??
-            //     //     phoneNumber: userObj?.phoneNumber,
-            //     //     dailyNotif: notifObj?.notifTime
-            //     // };
-            //     // const updateTextNotifEntry = await put('/updateTextNotifs', updatedTextNotifTime);
+                const updatedTextNotifTime = {
+                    phoneNumber: userObj?.phoneNumber,
+                    dailyNotif: selectedHour.toString().concat(" " + selectedPeriod.toUpperCase())
+                };
+                console.log("updatedTextNotifTime: ", updatedTextNotifTime);
+
+                const updateTextNotifResponse = await put('/updateTextNotifs', updatedTextNotifTime);
+                console.log("updateTextNotifResponse: ", updateTextNotifResponse);
         } else {
             console.log(`selectedHour: ${selectedHour}`);
             console.log(`selectedPeriod: ${selectedPeriod}`);
