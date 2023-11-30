@@ -119,12 +119,19 @@ function Home() {
     let cumulativeDaySpending;
     let line_data;
     if(inputDailyObj) {
-        // console.log("inputDailyObj: ", inputDailyObj.data)
-        // totalDailySpending = [11,50,12,40,130,75];
         cumulativeDaySpending = inputDailyObj?.cumulativeDailySpending;
         line_data = [];
         cumulativeDaySpending?.forEach((value, day) => {
             line_data.push({name: "Day " + (day + 1), currentTotal: value, budgetLimit: budgetGoalObj?.monthlyBudget})
+        });
+    } else {
+        // case when only the monthly budget is set
+        const length = 31; // Set the desired length of the array
+        const zerosArray = Array(length).fill(0);
+        line_data = [];
+        let day = 0;
+        zerosArray?.forEach((value, day) => {
+                line_data.push({name: "Day " + (day + 1), currentTotal: 0, budgetLimit: budgetGoalObj?.monthlyBudget})
         });
     }
 
@@ -212,6 +219,25 @@ function Home() {
         );
     }
 
+    const MyBudgetOnlyLineChart = () => {
+        return (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <h1 className="text-heading">Cumulative Monthly Spending Chart</h1>
+                <ResponsiveContainer width="100%" aspect={3}>
+                    <LineChart data={line_data} margin={{ right: 30 }}> {/* Adjusted margin */}
+                        <CartesianGrid strokeDasharray="3 3" /> {/* dashed grid lines */}
+                        <XAxis dataKey="name" interval={"preserveStartEnd"} />
+                        <YAxis />
+                        <Tooltip /> {/* Tooltip for better data visibility */}
+                        <Legend />
+                        {/*<Line type="monotone" dataKey="currentTotal" name="Current Total" stroke="black" activeDot={{ r: 8 }} />*/}
+                        <Line type="monotone" dataKey="budgetLimit" name="Budget Limit" stroke="red" activeDot={{ r: 8 }} />
+                    </LineChart>
+                </ResponsiveContainer>
+            </div>
+        );
+    }
+
     return (
         <div>
             {budgetGoalObj?.colors ? (
@@ -235,7 +261,8 @@ function Home() {
                             <h3> no purchases made. </h3>
                             <h3>Daily Spending scatter plot unavailable until purchases are made.</h3>
                             <h3>Spending pie chart unavailable until purchases are made.</h3>
-                            <h3>Spending cumulative line graph unavailable until purchases are made.</h3>
+                            <h3>Spending cumulative line graph unavailable until purchases are made. </h3>
+                            <MyBudgetOnlyLineChart/>
                         </div>
                     )}
                 </div>
