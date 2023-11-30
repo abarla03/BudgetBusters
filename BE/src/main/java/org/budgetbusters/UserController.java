@@ -32,6 +32,11 @@ public class UserController {
         return userService.createTextNotif(textNotifs);
     }
 
+    @PostMapping("/createEmailNotif")
+    public String createEmailNotif(@RequestBody EmailNotifs emailNotifs) throws InterruptedException, ExecutionException {
+        return userService.createEmailNotif(emailNotifs);
+    }
+
     @PostMapping("/createUser")
     public String createUser(@RequestBody User user) throws InterruptedException, ExecutionException {
         return userService.createUser(user);
@@ -50,6 +55,11 @@ public class UserController {
     @DeleteMapping("/deleteTextNotif/{phoneNumber}")
     public String deleteTextNotif(@PathVariable String phoneNumber) throws InterruptedException, ExecutionException {
         return userService.deleteTextNotif(phoneNumber);
+    }
+
+    @DeleteMapping("/deleteEmailNotif/{email}")
+    public String deleteEmailNotif(@PathVariable String email) throws InterruptedException, ExecutionException {
+        return userService.deleteEmailNotif(email);
     }
 
     @GetMapping("/getBudget/{email}")
@@ -72,8 +82,12 @@ public class UserController {
 
     @GetMapping("/getTextNotifs/{phoneNumber}")
     public TextNotifs getTextNotifs(@PathVariable String phoneNumber) throws InterruptedException, ExecutionException {
-        TextNotifs textNotifs = userService.getTextNotifs(phoneNumber);
-        return textNotifs;
+        return userService.getTextNotifs(phoneNumber);
+    }
+
+    @GetMapping("/getEmailNotifs/{email}")
+    public EmailNotifs getEmailNotifs(@PathVariable String email) throws InterruptedException, ExecutionException {
+        return userService.getEmailNotifs(email);
     }
 
     @GetMapping("/getUser/{email}")
@@ -117,6 +131,11 @@ public class UserController {
     @PutMapping("/updateTextNotifs")
     public String updateTextNotifs(@RequestBody TextNotifs textNotifs) throws InterruptedException, ExecutionException, BudgetBustersException {
         return userService.updateTextNotifs(textNotifs);
+    }
+
+    @PutMapping("/updateEmailNotifs")
+    public String updateEmailNotifs(@RequestBody EmailNotifs emailNotifs) throws InterruptedException, ExecutionException, BudgetBustersException {
+        return userService.updateEmailNotifs(emailNotifs);
     }
 
     @PutMapping("/updateUser")
