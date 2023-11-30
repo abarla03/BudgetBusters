@@ -128,8 +128,7 @@ const Register = (props) => {
                     fullName: name,
                     email: email,
                     age: null,
-                    phoneNumber: null,
-                    firstTimeRegister: true
+                    phoneNumber: null
                 }
                 const createUserResponse = await post('/createUser', userInfo);
 

@@ -14,5 +14,4 @@ public class User {
     private Integer age;
     private String email;
     private Integer phoneNumber;
-    private Boolean firstTimeRegister;
 }
