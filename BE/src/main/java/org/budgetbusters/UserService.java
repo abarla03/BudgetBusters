@@ -35,6 +35,12 @@ public class UserService {
 
     }
 
+    public String createTextNotif(TextNotifs textNotifs) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("textNotifs").document(textNotifs.getPhoneNumber()).set(textNotifs);
+        return "Text Notif created for " + textNotifs.getPhoneNumber() + " at " + collectionsApiFuture.get().getUpdateTime();
+    }
+
     public String createUser(User user) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("BudgetBusterUser").document(user.getEmail()).set(user);
@@ -58,6 +64,12 @@ public class UserService {
         inputDailySpending.setCurrentDayTotal(currentDayTotal);
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("DailyPurchases").document(inputDailySpending.getEmail()).set(inputDailySpending);
         return "Purchase at " + index + " deleted. "+ collectionsApiFuture.get().getUpdateTime();
+    }
+
+    public String deleteTextNotif(String phoneNumber) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> writeResult = dbFirestore.collection("textNotifs").document(phoneNumber).delete();
+        return "Text Notifications for " + phoneNumber + " is deleted.";
     }
 
     public MonthlyBudget getBudget(String email) throws ExecutionException, InterruptedException {
@@ -95,6 +107,19 @@ public class UserService {
         if (document.exists()) {
             inputDailySpending = document.toObject(InputDailySpending.class);
             return inputDailySpending;
+        }
+        return null;
+    }
+
+    public TextNotifs getTextNotifs(String phoneNumber) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        DocumentReference documentReference = dbFirestore.collection("textNotifs").document(phoneNumber);
+        ApiFuture<DocumentSnapshot> future = documentReference.get();
+        DocumentSnapshot document = future.get();
+        TextNotifs textNotifs;
+        if (document.exists()) {
+            textNotifs = document.toObject(TextNotifs.class);
+            return textNotifs;
         }
         return null;
     }
@@ -233,6 +258,20 @@ public class UserService {
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("DailyPurchases").document(inputDailySpending.getEmail()).set(inputDailySpending);
         return "Purchase updated: " + collectionsApiFuture.get().getUpdateTime();
 
+    }
+
+    public String updateTextNotifs(TextNotifs textNotifs) throws ExecutionException, InterruptedException, BudgetBustersException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        // check if already exists
+        DocumentReference documentReference = dbFirestore.collection("textNotifs").document(textNotifs.getPhoneNumber());
+        ApiFuture<DocumentSnapshot> future = documentReference.get();
+        DocumentSnapshot document = future.get();
+        if (document == null) {
+            throw new BudgetBustersException("No textNotifs exists for user: " + textNotifs.getPhoneNumber());
+        }
+
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("textNotifs").document(textNotifs.getPhoneNumber()).set(textNotifs);
+        return "TextNotifs updated for " + textNotifs.getPhoneNumber() + " at " + collectionsApiFuture.get().getUpdateTime();
     }
 
     public String updateUser(User user) throws ExecutionException, InterruptedException {

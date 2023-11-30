@@ -26,6 +26,12 @@ public class UserController {
     public String createPurchase(@RequestBody InputDailySpending inputDailySpending) throws InterruptedException, ExecutionException {
         return userService.createPurchase(inputDailySpending);
     }
+
+    @PostMapping("/createTextNotif")
+    public String createTextNotif(@RequestBody TextNotifs textNotifs) throws InterruptedException, ExecutionException {
+        return userService.createTextNotif(textNotifs);
+    }
+
     @PostMapping("/createUser")
     public String createUser(@RequestBody User user) throws InterruptedException, ExecutionException {
         return userService.createUser(user);
@@ -39,6 +45,11 @@ public class UserController {
     @DeleteMapping("/deletePurchase/{email}/{index}/{currentDayTotal}")
     public String deletePurchase(@PathVariable String email, @PathVariable Integer index, @PathVariable Double currentDayTotal) throws InterruptedException, ExecutionException, BudgetBustersException {
         return userService.deletePurchase(email, index, currentDayTotal);
+    }
+
+    @DeleteMapping("/deleteTextNotif/{phoneNumber}")
+    public String deleteTextNotif(@PathVariable String phoneNumber) throws InterruptedException, ExecutionException {
+        return userService.deleteTextNotif(phoneNumber);
     }
 
     @GetMapping("/getBudget/{email}")
@@ -57,6 +68,12 @@ public class UserController {
     public InputDailySpending getPurchase(@PathVariable String email) throws InterruptedException, ExecutionException {
         InputDailySpending inputDailySpending = userService.getPurchase(email);
         return inputDailySpending;
+    }
+
+    @GetMapping("/getTextNotifs/{phoneNumber}")
+    public TextNotifs getTextNotifs(@PathVariable String phoneNumber) throws InterruptedException, ExecutionException {
+        TextNotifs textNotifs = userService.getTextNotifs(phoneNumber);
+        return textNotifs;
     }
 
     @GetMapping("/getUser/{email}")
@@ -95,6 +112,11 @@ public class UserController {
     @PutMapping("/updatePurchase")
     public String updatePurchase(@RequestBody InputDailySpending inputDailySpending) throws InterruptedException, ExecutionException, BudgetBustersException {
         return userService.updatePurchase(inputDailySpending);
+    }
+
+    @PutMapping("/updateTextNotifs")
+    public String updateTextNotifs(@RequestBody TextNotifs textNotifs) throws InterruptedException, ExecutionException, BudgetBustersException {
+        return userService.updateTextNotifs(textNotifs);
     }
 
     @PutMapping("/updateUser")
