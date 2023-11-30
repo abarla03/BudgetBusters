@@ -247,7 +247,7 @@ function DisplayProfile({firebaseDisplayName, firebaseEmail, setFullName, setEma
             fullName: editFullName,
             email: firebaseEmail,
             age: editAge,
-            phoneNumber: editPhonefirstTimeRegister
+            phoneNumber: editPhone
         }
 
         const updatedUserResponse = await put('/updateUser', updatedUserInfo);
