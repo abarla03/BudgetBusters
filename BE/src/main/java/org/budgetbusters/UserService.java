@@ -7,6 +7,8 @@ import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -172,6 +174,16 @@ public class UserService {
             } else {
                 inputDailySpending1.setCumulativeDailySpending(List.of(inputDailySpending1.getCurrentDayTotal()));
             }
+
+            // add to values from dayCategoryCount to categoryCount at the END OF DAY
+            if (inputDailySpending1.getCategoryCount().isEmpty()) {
+                int length = inputDailySpending1.getDayCategoryCount().size();
+                inputDailySpending1.setCategoryCount(new ArrayList<>(Collections.nCopies(length, 0.0)));
+            }
+            List<Double> result = addArrays(inputDailySpending1.getDayCategoryCount(), inputDailySpending1.getCategoryCount());
+            inputDailySpending1.setCategoryCount(result);
+
+            inputDailySpending1.setDayCategoryCount(null);
             inputDailySpending1.setCurrentDayTotal(null);
             updatePurchase(inputDailySpending1);
 
@@ -179,6 +191,19 @@ public class UserService {
         } else {
             return "Nothing has been reset for " + inputDailySpending1.getEmail();
         }
+    }
+
+    public static List<Double> addArrays(List<Double> list1, List<Double> list2) {
+        if (list1.size() != list2.size()) {
+            throw new IllegalArgumentException("Lists must be of the same length");
+        }
+
+        List<Double> result = new ArrayList<>();
+        for (int i = 0; i < list1.size(); i++) {
+            result.add(list1.get(i) + list2.get(i));
+        }
+
+        return result;
     }
 
     public String updateNotifications(Notifications notifications) throws ExecutionException, InterruptedException, BudgetBustersException {

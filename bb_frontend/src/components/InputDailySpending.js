@@ -74,6 +74,7 @@ function InputDailySpending() {
     const [editIndex, setEditIndex] = useState(null);
     const [isAddMode, setIsAddMode] = useState(true);
     const [messageFlag, setMessageFlag] = useState(false);
+    const [categoryCountFlag, setCategoryCountFlag] = useState(false);
     const arePurchasesStored = inputDailyObj?.numPurchases > 0;
 
     /* category data from setMonthlyGoal Page*/
@@ -83,21 +84,24 @@ function InputDailySpending() {
     const resetPurchases = async () => {
         const inputDailyReset = {
             email: userEmail,
-            currentDayTotal: inputDailyObj.currentDayTotal
+            currentDayTotal: inputDailyObj?.currentDayTotal ? inputDailyObj?.currentDayTotal : 0,
+            dayCategoryCount: inputDailyObj?.dayCategoryCount ? inputDailyObj?.dayCategoryCount : []
         }
         const resetPurchases = await put('/resetPurchases', inputDailyReset);
     }
 
     /* resets purchases at the end of day with timer (NOTE: 1 day = 3 min) */
     useEffect(() => {
+        setCategoryCountFlag(false);
         const timer = setTimeout(() => {
             resetPurchases();
             setNoSpendingMessage("You did not spend anything today.")
             setIsSubmitted(false);
             setMessageFlag(true);
+            setCategoryCountFlag(true);
             localStorage.removeItem(`purchases_${userEmail}`)
 
-        }, 3 * 60 * 1000);
+        }, 0.5 * 60 * 1000);
 
         // clear the timer when the component unmounts or when purchases are cleared manually
         return () => clearTimeout(timer);
@@ -158,18 +162,22 @@ function InputDailySpending() {
 
         // create dictionary mapping each category to its respective spending amount
         const categoryCountDict = selectedCategories.reduce((dict, category, currentIndex) => {
-            dict[category] = inputDailyObj.categoryCount ? inputDailyObj.categoryCount[currentIndex] : 0;
+            dict[category] = 0;
+            setCategoryCountFlag(false);
+            console.log("dict: ", dict)
             return dict;
         }, {});
 
         // iterate through purchases and add total corresponding to the purchases' categories
         for (const purchase of purchases) {
-            categoryCountDict[purchase.category] += parseInt(purchase.amount, 10) || 0;
+            categoryCountDict[purchase.category] += parseInt(purchase.amount);
+            console.log("categoryCountDict: ", categoryCountDict)
+
         }
-        const categoryCount = Object.values(categoryCountDict);
+        const dayCategoryCount = Object.values(categoryCountDict);
         const totalDailySpending = inputDailyObj.totalDailySpending || [];
         const cumulativeDailySpending = inputDailyObj.cumulativeDailySpending || [];
-
+        const categoryCount = inputDailyObj.categoryCount || [];
         // send json obj
         const userPurchaseInfo = {
             email: userEmail,
@@ -182,7 +190,8 @@ function InputDailySpending() {
             currentDayTotal: currentDayTotal,
             totalDailySpending: totalDailySpending,
             cumulativeDailySpending: cumulativeDailySpending,
-            categoryCount: categoryCount
+            categoryCount: categoryCount,
+            dayCategoryCount: dayCategoryCount
         }
 
         const createInputDailyResponse = await post('/createPurchase', userPurchaseInfo);
@@ -452,10 +461,12 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                 for (const purchase of purchases) {
                     categoryCountDict[purchase.category] += parseInt(purchase.amount, 10) || 0;
                 }
-                const categoryCount = Object.values(categoryCountDict);
+                const dayCategoryCount = Object.values(categoryCountDict);
 
                 const totalDailySpending = inputDailyObj.totalDailySpending;
                 const cumulativeDailySpending = inputDailyObj.cumulativeDailySpending;
+                const categoryCount = inputDailyObj.categoryCount;
+
                 const updatedPurchaseInfo = {
                     email: userEmail,
                     numPurchases: purchases.length,
@@ -467,7 +478,8 @@ function DisplayDailySpending({ purchases, purchasedItem, setPurchasedItem, purc
                     currentDayTotal: currentDayTotal,
                     totalDailySpending: totalDailySpending,
                     cumulativeDailySpending: cumulativeDailySpending,
-                    categoryCount: categoryCount
+                    categoryCount: categoryCount,
+                    dayCategoryCount: dayCategoryCount
                 }
                 const updatedInputDailyResponse = await put('/updatePurchase', updatedPurchaseInfo);
                 setInputDailyUpdated(true);
