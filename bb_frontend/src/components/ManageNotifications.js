@@ -10,7 +10,13 @@ function SetNotifications() {
 
     const [notifObj, setNotifObj] = useState({});
     const [notifUpdated, setNotifUpdated] = useState(false); // to re-fetch notifications info whenever update happens
-    
+
+    // setting the email for pop-up
+    const [emailSelected, setEmailSelected] = useState(false);
+    const [emailAddress, setEmailAddress] = useState("");
+
+
+
     /* obtaining notification object from user input */
     useEffect(() => {
         function fetchNotifData() {
@@ -59,6 +65,10 @@ function SetNotifications() {
 
     /* function handling user's ability to select multiple notification methods */
     const handleMethodClick = (method) => {
+
+        if (method === "Email") {
+            window.alert(`You will be sent an email to: ${userEmail}`);
+        }
         // adds or removes the selected method from the selectedMethods array
         // based on whether it was included before or not
         if (selectedMethods?.includes(method)) {
@@ -69,6 +79,8 @@ function SetNotifications() {
             setAllMethods([...allMethods, method]);
         }
     };
+
+
 
     /* yes/no dropdown for user's budget limit warning notification choice */
     const handleWarningNotificationChange = (e) => {
@@ -119,6 +131,7 @@ function SetNotifications() {
     }, [hasSubmittedOnce, `hasSubmittedOnce_${userEmail}`]);
 
     return (
+
         <div className="notification-container">
             {/* condition where user previously submitted their notification form and views the page after a login/redirection */}
             {hasSubmittedOnce && (
@@ -257,6 +270,7 @@ function SetNotifications() {
                                 </div>
                             )}
                         </div>
+
 
                         {/*Conditionally renders Submit/Save button depending on if user is in edit mode*/}
                         {!isEditMode ? (
