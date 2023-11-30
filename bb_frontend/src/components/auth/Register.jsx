@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import GoogleSignInButton from '../GoogleSignInButton';
 import GoogleSignUpButton from "../GoogleSignUpButton";
 import * as currentUser from "firebase/auth";
+import {post} from "../ApiClient";
 const Register = (props) => {
     const navigate = useNavigate();
     const [name, setName ] = useState('');
@@ -113,12 +114,21 @@ const Register = (props) => {
             // e.preventDefault();
         createUserWithEmailAndPassword(auth, email, password)
 
-            .then((userCredential) => {
+            .then(async(userCredential) => {
                 console.log(userCredential);
                 //console.log('no actual error'); // THIS IS WHERE SUCCESSFUL LOGIN MESSAGE GOES
                 const successMessage = "You have successfully created an account!";
                 console.log(successMessage);
                 window.alert("You have successfully created an account!");
+
+                // create user info in backend
+                const userInfo = {
+                    fullName: name,
+                    email: email,
+                    age: null,
+                    phoneNumber: null
+                }
+                const createUserResponse = await post('/createUser', userInfo);
                 navigate('/login')
                 //showMessage(successMessage);
                 //showMessage("You have successfully created an account!");

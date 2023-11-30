@@ -5,12 +5,9 @@ import {post, put, get} from "./ApiClient";
 function SetNotifications() {
     const user = auth.currentUser;
     const userEmail = user ? user.email : "";
-    const [formSubmitted, setFormSubmitted] = useState(false);
 
     const [userObj, setUserObj] = useState({});
     const [userUpdated, setUserUpdated] = useState(false); // to re-fetch notifications info whenever update happens
-    const [isNotifTime, setIsNotifTime] = useState(false);
-
     /* getting the user's phone number */
     useEffect(() => {
         function fetchUserData() {
@@ -35,7 +32,6 @@ function SetNotifications() {
 
     const [notifObj, setNotifObj] = useState({});
     const [notifUpdated, setNotifUpdated] = useState(false); // to re-fetch notifications info whenever update happens
-
     /* obtaining notification object from user input */
     useEffect(() => {
         function fetchNotifData() {
@@ -63,28 +59,18 @@ function SetNotifications() {
     const methods = ["Email", "Text"];
 
     /* select time */
-    //time
     const [selectedHour, setSelectedHour] = useState(notifObj ? notifObj.notifTime?.split(" ")[0] : "0");
-    //minute -- no need for this, we will just give them options on the hour (1:00, 2:00, etc.)
-    const [selectedMin, setSelectedMin] = useState(0);
-    const [showMinDropdown, setShowMinDropdown] = useState(false);
-    //am or pm
     const [selectedPeriod, setSelectedPeriod] = useState(notifObj ? notifObj.notifTime?.split(" ")[1] : "");
 
     /* options */
-    const [isOptionEditMode, setIsOptionEditMode] = useState(true);
     const [warningNotificationChoice, setWarningNotificationChoice] = useState(notifObj ? notifObj.warningNotificationChoice : "");
     const [percentageThreshold, setPercentageThreshold] = useState(notifObj ? notifObj.budgetWarning : 0);
-    const [selectedPercentage, setSelectedPercentage] = useState(0);
     const [showPercentageDropdown, setShowPercentageDropdown] = useState(false);
-    const [dollarThreshold, setDollarThreshold] = useState(0); // may not need this; calculations could be done in backend
-
     const [hasSubmittedOnce, setHasSubmittedOnce] = useState(Boolean(localStorage.getItem(`hasSubmittedOnce_${userEmail}`)));
-    const [isEditMode, setIsEditMode] = useState(false); // Track edit mode
-    const [noNumberFlag, setNoNumberFlag] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false); // track edit mode
     const [noNumberMessage, setNoNumberMessage] = useState('');
     const [noTimeMessage, setNoTimeMessage] = useState('');
-    const [noPeriodMessage, setNoPeriodMessage] = useState('');
+    const [formSubmitted, setFormSubmitted] = useState(false);
 
     /* function handling user's ability to select multiple notification methods */
     const handleMethodClick = (method) => {
@@ -115,30 +101,6 @@ function SetNotifications() {
         }
     };
 
-    /* function handling whether time choice exists */
-    const handleTimeChoice = (e) => {
-        if (!(e.target.value)) {
-            // set error message
-            setNoTimeMessage('Please choose an hour for your daily notification.');
-        } else {
-            // set error ''
-            setNoTimeMessage('');
-            setSelectedHour(e.target.value);
-        }
-    }
-
-    /* function handling whether period choice exists */
-    const handlePeriodChoice = (e) => {
-        if (!(e.target.value)) {
-            // set error message
-            setNoPeriodMessage('Please choose a period for your daily notification.');
-        } else {
-            // set error ''
-            setNoPeriodMessage('');
-            setSelectedPeriod(e.target.value);
-        }
-    }
-
     /* yes/no dropdown for user's budget limit warning notification choice */
     const handleWarningNotificationChange = (e) => {
         setWarningNotificationChoice(e.target.value);
@@ -148,16 +110,11 @@ function SetNotifications() {
 
     /* function handling when user submits all of their notification choices, also stores notifObj on FB */
     const handleSubmit = async () => {
-        // change logic here
-        if (!selectedHour || selectedHour === "0" || !selectedPeriod || selectedPeriod === '') {
-            console.log("selected hour when null", selectedHour);
-            console.log("selected period when null", selectedPeriod);
-            setNoTimeMessage("HAHA");
-        } else {
-            console.log("selected hour when not null", selectedHour);
-            console.log("selected period when not null", selectedPeriod);
-            setNoTimeMessage("LOLOL");
-            // save notification data to FB
+        if (selectedHour && selectedHour !== "0" && selectedPeriod && selectedPeriod !== '') {
+            console.log(` in submit if selectedHour: ${selectedHour}`);
+            console.log(`in submit if selectedPeriod: ${selectedPeriod}`);
+            setNoTimeMessage('');
+
             const notificationData = {
                 email: userEmail,
                 preferredMethod: selectedMethods,
@@ -167,39 +124,31 @@ function SetNotifications() {
             };
 
             const createBudgetResponse = await post('/createNotification', notificationData);
+            setFormSubmitted(true);
+            localStorage.setItem(`hasSubmittedOnce_${userEmail}`, 'true');
+            setHasSubmittedOnce(true);
+            setNotifUpdated(true);
 
-            // verify post was successful
-            // if (createBudgetResponse.status === 200) {
-            //     console.log('Text notification entry created successfully!');
-            //
-            // } else {
-            //     console.log('Text notification entry creation failed.');
-            // }
-        }
-
-          // // store into textNotifs collection -- time + number
+            // // store into textNotifs collection -- time + number
             // const textNotifTime = {
             //     phoneNumber: userPhone,
             //     dailyNotif: notifObj.notifTime
             // };
             // const createTextNotifEntry = await post('/createTextNotif', textNotifTime);
-        setFormSubmitted(true);
-        localStorage.setItem(`hasSubmittedOnce_${userEmail}`, 'true');
-        setHasSubmittedOnce(true);
-        setNotifUpdated(true);
-        console.log("test 10");
+        } else {
+            console.log(`in submit else selectedHour: ${selectedHour}`);
+            console.log(` in submit else selectedPeriod: ${selectedPeriod}`);
+            setNoTimeMessage("Please enter both a time and period for your daily notification.");
+        }
     };
 
     /* function handling when user wants to save their edits to their notification choices, also updates notifObj on FB */
     const handleSave = async () => {
-        // handleNotifTime();
-        // setIsEditMode(false);
-        // setFormSubmitted(true);
-        if (!isNotifTime) {
-            window.alert("Please enter a time to receive your daily notification!");
-            // handleNotifTime()
-        } else {
-            // save notification data in FB
+        if (selectedHour && selectedHour !== "0" && selectedPeriod && selectedPeriod !== '') {
+            setNoTimeMessage('');
+            console.log(`selectedHour: ${selectedHour}`);
+            console.log(`selectedPeriod: ${selectedPeriod}`);
+
             const updatedNotificationData = {
                 email: userEmail,
                 preferredMethod: selectedMethods,
@@ -209,22 +158,25 @@ function SetNotifications() {
             };
             const updateBudgetResponse = await put('/updateNotifications', updatedNotificationData);
 
-            // store into textNotifs collection -- time + number
-            const updatedTextNotifTime = {
-                //phoneNumber: notifObj.phoneNumber,??
-                phoneNumber: userObj?.phoneNumber,
-                dailyNotif: notifObj.notifTime
-            };
-            const updateTextNotifEntry = await put('/updateTextNotifs', updatedTextNotifTime);
-
             setIsEditMode(false);
             setFormSubmitted(true);
+            setNotifUpdated(true);
+
+            // store into textNotifs collection -- time + number
+            //     // const updatedTextNotifTime = {
+            //     //     //phoneNumber: notifObj.phoneNumber,??
+            //     //     phoneNumber: userObj?.phoneNumber,
+            //     //     dailyNotif: notifObj?.notifTime
+            //     // };
+            //     // const updateTextNotifEntry = await put('/updateTextNotifs', updatedTextNotifTime);
+        } else {
+            console.log(`selectedHour: ${selectedHour}`);
+            console.log(`selectedPeriod: ${selectedPeriod}`);
+            setNoTimeMessage("Please enter both a time and period for your daily notification.");
         }
-        
-        //const updateBudgetResponse = await put('/updateNotifications', updatedNotificationData);
-        setNotifUpdated(true);
     };
 
+    /* this helps prepopulate the notif information after user presses edit */
     // useEffect(() => {
     //     // save hasSubmittedOnce to local storage whenever it changes
     //     localStorage.removeItem(`hasSubmittedOnce_${userEmail}`);
@@ -243,7 +195,6 @@ function SetNotifications() {
                 />
             )}
             {/* condition where user submitted their notification form and views the page immediately after clicking the Submit button */}
-            {/* !hasSubmittedOnce && */}
             {!hasSubmittedOnce && formSubmitted && !isEditMode && (
                 <DisplayNotifications
                     warningNotificationChoice={notifObj.warningNotificationChoice}
@@ -266,9 +217,6 @@ function SetNotifications() {
                                 {methods.map((method) => (
                                     <button
                                         key={method}
-                                        // className={`notification-method-button${
-                                        //     ((notifObj.preferredMethod === selectedMethods) ? notifObj?.preferredMethod : selectedMethods).includes(method) ? ' selected' : ''
-                                        // }`}
                                         className={`notification-method-button${selectedMethods.includes(method) ? ' selected' : ''}`}
                                         onClick={() => handleMethodClick(method)}
                                     >
@@ -285,10 +233,8 @@ function SetNotifications() {
                             <div className="select-time">
                                 <select
                                     id="selectedHour"
-                                    // value={(notifObj.notifTime.split(" ")[0] === selectedHour) ? (notifObj?.notifTime.split(" ")[0]) : (selectedHour)}
                                     value={selectedHour}
-                                    // onChange={(e) => setSelectedHour(e.target.value)}
-                                    onChange={(e) => handleTimeChoice(e)}
+                                    onChange={(e) => setSelectedHour(e.target.value)}
                                 >
                                     <option value="">Select a time</option>
                                     <option value="12">12:00</option>
@@ -316,20 +262,18 @@ function SetNotifications() {
                                     <option value="11">11:00</option>
                                     <option value="11:30">11:30</option>
                                 </select>
-                                {noTimeMessage && <p className="error-message">{noTimeMessage}</p>}
                                 <div className="am-pm">
                                     <select
                                         id="selectedPeriod"
                                         // value={(notifObj.notifTime.split(" ")[1] === selectedPeriod) ? (notifObj?.notifTime.split(" ")[1]) : (selectedPeriod)}
                                         value={selectedPeriod}
-                                        onChange={(e) => handlePeriodChoice(e)}
+                                        onChange={(e) => setSelectedPeriod(e.target.value)}
                                         //onChange={handleNotifTime}
                                     >
                                         <option value="">Select AM/PM</option>
                                         <option value="AM">AM</option>
                                         <option value="PM">PM</option>
                                     </select>
-                                    {noPeriodMessage && <p className="error-message">{noPeriodMessage}</p>}
                                 </div>
                             </div>
                         </div>
@@ -356,7 +300,6 @@ function SetNotifications() {
                                     <label htmlFor="percentageThreshold">Select a percentage threshold:</label>
                                     <select
                                         id="percentageThreshold"
-                                        // value={(notifObj.budgetWarning === percentageThreshold) ? notifObj?.budgetWarning : percentageThreshold}
                                         value={percentageThreshold}
                                         onChange={(e) => setPercentageThreshold(e.target.value)}
                                     >
@@ -376,32 +319,26 @@ function SetNotifications() {
                             )}
                         </div>
 
+                        {noTimeMessage && <p className="error-message">{noTimeMessage}</p>}
                         {/*Conditionally renders Submit/Save button depending on if user is in edit mode*/}
                         {!isEditMode ? (
                             <button
                                 className="submit-button"
                                 type="submit"
                                 onClick={handleSubmit}
-                                disabled={noNumberMessage !== '' || noTimeMessage !== ''}
+                                disabled={noNumberMessage !== ''}
                             >
                                 Submit
                             </button>
                         ) : (
-                            <button className="edit-button" onClick={handleSave}>
+                            <button
+                                className="edit-button"
+                                onClick={handleSave}
+                                disabled={noNumberMessage !== ''}
+                            >
                                 Save
                             </button>
                         )}
-                        {noTimeMessage && <p className="error-message">{noTimeMessage}</p>}
-                        {/*{!isEditMode && (*/}
-                        {/*    <button*/}
-                        {/*        className="submit-button"*/}
-                        {/*        type="submit"*/}
-                        {/*        onClick={handleSubmit}*/}
-                        {/*        disabled={noNumberMessage !== ''}*/}
-                        {/*    >*/}
-                        {/*        Submit*/}
-                        {/*    </button>*/}
-                        {/*)}*/}
                     </div>
                 </>
             )}

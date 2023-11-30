@@ -16,23 +16,24 @@ function CreateProfile() {
     const [userObj, setUserObj] = useState({});
     const [userUpdated, setUserUpdated] = useState(false); // to re-fetch budget info whenever update happens
 
-    // /* obtaining user object from user profile input */
-    // useEffect(() => {
-    //     function fetchUserData() {
-    //         let data;
-    //         try {
-    //             // Make the GET request to retrieve the user
-    //             data = get(`/getUser/${firebaseEmail}`);
-    //         } catch (error) {
-    //             console.error("Error creating or fetching user:", error);
-    //         }
-    //         return data;
-    //     }
-    //     fetchUserData().then((response) => {
-    //         setUserObj(response.data);
-    //     });
-    //     setUserUpdated(false)
-    // }, [firebaseEmail, userUpdated]);
+    /* obtaining user object from user profile input */
+    useEffect(() => {
+        function fetchUserData() {
+            let data;
+            try {
+                // Make the GET request to retrieve the user
+                data = get(`/getUser/${firebaseEmail}`);
+            } catch (error) {
+                console.error("Error creating or fetching user:", error);
+            }
+            return data;
+        }
+        fetchUserData().then((response) => {
+            setUserObj(response.data);
+        });
+        setUserUpdated(false)
+    }, [firebaseEmail, userUpdated]);
+
 
     // useEffect(() => {
     //     async function fetchUserData() {

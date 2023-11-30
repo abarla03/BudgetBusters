@@ -80,10 +80,10 @@ public class UserController {
         return userService.getUser(email);
     }
 
-    @GetMapping("/getUser/{phoneNumber}")
-    public User getUser(@PathVariable Integer phoneNumber) throws InterruptedException, ExecutionException {
-        return userService.getUser(String.valueOf(phoneNumber));
-    }
+//    @GetMapping("/getUser/{phoneNumber}")
+//    public User getUser(@PathVariable Integer phoneNumber) throws InterruptedException, ExecutionException {
+//        return userService.getUser(String.valueOf(phoneNumber));
+//    }
 
     @PutMapping("/updateBudget")
     public String updateBudget(@RequestBody MonthlyBudget monthlyBudget) throws InterruptedException, ExecutionException, BudgetBustersException {
