@@ -88,9 +88,8 @@ function SetNotifications() {
             preferredMethod: selectedMethods,
             notifTime: selectedHour.toString().concat(" " + selectedPeriod.toUpperCase()),
             warningNotificationChoice: warningNotificationChoice,
-            budgetWarning: percentageThreshold
+            budgetWarning: parseInt(percentageThreshold)
         };
-        
         const createBudgetResponse = await post('/createNotification', notificationData);
         setNotifUpdated(true);
     };
@@ -106,7 +105,7 @@ function SetNotifications() {
             preferredMethod: selectedMethods,
             notifTime: selectedHour.toString().concat(" " + selectedPeriod.toUpperCase()),
             warningNotificationChoice: warningNotificationChoice,
-            budgetWarning: percentageThreshold
+            budgetWarning: parseInt(percentageThreshold)
         };
         
         const updateBudgetResponse = await put('/updateNotifications', updatedNotificationData);
