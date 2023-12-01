@@ -76,14 +76,6 @@ function SetNotifications() {
     const handleMethodClick = (method) => {
         // adds or removes the selected method from the selectedMethods array
         // based on whether it was included before or not
-
-        if (method === "Email") {
-            window.alert(`You will be sent an email to: ${userEmail}`);
-        }
-        if (method === "Text") {
-            window.alert(`You will be sent a text message to the number`);
-        }
-        
         if (selectedMethods?.includes(method)) {
             // this condition deselects a previously chosen method
             setSelectedMethods(selectedMethods.filter((c) => c !== method)); //deselects the method
@@ -137,7 +129,9 @@ function SetNotifications() {
             setHasSubmittedOnce(true);
             setNotifUpdated(true);
 
+
             if (selectedMethods.includes('Text')) {
+                window.alert(`You will be sent text messages to the number ${userObj?.phoneNumber}!`);
                 // store into textNotifs collection -- time + number
                 const textNotifTime = {
                     phoneNumber: userObj?.phoneNumber,
@@ -150,6 +144,7 @@ function SetNotifications() {
             }
 
             if (selectedMethods.includes('Email')) {
+                window.alert(`You will be sent email notifications to ${userEmail}!`);
                 // store into textNotifs collection -- time + number
                 const emailNotifTime = {
                     email: userEmail,
@@ -189,6 +184,7 @@ function SetNotifications() {
             setNotifUpdated(true);
 
             if (selectedMethods.includes('Text')) {
+                window.alert(`You will be sent text messages to the number ${userObj?.phoneNumber}!`);
                 // store into textNotifs collection -- time + number
                 const updatedTextNotifTime = {
                     phoneNumber: userObj?.phoneNumber,
@@ -201,6 +197,7 @@ function SetNotifications() {
             }
 
             if (selectedMethods.includes('Email')) {
+                window.alert(`You will be sent email notifications to ${userEmail}!`);
                 // store into textNotifs collection -- time + number
                 const updatedEmailNotifTime = {
                     email: userEmail,
