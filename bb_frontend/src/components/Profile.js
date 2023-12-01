@@ -102,7 +102,7 @@ function CreateProfile() {
             age: age,
             phoneNumber: phone
         }
-        const createUserResponse = await post('/createUser', userInfo);
+        const createUserResponse = await put('/updateUser', userInfo);
         setUserUpdated(true)
     };
 
