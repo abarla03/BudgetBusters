@@ -129,7 +129,8 @@ function CreateProfile() {
             age: age,
             phoneNumber: phone
         }
-        const createUserResponse = await post('/createUser', userInfo)
+        //causing an error
+        const createUserResponse = await put('/updateUser', userInfo);
 
 
         setUserUpdated(true)
@@ -279,6 +280,7 @@ function DisplayProfile({firebaseDisplayName, firebaseEmail, setFullName, setEma
             phoneNumber: editPhone
         }
 
+        //causing an error
         const updatedUserResponse = await put('/updateUser', updatedUserInfo);
         setUserUpdated(true);
     };
