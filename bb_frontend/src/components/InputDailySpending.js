@@ -19,6 +19,9 @@ function InputDailySpending() {
     const [budgetGoalObj, setBudgetGoalObj] = useState({});
     const [budgetUpdated, setBudgetUpdated] = useState(false); // to re-fetch budget info whenever update happens
 
+    const [notifObj, setNotifObj] = useState({});
+    const [notifUpdated, setNotifUpdated] = useState(false); // to re-fetch notifications info whenever update happens
+
     /* obtaining input daily spending object from user input */
     useEffect(() => {
         function fetchInputDailyData() {
@@ -60,6 +63,26 @@ function InputDailySpending() {
 
     }, [userEmail, budgetUpdated]);
 
+    /* obtaining notifications object from user input */
+    useEffect(() => {
+        function fetchNotificationsData() {
+            let data;
+            try {
+                // Make the GET request to retrieve the budget
+                data = get(`/getNotifications/${userEmail}`)
+            } catch (error) {
+                console.error("Error creating or fetching budget:", error);
+            }
+            return data;
+        }
+
+        fetchNotificationsData().then((response) => {
+            setNotifObj(response.data);
+        });
+        setNotifUpdated(false);
+
+    }, [userEmail, notifUpdated]);
+
     const [showPurchaseFields, setShowPurchaseFields] = useState(false);
     const [purchasedItem, setPurchasedItem] = useState('');
     const [purchaseAmount, setPurchaseAmount] = useState('');
@@ -81,31 +104,94 @@ function InputDailySpending() {
     const selectedCategories = budgetGoalObj.allCategories;
 
     /* function handling reset purchases on backend */
+    // const resetPurchases = async () => {
+    //     const inputDailyReset = {
+    //         email: userEmail,
+    //         currentDayTotal: inputDailyObj?.currentDayTotal ? inputDailyObj?.currentDayTotal : 0,
+    //         dayCategoryCount: inputDailyObj?.dayCategoryCount ? inputDailyObj?.dayCategoryCount : []
+    //     }
+    //     const resetPurchases = await put('/resetPurchases', inputDailyReset);
+    // }
     const resetPurchases = async () => {
         const inputDailyReset = {
             email: userEmail,
             currentDayTotal: inputDailyObj?.currentDayTotal ? inputDailyObj?.currentDayTotal : 0,
-            dayCategoryCount: inputDailyObj?.dayCategoryCount ? inputDailyObj?.dayCategoryCount : []
-        }
+            dayCategoryCount: inputDailyObj?.dayCategoryCount ? inputDailyObj?.dayCategoryCount : [],
+        };
+
         const resetPurchases = await put('/resetPurchases', inputDailyReset);
-    }
+        console.log("resetPurchases", resetPurchases);
+
+        return resetPurchases;
+
+        // After the reset is complete, check the condition
+
+    };
+
 
     /* resets purchases at the end of day with timer (NOTE: 1 day = 3 min) */
     useEffect(() => {
         setCategoryCountFlag(false);
         const timer = setTimeout(() => {
-            resetPurchases();
+            // resetPurchases();
             setNoSpendingMessage("You did not spend anything today.")
             setIsSubmitted(false);
             setMessageFlag(true);
             setCategoryCountFlag(true);
-            localStorage.removeItem(`purchases_${userEmail}`)
+            // localStorage.removeItem(`purchases_${userEmail}`)
+
+            resetPurchases()
+                .then(() => {
+                const isExceeded = (inputDailyObj?.cumulativeDailySpending?.[inputDailyObj?.cumulativeDailySpending?.length - 1]) > (budgetGoalObj?.monthlyBudget * ((notifObj?.budgetWarning) / 100));
+                if (inputDailyObj?.cumulativeDailySpending?.length && isExceeded) {
+                    console.log("last index of cumulative array ", inputDailyObj?.cumulativeDailySpending?.[inputDailyObj.cumulativeDailySpending.length - 1]);
+                    console.log("Exceeds limit");
+                    console.log("this is the percent threshold", budgetGoalObj?.monthlyBudget * (notifObj?.budgetWarning / 100));
+                } else {
+                    console.log("Does not exceed limit");
+                }
+
+                resetPurchases();
+            });
+
+            // if (inputDailyObj) {
+            //     console.log("input daily obj: ", inputDailyObj)
+            // }
+            // if (inputDailyObj?.cumulativeDailySpending) {
+            //     console.log("cumulative daily spending: ", inputDailyObj?.cumulativeDailySpending)
+            // }
+            // if (inputDailyObj?.cumulativeDailySpending?.length) {
+            //     console.log("cumulative daily spending length ", inputDailyObj?.cumulativeDailySpending?.length)
+            // }
+            //
+            // // check if the user exceeds budget threshold
+            // if (inputDailyObj && inputDailyObj?.cumulativeDailySpending?.length !== 0) {
+            //     const lastIdx = inputDailyObj?.cumulativeDailySpending?.length - 1;
+            //     if (inputDailyObj?.cumulativeDailySpending?.[lastIdx] > (budgetGoalObj?.monthlyBudget * (notifObj?.budgetWarning / 100))) {
+            //         console.log(inputDailyObj?.cumulativeDailySpending?.[lastIdx]);
+            //         console.log((budgetGoalObj?.monthlyBudget * (notifObj?.budgetWarning / 100)));
+            //         console.log("Exceeds limit");
+            //     }
+            // } else {
+            //     console.log(inputDailyObj?.cumulativeDailySpending?.[lastIdx]);
+            //     console.log((budgetGoalObj?.monthlyBudget * (notifObj?.budgetWarning / 100)));
+            //     console.log("does not exceed limit");
+            // }
+
+            // if (inputDailyObj?.cumulativeDailySpending?.length && inputDailyObj.cumulativeDailySpending[inputDailyObj.cumulativeDailySpending.length - 1] > (budgetGoalObj?.monthlyBudget * (notifObj?.budgetWarning / 100))) {
+            //     console.log(inputDailyObj.cumulativeDailySpending[inputDailyObj.cumulativeDailySpending.length - 1]);
+            //     console.log(budgetGoalObj?.monthlyBudget * (notifObj?.budgetWarning / 100));
+            //     console.log("Exceeds limit");
+            // } else {
+            //     console.log("Does not exceed limit");
+            // }
+
 
         }, 0.5 * 60 * 1000);
 
         // clear the timer when the component unmounts or when purchases are cleared manually
         return () => clearTimeout(timer);
-    }, [userEmail, purchases]);
+    }, [[inputDailyObj, budgetGoalObj, notifObj, userEmail, purchases]]);
 
     /* function handling non-numeric values in purchase amount field */
     const handlePurchaseAmountChange = (event) => {
@@ -164,14 +250,14 @@ function InputDailySpending() {
         const categoryCountDict = selectedCategories.reduce((dict, category, currentIndex) => {
             dict[category] = 0;
             setCategoryCountFlag(false);
-            console.log("dict: ", dict)
+            // console.log("dict: ", dict)
             return dict;
         }, {});
 
         // iterate through purchases and add total corresponding to the purchases' categories
         for (const purchase of purchases) {
             categoryCountDict[purchase.category] += parseInt(purchase.amount);
-            console.log("categoryCountDict: ", categoryCountDict)
+            // console.log("categoryCountDict: ", categoryCountDict)
 
         }
         const dayCategoryCount = Object.values(categoryCountDict);

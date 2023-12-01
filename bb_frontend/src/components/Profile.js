@@ -13,7 +13,7 @@ function CreateProfile() {
     const firebaseDisplayName = firebaseEmail.match(/([^@]+)/)[0];
 
     const [userObj, setUserObj] = useState({});
-    const [userUpdated, setUserUpdated] = useState(false); // to re-fetch budget info whenever update happens
+    const [userUpdated, setUserUpdated] = useState(false); // to re-fetch user info whenever update happens
 
     /* obtaining user object from user profile input */
     useEffect(() => {
