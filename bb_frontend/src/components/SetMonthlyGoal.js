@@ -272,14 +272,14 @@ function ColorCodeCategories({ budgetGoalObj, userEmail, setBudgetUpdated, color
     const hexColorOptions = {
         Red: '#ff5c70',
         Orange: '#ffb267',
-        Yellow: '#e9fc87',
+        Yellow: '#dad873',
         Green: '#85d67a',
         Teal: '#47c8a6',
         Blue: '#5c9dc5',
-        Violet: '#6d5eb0',
+        Violet: '#8b7bda',
         Purple: '#af7abd',
         Pink: '#e36498',
-        Grey: '#ccc'
+        Grey: '#949292'
     };
 
     /* function handling the color change of categories when hex code is specified */
