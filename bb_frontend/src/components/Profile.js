@@ -10,7 +10,7 @@ import {post, put, get} from "./ApiClient";
 function CreateProfile() {
     const user = auth.currentUser;
     const firebaseEmail = user ? user.email : "";
-    const firebaseDisplayName = firebaseEmail.match(/([^@]+)/)[0];
+    // const firebaseDisplayName = firebaseEmail.match(/([^@]+)/)[0];
 
     const [userObj, setUserObj] = useState({});
     const [userUpdated, setUserUpdated] = useState(false); // to re-fetch budget info whenever update happens
@@ -34,7 +34,7 @@ function CreateProfile() {
     }, [firebaseEmail, userUpdated]);
     
     const navigate = useNavigate();
-    const [fullName, setFullName] = useState('');
+    const [fullName, setFullName] = useState(userObj ? userObj?.fullName : '');
     const [email, setEmail] = useState('');
     const [age, setAge] = useState('');
     const [phone, setPhone] = useState('');
@@ -44,9 +44,9 @@ function CreateProfile() {
 
     /* populate name and email fields from data inputted in login process */
     useEffect (() => {
-        setFullName(firebaseDisplayName);
+        setFullName(userObj?.fullName);
         setEmail(firebaseEmail);
-    }, []);
+    });
 
     /* function handling a change in the age field */
     const handleAgeInputChange = (event) => {
@@ -102,7 +102,8 @@ function CreateProfile() {
             age: age,
             phoneNumber: phone
         }
-        const createUserResponse = await post('/createUser', userInfo);
+
+        const updateUserResponse = await put('/updateUser', userInfo);
         setUserUpdated(true)
     };
 
@@ -110,7 +111,7 @@ function CreateProfile() {
         <div>
             {isProfileSubmitted ?
                 <DisplayProfile
-                    firebaseDisplayName={firebaseDisplayName}
+                    firebaseDisplayName={userObj?.fullName}
                     firebaseEmail={firebaseEmail}
                     fullName={fullName}
                     setFullName={setFullName}
@@ -172,7 +173,7 @@ function CreateProfile() {
     );
 }
 
-function DisplayProfile({firebaseDisplayName, firebaseEmail, setFullName, setEmail, fullName, email, setAge, setPhone,
+function DisplayProfile({firebaseDisplayName, firebaseEmail, setFullName, setEmail, email, setAge, setPhone,
                             handleDeleteAccount, setUserUpdated, userObj}) {
 
     const [isEditMode, setIsEditMode] = useState(false);
@@ -218,7 +219,7 @@ function DisplayProfile({firebaseDisplayName, firebaseEmail, setFullName, setEma
         setFullName(firebaseDisplayName);
         setEmail(firebaseEmail);
 
-        setEditFullName(firebaseDisplayName);
+        setEditFullName(userObj?.fullName)
         setEditEmail(firebaseEmail);
         setEditAge(userObj.age);
         setEditPhone(userObj.phoneNumber);
@@ -257,7 +258,7 @@ function DisplayProfile({firebaseDisplayName, firebaseEmail, setFullName, setEma
 
     return (
         <div>
-            <h5>Name: {isEditMode ? <input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} /> : fullName}</h5>
+            <h5>Name: {isEditMode ? <input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} /> : userObj?.fullName}</h5>
             <h5>Email: {isEditMode ? <input value={editEmail} onChange={(e) => setEditEmail(e.target.value)} /> : email}</h5>
 
             <h5>Age:
