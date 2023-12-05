@@ -125,27 +125,33 @@ function CreateProfile() {
                 />
                 : (
                     <div>
-                        <h5> Name:
-                            <input value={fullName} onChange={(e) => setFullName(e.target.value)}/>
+                        <h5>
+                            <span style={{ fontWeight: '900' }}>Name: </span>
+                            <input value={fullName} style={{ fontWeight: '100' }} onChange={(e) => setFullName(e.target.value)} />
                         </h5>
 
-                        <h5> Email:
-                            <input value={email} onChange={(e) => setEmail(e.target.value)}/>
+                        <h5>
+                            <span style={{ fontWeight: '900' }}>Email: </span>
+                            <input value={email} style={{ fontWeight: '100' }} onChange={(e) => setEmail(e.target.value)} />
                         </h5>
 
-                        <h5>Age:
+                        <h5>
+                            <span style={{ fontWeight: '900' }}>Age: </span>
                             <input
                                 value={age}
                                 onChange={handleAgeInputChange}
+                                style={{ fontWeight: '100' }}
                                 type="text"
                                 id="age"
                                 placeholder="Enter your age"
                                 name="age"
                             />
                         </h5>
+
                         <p className="error-message9">{validationMessage}</p>
 
-                        <h5>Phone number:
+                        <h5>
+                            <span style={{ fontWeight: '900' }}>Phone number: </span>
                             <input
                                 value={phone}
                                 onChange={handlePhoneInputChange}
@@ -258,10 +264,18 @@ function DisplayProfile({firebaseDisplayName, firebaseEmail, setFullName, setEma
 
     return (
         <div>
-            <h5>Name: {isEditMode ? <input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} /> : userObj?.fullName}</h5>
-            <h5>Email: {isEditMode ? <input value={editEmail} onChange={(e) => setEditEmail(e.target.value)} /> : email}</h5>
+            <h5>
+                <span style={{ fontWeight: '900' }}>Name: </span>
+                {isEditMode ?
+                    <input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} /> : userObj?.fullName}</h5>
 
-            <h5>Age:
+            <h5>
+                <span style={{ fontWeight: '900' }}>Email: </span>
+                {isEditMode ?
+                    <input value={editEmail} onChange={(e) => setEditEmail(e.target.value)} /> : email}</h5>
+
+            <h5>
+                <span style={{ fontWeight: '900' }}>Age: </span>
                 {isEditMode ? (
                     <input
                         value={editAge}
@@ -277,7 +291,8 @@ function DisplayProfile({firebaseDisplayName, firebaseEmail, setFullName, setEma
             </h5>
             <p className="error-message9">{invalidAgeError}</p>
 
-            <h5>Phone number:
+            <h5>
+                <span style={{ fontWeight: '900' }}>Phone Number: </span>
                 {isEditMode ? (
                     <input
                         value={editPhone}
@@ -304,7 +319,6 @@ function DisplayProfile({firebaseDisplayName, firebaseEmail, setFullName, setEma
                     </div>
                 )}
             </div>
-
             <button className="submit-button" onClick={handleDeleteAccount}>Delete Account</button>
         </div>
     );

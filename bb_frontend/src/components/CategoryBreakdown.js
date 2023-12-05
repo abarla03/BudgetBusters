@@ -133,13 +133,11 @@ function CategoryBreakdown() {
 
     return (
         <div>
-            {
-                !budgetGoalObj?.colors ? (
-                    <h3>Please set your monthly goal and add purchases to view your progress.</h3>
-                ) : (
-                    <MyBarChart />
-                )
-            }
+            {!budgetGoalObj?.colors ? (
+                <h20>Please set your monthly goal and add purchases to view your progress.</h20>
+            ) : (
+                <MyBarChart />
+            )}
         </div>
     );
 }
