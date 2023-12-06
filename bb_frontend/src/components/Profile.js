@@ -179,11 +179,11 @@ function CreateProfile() {
     );
 }
 
-function DisplayProfile({firebaseDisplayName, firebaseEmail, setFullName, setEmail, email, setAge, setPhone,
+function DisplayProfile({firebaseEmail, setFullName, setEmail, email, setAge, setPhone,
                             handleDeleteAccount, setUserUpdated, userObj}) {
 
     const [isEditMode, setIsEditMode] = useState(false);
-    const [editFullName, setEditFullName] = useState('');
+    const [editFullName, setEditFullName] = useState(userObj ? userObj.fullName : '');
     const [editEmail, setEditEmail] = useState('');
     const [editPhone, setEditPhone] = useState(userObj ? userObj.phoneNumber : '');
     const [editAge, setEditAge] = useState(userObj ? userObj.age : '');
@@ -222,7 +222,7 @@ function DisplayProfile({firebaseDisplayName, firebaseEmail, setFullName, setEma
     }
 
     const populateProfileData = () => {
-        setFullName(firebaseDisplayName);
+        setFullName(userObj?.fullName);
         setEmail(firebaseEmail);
 
         setEditFullName(userObj?.fullName)
